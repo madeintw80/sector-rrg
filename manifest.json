@@ -1,7 +1,7 @@
 {
-  "name": "台股題材輪動 RRG",
+  "name": "題材輪動 RRG",
   "short_name": "RRG輪動",
-  "description": "台股題材資金輪動四象限圖：能點、能追單一題材軌跡、下鑽成分股訊號燈",
+  "description": "題材資金輪動四象限圖：能點、能追單一題材軌跡、下鑽成分股訊號燈",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<!-- data-theme="dark"：預設深色（見下方 head 內 localStorage script）-->
+<html lang="zh-Hant" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <!-- viewport-fit=cover：讓底色延伸到 iPhone 瀏海區 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>台股題材輪動 RRG · 互動版</title>
+<title>題材輪動 RRG · 互動版</title>
 
 <!-- PWA 設定 -->
 <link rel="manifest" href="manifest.json">
@@ -13,6 +14,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RRG輪動">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<!-- 預設深色：開圖先套深色；若使用者手動切過淺色，就用記住的偏好（localStorage）。
+     放在 head 最前面、body 畫出來之前執行，避免「先閃一下淺色再變深色」。 -->
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rrg-theme")||"dark");}catch(e){}</script>
 
 <style>
   /* ── 淺色（預設）── */
@@ -106,19 +111,32 @@
     border:1px solid transparent;}
   .legend span[data-cat].off{opacity:0.3;}
   .legend span[data-cat].sel{border-color:currentColor;}
+
+  /* ── 手機版：把上方標題/資訊/控制列全部收緊，讓四象限圖一進畫面就完整看到、不被截 ── */
+  @media(max-width:640px){
+    .wrap{padding:10px;}
+    h1{font-size:17px;}
+    .meta{font-size:12px;margin-bottom:8px;line-height:1.4;}
+    .bar{gap:6px;margin-bottom:8px;}
+    button{padding:5px 9px;}
+    .lbl{margin-right:0;}
+    .legend{gap:9px;margin:0 0 8px;}
+    .search{min-width:120px;}
+    .player{margin:10px 0 6px;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="head">
     <div>
-      <h1>台股題材輪動 RRG · 互動版</h1>
+      <h1>題材輪動 RRG · 互動版</h1>
       <div class="meta" id="meta">載入中…</div>
     </div>
     <div class="tools">
-      <button id="downloadBtn" title="下載目前這張圖 PNG">⬇️ 圖</button>
+      <button id="downloadBtn" title="下載目前這張圖 PNG（靜態）">⬇️ 圖</button>
       <button id="themeBtn" title="切換深色／淺色">🌙 深色</button>
-      <button id="checkUpdate" title="檢查有沒有新版">🔄</button>
+      <button id="checkUpdate" title="檢查網站程式有沒有新版（不會重抓股價，資料每晚自動更新）">🔄</button>
     </div>
   </div>
 
@@ -150,7 +168,7 @@
   <div class="main">
     <div>
       <div class="chart">
-        <svg id="rrg" viewBox="0 0 600 588" role="img" aria-label="台股題材輪動 RRG 四象限互動圖">
+        <svg id="rrg" viewBox="0 0 600 588" role="img" aria-label="題材輪動 RRG 四象限互動圖">
           <g id="scaffold"></g>
           <g id="themes"></g>
         </svg>
@@ -159,6 +177,7 @@
         <button id="play">▶ 播放</button>
         <input type="range" id="slider" min="0" max="19" value="19">
         <span class="day" id="day">—</span>
+        <button id="gifBtn" title="把目前這張圖的時間動畫存成動圖（GIF），可直接發 LINE／社群自動循環播放">🎬 動圖</button>
       </div>
       <div class="chips" id="chips"></div>
     </div>
@@ -171,6 +190,161 @@
 
 <!-- 離線 fallback：file:// 雙擊或 fetch 失敗時用這份內嵌資料（window.RRG_DATA）-->
 <script src="rrg_web_data.js"></script>
+
+<!-- =====================================================================
+     極簡 GIF89a 動圖編碼器（純前端、無外部檔、可離線／iOS 可用）
+     把 RRG 時間動畫每一格畫面編成一張會循環播放的 GIF，方便直接發 LINE。
+     - 色彩量化：median-cut（中位切割）建 256 色全域調色盤
+     - 影像壓縮：GIF 標準 LZW（公認正確的移植版，勿隨意改動）
+     對外只暴露 window.encodeGIF(frames, w, h, delayCs) → Uint8Array
+       frames  = 每格的 RGBA 像素（Uint8ClampedArray，長度 = w*h*4）
+       delayCs = 每格間隔（單位 1/100 秒）
+     ===================================================================== -->
+<script>
+(function(){
+  "use strict";
+
+  // ── 可自動長大的位元組緩衝（比一直 push 陣列快、省記憶體）──
+  function ByteArray(){ this.buf=new Uint8Array(1<<16); this.len=0; }
+  ByteArray.prototype._grow=function(n){
+    if(this.len+n<=this.buf.length) return;
+    var nl=this.buf.length; while(nl<this.len+n) nl*=2;
+    var nb=new Uint8Array(nl); nb.set(this.buf.subarray(0,this.len)); this.buf=nb;
+  };
+  ByteArray.prototype.byte=function(v){ this._grow(1); this.buf[this.len++]=v&255; };
+  ByteArray.prototype.bytes=function(a,off,len){ off=off||0; if(len==null)len=a.length;
+    this._grow(len); for(var i=0;i<len;i++) this.buf[this.len++]=a[off+i]&255; };
+  ByteArray.prototype.str=function(s){ for(var i=0;i<s.length;i++) this.byte(s.charCodeAt(i)); };
+  ByteArray.prototype.out=function(){ return this.buf.subarray(0,this.len); };
+
+  // ── GIF LZW 壓縮（GIF 標準，公認正確的移植版；勿隨意改動）──
+  function LZWEncoder(width, height, pixels, colorDepth){
+    var EOF=-1, imgW=width, imgH=height, pixAry=pixels;
+    var initCodeSize=Math.max(2, colorDepth);
+    var BITS=12, HSIZE=5003, maxbits=BITS, maxmaxcode=1<<BITS;
+    var n_bits, maxcode, htab=[], codetab=[], hsize=HSIZE, free_ent=0, clear_flg=false;
+    var g_init_bits, ClearCode, EOFCode, cur_accum=0, cur_bits=0, a_count=0, accum=[];
+    var remaining, curPixel;
+    var masks=[0x0000,0x0001,0x0003,0x0007,0x000F,0x001F,0x003F,0x007F,0x00FF,
+               0x01FF,0x03FF,0x07FF,0x0FFF,0x1FFF,0x3FFF,0x7FFF,0xFFFF];
+    function MAXCODE(nb){ return (1<<nb)-1; }
+    function nextPixel(){ if(remaining===0) return EOF; --remaining; return pixAry[curPixel++]&0xff; }
+    function cl_hash(h){ for(var i=0;i<h;++i) htab[i]=-1; }
+    function char_out(c,outs){ accum[a_count++]=c; if(a_count>=254) flush_char(outs); }
+    function flush_char(outs){ if(a_count>0){ outs.byte(a_count); outs.bytes(accum,0,a_count); a_count=0; } }
+    function cl_block(outs){ cl_hash(hsize); free_ent=ClearCode+2; clear_flg=true; output(ClearCode,outs); }
+    function output(code,outs){
+      cur_accum&=masks[cur_bits];
+      if(cur_bits>0) cur_accum|=(code<<cur_bits); else cur_accum=code;
+      cur_bits+=n_bits;
+      while(cur_bits>=8){ char_out(cur_accum&0xff,outs); cur_accum>>=8; cur_bits-=8; }
+      if(free_ent>maxcode || clear_flg){
+        if(clear_flg){ maxcode=MAXCODE(n_bits=g_init_bits); clear_flg=false; }
+        else { ++n_bits; if(n_bits==maxbits) maxcode=maxmaxcode; else maxcode=MAXCODE(n_bits); }
+      }
+      if(code==EOFCode){
+        while(cur_bits>0){ char_out(cur_accum&0xff,outs); cur_accum>>=8; cur_bits-=8; }
+        flush_char(outs);
+      }
+    }
+    function compress(init_bits,outs){
+      var fcode,c,i,ent,disp,hsize_reg,hshift;
+      g_init_bits=init_bits; clear_flg=false; n_bits=g_init_bits; maxcode=MAXCODE(n_bits);
+      ClearCode=1<<(init_bits-1); EOFCode=ClearCode+1; free_ent=ClearCode+2; a_count=0;
+      ent=nextPixel();
+      hshift=0; for(fcode=hsize;fcode<65536;fcode*=2) ++hshift; hshift=8-hshift;
+      hsize_reg=hsize; cl_hash(hsize_reg); output(ClearCode,outs);
+      outer: while((c=nextPixel())!=EOF){
+        fcode=(c<<maxbits)+ent; i=(c<<hshift)^ent;
+        if(htab[i]==fcode){ ent=codetab[i]; continue; }
+        else if(htab[i]>=0){
+          disp=hsize_reg-i; if(i===0) disp=1;
+          do{ if((i-=disp)<0) i+=hsize_reg;
+              if(htab[i]==fcode){ ent=codetab[i]; continue outer; }
+          } while(htab[i]>=0);
+        }
+        output(ent,outs); ent=c;
+        if(free_ent<maxmaxcode){ codetab[i]=free_ent++; htab[i]=fcode; } else cl_block(outs);
+      }
+      output(ent,outs); output(EOFCode,outs);
+    }
+    this.encode=function(outs){
+      outs.byte(initCodeSize);            // LZW 最小碼長
+      remaining=imgW*imgH; curPixel=0;
+      compress(initCodeSize+1, outs);     // 實際碼寬 = 最小碼長 + 1
+      outs.byte(0);                       // 資料區塊結束
+    };
+  }
+
+  // ── median-cut 量化：從所有格子的像素建一張 256 色全域調色盤 ──
+  function buildPalette(frames){
+    var hist=new Uint32Array(32768), f, d, i, key;   // 15-bit(5:5:5) 直方圖
+    for(f=0; f<frames.length; f++){ d=frames[f];
+      for(i=0; i<d.length; i+=4){ key=((d[i]>>3)<<10)|((d[i+1]>>3)<<5)|(d[i+2]>>3); hist[key]++; }
+    }
+    var bins=[];
+    for(key=0; key<32768; key++){ var c=hist[key]; if(!c) continue;
+      var r5=(key>>10)&31, g5=(key>>5)&31, b5=key&31;
+      bins.push({ r:(r5<<3)|(r5>>2), g:(g5<<3)|(g5>>2), b:(b5<<3)|(b5>>2), cnt:c, key:key });
+    }
+    function box(bs){ var o={bins:bs}; measure(o); return o; }
+    function measure(o){
+      var rmn=255,rmx=0,gmn=255,gmx=0,bmn=255,bmx=0,i,p;
+      for(i=0;i<o.bins.length;i++){ p=o.bins[i];
+        if(p.r<rmn)rmn=p.r; if(p.r>rmx)rmx=p.r; if(p.g<gmn)gmn=p.g; if(p.g>gmx)gmx=p.g;
+        if(p.b<bmn)bmn=p.b; if(p.b>bmx)bmx=p.b; }
+      var dr=rmx-rmn, dg=gmx-gmn, db=bmx-bmn;
+      o.axis = (dr>=dg && dr>=db) ? "r" : (dg>=db ? "g" : "b");
+      o.range = Math.max(dr,dg,db);
+    }
+    function split(o){
+      var key=o.axis, bs=o.bins.slice().sort(function(a,b){ return a[key]-b[key]; });
+      var total=0,i; for(i=0;i<bs.length;i++) total+=bs[i].cnt;
+      var half=total/2, acc=0, cut=0;
+      for(i=0;i<bs.length;i++){ acc+=bs[i].cnt; if(acc>=half){ cut=i; break; } }
+      if(cut<=0) cut=0; if(cut>=bs.length-1) cut=bs.length-2;      // 保證兩邊都非空
+      return [box(bs.slice(0,cut+1)), box(bs.slice(cut+1))];
+    }
+    var boxes=[box(bins)];
+    while(boxes.length<256){
+      var bi=-1, best=-1;
+      for(i=0;i<boxes.length;i++){ if(boxes[i].bins.length>1 && boxes[i].range>best){ best=boxes[i].range; bi=i; } }
+      if(bi<0) break;                                              // 沒得再切了
+      var sp=split(boxes[bi]); boxes.splice(bi,1,sp[0],sp[1]);
+    }
+    var palette=new Uint8Array(768), map=new Int32Array(32768);
+    for(i=0;i<boxes.length;i++){
+      var bx=boxes[i], sr=0,sg=0,sb=0,sc=0,k,bn;
+      for(k=0;k<bx.bins.length;k++){ bn=bx.bins[k]; sr+=bn.r*bn.cnt; sg+=bn.g*bn.cnt; sb+=bn.b*bn.cnt; sc+=bn.cnt; map[bn.key]=i; }
+      palette[i*3]=Math.round(sr/sc); palette[i*3+1]=Math.round(sg/sc); palette[i*3+2]=Math.round(sb/sc);
+    }
+    return { palette:palette, map:map };
+  }
+
+  // ── 組出完整 GIF89a 位元組 ──
+  window.encodeGIF=function(frames, w, h, delayCs){
+    var pal=buildPalette(frames), o=new ByteArray(), i, f;
+    o.str("GIF89a");
+    o.byte(w&255); o.byte((w>>8)&255); o.byte(h&255); o.byte((h>>8)&255);
+    o.byte(0xF7); o.byte(0); o.byte(0);                 // 有全域調色盤(256色)、背景色0、像素比0
+    for(i=0;i<768;i++) o.byte(pal.palette[i]||0);       // 全域調色盤
+    o.byte(0x21); o.byte(0xFF); o.byte(0x0B); o.str("NETSCAPE2.0");
+    o.byte(0x03); o.byte(0x01); o.byte(0); o.byte(0); o.byte(0);   // 無限循環播放
+    for(f=0; f<frames.length; f++){
+      o.byte(0x21); o.byte(0xF9); o.byte(0x04); o.byte(0x04);      // 圖形控制：disposal=1、不透明
+      o.byte(delayCs&255); o.byte((delayCs>>8)&255); o.byte(0); o.byte(0);
+      o.byte(0x2C); o.byte(0);o.byte(0);o.byte(0);o.byte(0);        // 影像描述：left/top=0
+      o.byte(w&255); o.byte((w>>8)&255); o.byte(h&255); o.byte((h>>8)&255); o.byte(0);
+      var d=frames[f], idx=new Uint8Array(w*h), p=0, q;
+      for(q=0;q<d.length;q+=4) idx[p++]=pal.map[((d[q]>>3)<<10)|((d[q+1]>>3)<<5)|(d[q+2]>>3)];
+      new LZWEncoder(w,h,idx,8).encode(o);
+    }
+    o.byte(0x3B);                                        // 檔案結束
+    return o.out();
+  };
+})();
+</script>
+
 <script>
 (function(){
   "use strict";
@@ -512,13 +686,88 @@
     img.src="data:image/svg+xml;base64,"+svg64;
   }
 
+  // ── 下載動圖 GIF（把時間動畫每一格畫成 GIF，可直接發 LINE、自動循環）──
+  // 把目前的 SVG 序列化成一張圖片（Promise），供逐格截圖用
+  function svgToImage(){
+    return new Promise(function(res,rej){
+      var svg=document.getElementById("rrg");
+      var xml=new XMLSerializer().serializeToString(svg);
+      var url="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(xml)));
+      var img=new Image(); img.onload=function(){ res(img); }; img.onerror=rej; img.src=url;
+    });
+  }
+
+  function downloadGif(){
+    var btn=document.getElementById("gifBtn"), old=btn.textContent;
+    if(btn.disabled) return;
+    var svg=document.getElementById("rrg"), vb=svg.viewBox.baseVal;
+    var W=Math.round(vb.width*0.84), H=Math.round(vb.height*0.84);   // 縮一點＝檔案小、好傳 LINE
+    var cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+    var ctx=cv.getContext("2d");
+    var bg=getComputedStyle(document.body).backgroundColor||"#16161a";
+    var n=cur().frames, frames=[], savedPos=state.pos;
+    stopPlay(); btn.disabled=true; btn.textContent="產生中…";
+
+    // 一格一格畫、截圖、收集像素（用 setTimeout 串起來，讓進度%能更新、不卡死畫面）
+    function step(i){
+      if(i>=n){ finish(); return; }
+      state.pos=i; drawThemes();                                    // 畫出第 i 格
+      svgToImage().then(function(img){
+        ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);                    // SVG 本身透明 → 先補底色
+        ctx.drawImage(img,0,0,W,H);
+        frames.push(new Uint8ClampedArray(ctx.getImageData(0,0,W,H).data));
+        btn.textContent="產生中 "+Math.round((i+1)/n*100)+"%";
+        setTimeout(function(){ step(i+1); }, 0);
+      }).catch(fail);
+    }
+    function finish(){
+      state.pos=savedPos; drawThemes(); updateDay();                // 還原到原本停的那格
+      btn.textContent="編碼中…";
+      setTimeout(function(){                                        // 讓「編碼中」字先畫出來
+        try{
+          var delayCs=Math.max(2, Math.round(state.speed/10));      // 動圖速度沿用畫面的 慢/中/快
+          var bytes=window.encodeGIF(frames, W, H, delayCs);
+          deliverGif(bytes);
+        }catch(err){ fail(err); }
+      }, 30);
+    }
+    // 交付動圖：手機優先叫「原生分享面板」（可直接選 LINE 傳）；桌機／不支援就存檔下載
+    function deliverGif(bytes){
+      var fname="RRG_"+(D.generated||"")+"_"+state.span+".gif";
+      var blob=new Blob([bytes], {type:"image/gif"});
+      function dl(){                                                // 退路：觸發檔案下載
+        var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+        a.download=fname; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+        btn.textContent="✓ 已下載"; setTimeout(reset, 1600);
+      }
+      try{
+        var file=new File([blob], fname, {type:"image/gif"});
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          navigator.share({files:[file], title:"題材輪動 RRG"})
+            .then(function(){ btn.textContent="✓ 已分享"; setTimeout(reset,1600); })
+            .catch(function(err){ if(err && err.name==="AbortError"){ reset(); return; } dl(); }); // 取消就不下載
+          return;
+        }
+      }catch(e){}
+      dl();
+    }
+    function fail(err){ if(err) console.error(err); state.pos=savedPos; drawThemes();
+      btn.textContent="✗ 失敗"; setTimeout(reset, 1800); }
+    function reset(){ btn.textContent=old; btn.disabled=false; }
+
+    step(0);
+  }
+
   // ── 深色／淺色切換 ──
   function updateThemeBtn(){
     document.getElementById("themeBtn").textContent = isDark() ? "☀️ 淺色" : "🌙 深色";
   }
   function redrawAll(){ buildScaffold(); drawThemes(); renderChips(); renderSide(); }
   document.getElementById("themeBtn").addEventListener("click",function(){
-    document.documentElement.setAttribute("data-theme", isDark()?"light":"dark");
+    var next = isDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try{ localStorage.setItem("rrg-theme", next); }catch(e){}   // 記住偏好，下次開圖沿用（預設深色）
     updateThemeBtn(); redrawAll();
   });
   // 系統深淺色變了、且用戶沒手動指定過 → 跟著變
@@ -537,9 +786,11 @@
     D = data;
     if(!D){ document.getElementById("meta").textContent="⚠️ 資料載入失敗，請重新整理或檢查連線。"; return; }
     state.span = D.default_span || "month";
+    // 精簡成一排（手機一進來就看得到完整圖）：去掉冗長操作說明＋benchmark 的 ticker 括號，只留關鍵資訊
+    var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
     document.getElementById("meta").textContent =
-      "更新 "+D.generated+"　·　基準："+D.benchmark+"　·　母體："+(D.mode==="fine"?"細分題材":"官方產業別")+
-      "　·　點大小＝成交額，點題材看成分股訊號燈　·　v1.1";
+      "更新 "+D.generated+"　·　基準 "+benchShort+"　·　"+(D.mode==="fine"?"細分題材":"官方產業別")+
+      "　·　點大小＝成交額　·　v1.2";
     var sb=document.getElementById("spanBtns");
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
@@ -568,8 +819,9 @@
         if(state.cats[c]) delete state.cats[c]; else state.cats[c]=true;
         syncLegend(); applyFilter(); });
     });
-    // 下載目前這張圖
+    // 下載目前這張圖（靜態 PNG）＋ 動圖（GIF，可發 LINE）
     document.getElementById("downloadBtn").addEventListener("click",downloadPng);
+    document.getElementById("gifBtn").addEventListener("click",downloadGif);
 
     slider.addEventListener("input",function(){ stopPlay(); state.pos=+slider.value; drawThemes(); updateDay(); });
     document.getElementById("play").addEventListener("click",play);
