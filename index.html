@@ -135,6 +135,21 @@
     .search{min-width:120px;}
     .player{margin:10px 0 6px;}
   }
+
+  /* ── 圖片預覽彈窗（下載/存相簿/分享）：iOS 沒法從網頁直接寫相簿，
+        改成跳出圖片讓用戶「長按存到相簿」或走分享面板傳 LINE ── */
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;
+    z-index:999;padding:16px;padding-top:max(16px,env(safe-area-inset-top));}
+  .ov-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;
+    max-width:min(94vw,560px);max-height:88vh;overflow:auto;display:flex;flex-direction:column;gap:11px;}
+  .ov-img{width:100%;height:auto;border-radius:8px;display:block;background:var(--bg);}
+  .ov-tip{font-size:13px;color:var(--sub);line-height:1.55;}
+  .ov-tip b{color:var(--ink);}
+  .ov-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .ov-btns button,.ov-btns .ov-dl{font:inherit;font-size:14px;padding:9px 15px;border-radius:9px;
+    border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-decoration:none;}
+  .ov-share{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}
+  .ov-close{margin-left:auto;}
 </style>
 </head>
 <body>
@@ -145,7 +160,7 @@
       <div class="meta" id="meta">載入中…</div>
     </div>
     <div class="tools">
-      <button id="downloadBtn" title="下載目前這張圖 PNG（靜態）">⬇️ 圖</button>
+      <button id="downloadBtn" title="目前這張圖（靜態）→ 跳預覽，可存到相簿或分享">⬇️ 圖</button>
       <button id="themeBtn" title="切換深色／淺色">🌙 深色</button>
       <button id="checkUpdate" title="檢查網站程式有沒有新版（不會重抓股價，資料每晚自動更新）">🔄</button>
     </div>
@@ -188,7 +203,7 @@
         <button id="play">▶ 播放</button>
         <input type="range" id="slider" min="0" max="19" value="19">
         <span class="day" id="day">—</span>
-        <button id="gifBtn" title="把目前這張圖的時間動畫存成動圖（GIF），可直接發 LINE／社群自動循環播放">🎬 動圖</button>
+        <button id="gifBtn" title="把時間動畫做成動圖（GIF）→ 跳預覽，可存到相簿或直接分享 LINE（自動循環）">🎬 動圖</button>
       </div>
       <div class="chips" id="chips"></div>
     </div>
@@ -675,7 +690,7 @@
     });
   }
 
-  // 下載目前這張 SVG 圖成 PNG（補背景色，因為 SVG 本身透明）
+  // 下載目前這張 SVG 圖成 PNG（補背景色，因為 SVG 本身透明）→ 跳預覽存相簿/分享
   function downloadPng(){
     var svg=document.getElementById("rrg");
     var xml=new XMLSerializer().serializeToString(svg);
@@ -689,13 +704,46 @@
       ctx.fillRect(0,0,cv.width,cv.height);
       ctx.drawImage(img,0,0,cv.width,cv.height);
       cv.toBlob(function(blob){
-        var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-        a.download="RRG_"+(D.generated||"")+"_"+state.span+".png"; a.click();
-        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+        showResult(blob, "RRG_"+(D.generated||"")+"_"+state.span+".png");
       });
     };
     img.src="data:image/svg+xml;base64,"+svg64;
   }
+
+  // ── 圖片/動圖交付：跳預覽彈窗，讓 iPhone「長按存相簿」或走分享面板傳 LINE，桌機可下載 ──
+  function showResult(blob, fname){
+    var url=URL.createObjectURL(blob);
+    var isGif=/\.gif$/i.test(fname);
+    var ov=document.createElement("div"); ov.className="ov";
+    var box=document.createElement("div"); box.className="ov-box";
+    var im=el2("img"); im.className="ov-img"; im.src=url; im.alt="RRG";
+    var tip=el2("div"); tip.className="ov-tip";
+    tip.innerHTML='<b>iPhone</b>：長按上面'+(isGif?'動圖':'圖片')+' →「加入照片／儲存影像」存到<b>相簿</b>；'+
+                  '或按「分享」直接傳 LINE（LINE 裡'+(isGif?'會自動循環播放':'照片')+'）。';
+    var btns=el2("div"); btns.className="ov-btns";
+    var shareBtn=el2("button"); shareBtn.className="ov-share"; shareBtn.textContent="📤 分享／存相簿";
+    var dl=el2("a"); dl.className="ov-dl"; dl.href=url; dl.download=fname; dl.textContent="⬇️ 下載檔案";
+    var closeBtn=el2("button"); closeBtn.className="ov-close"; closeBtn.textContent="✕ 關閉";
+    btns.appendChild(shareBtn); btns.appendChild(dl); btns.appendChild(closeBtn);
+    box.appendChild(im); box.appendChild(tip); box.appendChild(btns); ov.appendChild(box);
+    document.body.appendChild(ov);
+    function close(){ if(ov.parentNode) ov.parentNode.removeChild(ov); setTimeout(function(){ URL.revokeObjectURL(url); }, 500); }
+    closeBtn.addEventListener("click",close);
+    ov.addEventListener("click",function(e){ if(e.target===ov) close(); });   // 點黑底關閉
+    // 分享（用戶這一下點擊＝新的手勢，navigator.share 才不會被 iOS 擋）
+    shareBtn.addEventListener("click",function(){
+      try{
+        var file=new File([blob], fname, {type:blob.type});
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          navigator.share({files:[file], title:"題材輪動 RRG"}).catch(function(){});
+          return;
+        }
+      }catch(e){}
+      dl.click();   // 不支援分享（多半是桌機）→ 直接下載
+    });
+  }
+  // 建立一般 HTML 元素的小工具（跟 SVG 的 el() 區隔）
+  function el2(tag){ return document.createElement(tag); }
 
   // ── 下載動圖 GIF（把時間動畫每一格畫成 GIF，可直接發 LINE、自動循環）──
   // 把目前的 SVG 序列化成一張圖片（Promise），供逐格截圖用
@@ -738,30 +786,10 @@
         try{
           var delayCs=Math.max(2, Math.round(state.speed/10));      // 動圖速度沿用畫面的 慢/中/快
           var bytes=window.encodeGIF(frames, W, H, delayCs);
-          deliverGif(bytes);
+          showResult(new Blob([bytes], {type:"image/gif"}), "RRG_"+(D.generated||"")+"_"+state.span+".gif");
+          reset();                                                  // 交付走 showResult 彈窗（存相簿/分享）
         }catch(err){ fail(err); }
       }, 30);
-    }
-    // 交付動圖：手機優先叫「原生分享面板」（可直接選 LINE 傳）；桌機／不支援就存檔下載
-    function deliverGif(bytes){
-      var fname="RRG_"+(D.generated||"")+"_"+state.span+".gif";
-      var blob=new Blob([bytes], {type:"image/gif"});
-      function dl(){                                                // 退路：觸發檔案下載
-        var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-        a.download=fname; document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
-        btn.textContent="✓ 已下載"; setTimeout(reset, 1600);
-      }
-      try{
-        var file=new File([blob], fname, {type:"image/gif"});
-        if(navigator.canShare && navigator.canShare({files:[file]})){
-          navigator.share({files:[file], title:"題材輪動 RRG"})
-            .then(function(){ btn.textContent="✓ 已分享"; setTimeout(reset,1600); })
-            .catch(function(err){ if(err && err.name==="AbortError"){ reset(); return; } dl(); }); // 取消就不下載
-          return;
-        }
-      }catch(e){}
-      dl();
     }
     function fail(err){ if(err) console.error(err); state.pos=savedPos; drawThemes();
       btn.textContent="✗ 失敗"; setTimeout(reset, 1800); }
@@ -801,7 +829,7 @@
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
     document.getElementById("meta").textContent =
       "更新 "+D.generated+"　·　基準 "+benchShort+"　·　"+(D.mode==="fine"?"細分題材":"官方產業別")+
-      "　·　點大小＝成交額　·　v1.3";
+      "　·　點大小＝成交額　·　v1.4";
     var sb=document.getElementById("spanBtns");
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
