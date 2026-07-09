@@ -69,7 +69,10 @@
   .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
   h1{font-size:20px;font-weight:600;margin:0 0 2px;}
   .tools{display:flex;gap:6px;flex:0 0 auto;}
-  .meta{color:var(--sub);font-size:13px;margin-bottom:12px;}
+  /* meta：每個詞組整塊不換行（只在「·」處斷行），避免中文逐字硬切成「加權指/數」那種亂樣 */
+  .meta{color:var(--sub);font-size:13px;margin-bottom:12px;line-height:1.55;word-break:keep-all;}
+  .meta span{white-space:nowrap;}
+  .meta span:not(:last-child)::after{content:"　·　";opacity:.55;}
   .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;}
   .bar .grp{display:flex;gap:6px;align-items:center;}
   .lbl{font-size:13px;color:var(--sub);margin-right:2px;}
@@ -155,16 +158,15 @@
 <body>
 <div class="wrap">
   <div class="head">
-    <div>
-      <h1>題材輪動 RRG · 互動版</h1>
-      <div class="meta" id="meta">載入中…</div>
-    </div>
+    <h1>題材輪動 RRG · 互動版</h1>
     <div class="tools">
       <button id="downloadBtn" title="目前這張圖（靜態）→ 跳預覽，可存到相簿或分享">⬇️ 圖</button>
       <button id="themeBtn" title="切換深色／淺色">🌙 深色</button>
       <button id="checkUpdate" title="檢查網站程式有沒有新版（不會重抓股價，資料每晚自動更新）">🔄</button>
     </div>
   </div>
+  <!-- meta 移到標題列外、佔滿整行寬度，才不會被右上按鈕擠成左邊窄窄一條 -->
+  <div class="meta" id="meta">載入中…</div>
 
   <div class="bar">
     <span class="lbl">時間粒度</span>
@@ -825,11 +827,11 @@
     D = data;
     if(!D){ document.getElementById("meta").textContent="⚠️ 資料載入失敗，請重新整理或檢查連線。"; return; }
     state.span = D.default_span || "month";
-    // 精簡成一排（手機一進來就看得到完整圖）：去掉冗長操作說明＋benchmark 的 ticker 括號，只留關鍵資訊
+    // 精簡：去掉冗長操作說明＋benchmark 的 ticker 括號。每項包成一個 span（配合 CSS 整塊不換行，斷行才乾淨）
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    document.getElementById("meta").textContent =
-      "更新 "+D.generated+"　·　基準 "+benchShort+"　·　"+(D.mode==="fine"?"細分題材":"官方產業別")+
-      "　·　點大小＝成交額　·　v1.4";
+    var metaItems = ["更新 "+D.generated, "基準 "+benchShort, (D.mode==="fine"?"細分題材":"官方產業別"), "點大小＝成交額", "v1.5"];
+    var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
+    metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
     var sb=document.getElementById("spanBtns");
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
