@@ -3,7 +3,7 @@
    ⚠️ 改版規則：每次更新前端檔案，把 CACHE 版本號 +1（例 v1.0.0 → v1.0.1）
       使用者的瀏覽器才會抓到新版（對應 App Versioning Rule）
    ===================================================================== */
-const CACHE = 'rrg-v1.2.0';
+const CACHE = 'rrg-v1.3.0';
 
 // App shell：前端本體，預先快取（相對路徑，配合 GitHub Pages 子目錄）
 // ⚠️ 注意 rrg_web.json（資料檔）不放這裡 → 它每天更新，改走 network-first（見下方 fetch）
@@ -17,7 +17,9 @@ const ASSETS = [
 ];
 
 // 安裝：把 app shell 存進快取（{cache:'reload'} 強制走網路抓最新，避開瀏覽器 HTTP 舊快取）
+// skipWaiting()＝新版裝好就立刻接管，不用等所有分頁關掉（配合前端 controllerchange 自動重整）
 self.addEventListener('install', (e) => {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then((c) =>
       c.addAll(ASSETS.map((u) => new Request(u, { cache: 'reload' })))

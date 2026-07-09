@@ -58,7 +58,14 @@
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;font-size:15px;line-height:1.5;
     -webkit-tap-highlight-color:transparent;}
-  .wrap{max-width:1080px;margin:0 auto;padding:16px;}
+  /* padding 用 env(safe-area-inset-*) 讓內容避開 iPhone 瀏海／狀態列（時間·訊號·電量），
+     不然裝成 PWA 全螢幕時，最上面的標題和按鈕會被系統狀態列蓋住 */
+  .wrap{max-width:1080px;margin:0 auto;
+    padding:16px;
+    padding-top:max(16px, env(safe-area-inset-top));
+    padding-left:max(16px, env(safe-area-inset-left));
+    padding-right:max(16px, env(safe-area-inset-right));
+    padding-bottom:max(16px, env(safe-area-inset-bottom));}
   .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
   h1{font-size:20px;font-weight:600;margin:0 0 2px;}
   .tools{display:flex;gap:6px;flex:0 0 auto;}
@@ -114,7 +121,11 @@
 
   /* ── 手機版：把上方標題/資訊/控制列全部收緊，讓四象限圖一進畫面就完整看到、不被截 ── */
   @media(max-width:640px){
-    .wrap{padding:10px;}
+    .wrap{padding:10px;
+      padding-top:max(10px, env(safe-area-inset-top));
+      padding-left:max(10px, env(safe-area-inset-left));
+      padding-right:max(10px, env(safe-area-inset-right));
+      padding-bottom:max(10px, env(safe-area-inset-bottom));}
     h1{font-size:17px;}
     .meta{font-size:12px;margin-bottom:8px;line-height:1.4;}
     .bar{gap:6px;margin-bottom:8px;}
@@ -790,7 +801,7 @@
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
     document.getElementById("meta").textContent =
       "更新 "+D.generated+"　·　基準 "+benchShort+"　·　"+(D.mode==="fine"?"細分題材":"官方產業別")+
-      "　·　點大小＝成交額　·　v1.2";
+      "　·　點大小＝成交額　·　v1.3";
     var sb=document.getElementById("spanBtns");
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
@@ -836,15 +847,30 @@
 
   // ── PWA：註冊 service worker + 檢查更新鍵 ──
   if("serviceWorker" in navigator){
+    var refreshing=false;
+    // 新版 SW 接管後自動重整一次抓最新（只有「已被舊 SW 控制」＝非首次載入才聽，避免首次進站誤重整）
+    if(navigator.serviceWorker.controller){
+      navigator.serviceWorker.addEventListener("controllerchange",function(){
+        if(refreshing) return; refreshing=true; window.location.reload();
+      });
+    }
     window.addEventListener("load",function(){
       navigator.serviceWorker.register("sw.js").then(function(reg){
-        document.getElementById("checkUpdate").addEventListener("click",function(){
-          reg.update();
-          if(reg.waiting){ reg.waiting.postMessage({type:"SKIP_WAITING"}); }
-          // 新版接管後自動重整一次
-          navigator.serviceWorker.addEventListener("controllerchange",function(){ window.location.reload(); });
-          document.getElementById("checkUpdate").textContent="✓";
-          setTimeout(function(){ document.getElementById("checkUpdate").textContent="🔄"; },1500);
+        var btn=document.getElementById("checkUpdate");
+        function applyWaiting(){ if(reg.waiting){ reg.waiting.postMessage({type:"SKIP_WAITING"}); return true; } return false; }
+        applyWaiting();                                    // 進站時若早已有新版在等，直接套用
+        btn.addEventListener("click",function(){
+          btn.textContent="⏳";
+          reg.update().then(function(){
+            if(applyWaiting()){ btn.textContent="更新中"; return; }   // 有新版 → 立刻換
+            var sw=reg.installing;
+            if(sw){                                                  // 正在下載新版 → 裝好再換
+              btn.textContent="更新中";
+              sw.addEventListener("statechange",function(){ if(sw.state==="installed") applyWaiting(); });
+            } else {
+              btn.textContent="✓ 已最新"; setTimeout(function(){ btn.textContent="🔄"; },1500);
+            }
+          }).catch(function(){ btn.textContent="🔄"; });
         });
       }).catch(function(){ /* file:// 或不支援就算了 */ });
     });
