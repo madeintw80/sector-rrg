@@ -829,7 +829,7 @@
     state.span = D.default_span || "month";
     // 精簡：去掉冗長操作說明＋benchmark 的 ticker 括號。每項包成一個 span（配合 CSS 整塊不換行，斷行才乾淨）
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["更新 "+D.generated, "基準 "+benchShort, (D.mode==="fine"?"細分題材":"官方產業別"), "點大小＝成交額", "v1.5"];
+    var metaItems = ["更新 "+D.generated, "基準 "+benchShort, "點大小＝成交額", "v1.6"];
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
     metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
     var sb=document.getElementById("spanBtns");
