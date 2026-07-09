@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover：讓底色延伸到 iPhone 瀏海區 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>台股題材輪動 RRG · 互動版</title>
+
+<!-- PWA 設定 -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f1f1d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RRG輪動">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<style>
+  /* ── 淺色（預設）── */
+  :root{
+    --bg:#f7f7f5; --card:#ffffff; --line:#e3e3de; --ink:#1f1f1d; --sub:#6b6b66;
+    --btn-on:#1f1f1d; --btn-on-ink:#ffffff; --hover:#c7c7c0;
+    --leading:#2ca02c; --improving:#1f77b4; --weakening:#e07b00; --lag:#b8b8b8;
+    --lt-r:#d64545; --lt-y:#d99a00; --lt-g:#2ca02c;   /* 訊號燈 紅/黃/綠 */
+    --bar-bg:#eeeeea; --bar-fill:#9ecae1;
+  }
+  /* ── 系統深色時預設跟隨（沒手動指定 data-theme 才生效）── */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16161a; --card:#1e1e24; --line:#33333c; --ink:#e8e8e4; --sub:#9a9a94;
+      --btn-on:#e8e8e4; --btn-on-ink:#16161a; --hover:#55555f;
+      --leading:#3fbf4f; --improving:#4a9fe0; --weakening:#f0913a; --lag:#6a6a66;
+      --lt-r:#e56a6a; --lt-y:#e8b93a; --lt-g:#4fc45f;
+      --bar-bg:#2a2a32; --bar-fill:#2f5f7a;
+    }
+  }
+  /* ── 手動切換：data-theme 蓋過系統偏好 ── */
+  :root[data-theme="light"]{
+    --bg:#f7f7f5; --card:#ffffff; --line:#e3e3de; --ink:#1f1f1d; --sub:#6b6b66;
+    --btn-on:#1f1f1d; --btn-on-ink:#ffffff; --hover:#c7c7c0;
+    --leading:#2ca02c; --improving:#1f77b4; --weakening:#e07b00; --lag:#b8b8b8;
+    --lt-r:#d64545; --lt-y:#d99a00; --lt-g:#2ca02c;
+    --bar-bg:#eeeeea; --bar-fill:#9ecae1;
+  }
+  :root[data-theme="dark"]{
+    --bg:#16161a; --card:#1e1e24; --line:#33333c; --ink:#e8e8e4; --sub:#9a9a94;
+    --btn-on:#e8e8e4; --btn-on-ink:#16161a; --hover:#55555f;
+    --leading:#3fbf4f; --improving:#4a9fe0; --weakening:#f0913a; --lag:#6a6a66;
+    --lt-r:#e56a6a; --lt-y:#e8b93a; --lt-g:#4fc45f;
+    --bar-bg:#2a2a32; --bar-fill:#2f5f7a;
+  }
+
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;font-size:15px;line-height:1.5;
+    -webkit-tap-highlight-color:transparent;}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px;}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+  h1{font-size:20px;font-weight:600;margin:0 0 2px;}
+  .tools{display:flex;gap:6px;flex:0 0 auto;}
+  .meta{color:var(--sub);font-size:13px;margin-bottom:12px;}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;}
+  .bar .grp{display:flex;gap:6px;align-items:center;}
+  .lbl{font-size:13px;color:var(--sub);margin-right:2px;}
+  button{font:inherit;font-size:13px;padding:5px 11px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);border-radius:7px;cursor:pointer;}
+  button:hover{border-color:var(--hover);}
+  button.on{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}
+  .tools button{padding:5px 9px;}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--sub);margin:2px 0 10px;}
+  .legend span{display:flex;align-items:center;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto;}
+  .main{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;}
+  @media(max-width:860px){.main{grid-template-columns:1fr;}}
+  .chart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;}
+  svg{width:100%;height:auto;display:block;}
+  .side{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:120px;}
+  .side h3{font-size:15px;margin:0 0 6px;font-weight:600;display:flex;align-items:center;gap:6px;}
+  .hint{color:var(--sub);font-size:13px;}
+  .sub-tally{color:var(--sub);font-size:12px;margin-bottom:8px;}
+
+  /* 成分股列 */
+  .stk{display:flex;align-items:center;gap:7px;font-size:13px;padding:4px 0;border-top:1px solid var(--line);}
+  .stk .lt{flex:0 0 10px;width:10px;height:10px;border-radius:50%;}
+  .stk .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .stk .nm .code{color:var(--sub);font-size:11px;}
+  .stk .met{flex:0 0 auto;color:var(--sub);font-size:11px;font-variant-numeric:tabular-nums;}
+  .stk .tvbar{flex:0 0 46px;height:7px;background:var(--bar-bg);border-radius:4px;overflow:hidden;}
+  .stk .tvbar i{display:block;height:100%;background:var(--bar-fill);}
+  .stk .tv{flex:0 0 46px;text-align:right;color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums;}
+  .star{color:#e0a800;}
+  .sig{font-size:11px;line-height:1.35;padding:0 0 4px 17px;}
+
+  .player{display:flex;align-items:center;gap:12px;margin:14px 0 8px;}
+  .player input[type=range]{flex:1;}
+  .day{font-variant-numeric:tabular-nums;font-size:13px;color:var(--sub);min-width:96px;text-align:right;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .chip{display:flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);border-radius:14px;cursor:pointer;}
+  .chip.on{border-color:var(--ink);border-width:2px;padding:2px 8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>台股題材輪動 RRG · 互動版</h1>
+      <div class="meta" id="meta">載入中…</div>
+    </div>
+    <div class="tools">
+      <button id="themeBtn" title="切換深色／淺色">🌙 深色</button>
+      <button id="checkUpdate" title="檢查有沒有新版">🔄</button>
+    </div>
+  </div>
+
+  <div class="bar">
+    <span class="lbl">時間粒度</span>
+    <div class="grp" id="spanBtns"></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--leading)"></i>領先追強</span>
+    <span><i class="dot" style="background:var(--improving)"></i>改善翻正</span>
+    <span><i class="dot" style="background:var(--weakening)"></i>領先轉弱</span>
+    <span><i class="dot" style="background:var(--lag)"></i>落後／其他</span>
+  </div>
+
+  <div class="main">
+    <div>
+      <div class="chart">
+        <svg id="rrg" viewBox="0 0 600 588" role="img" aria-label="台股題材輪動 RRG 四象限互動圖">
+          <g id="scaffold"></g>
+          <g id="themes"></g>
+        </svg>
+      </div>
+      <div class="player">
+        <button id="play">▶ 播放</button>
+        <input type="range" id="slider" min="0" max="19" value="19">
+        <span class="day" id="day">—</span>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+
+    <div class="side" id="side">
+      <div class="hint">點圖上任一題材（或下方名稱）看它的成分股訊號燈；可多選比較多個題材的軌跡。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 離線 fallback：file:// 雙擊或 fetch 失敗時用這份內嵌資料（window.RRG_DATA）-->
+<script src="rrg_web_data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ── 主題色（SVG 是 JS 畫的，顏色不能只靠 CSS，這裡各備一套）──
+  var THEMES = {
+    light: {
+      panelStroke:"#d7d7d1", grid:"#c2c2bb", axis:"#6b6b66", label:"#3a3a37", leader:"#c2c2bb",
+      faded:"#c9c9c3", dotStroke:"#ffffff", qOpacity:0.55,
+      q:{ul:"#deebf7", ur:"#e5f5e0", ll:"#fdece2", lr:"#fff7bc"},
+      corner:{lead:"#2c7a3f", impr:"#2b6ca3", lag:"#b03a2e", weak:"#a9781a"},
+      cats:{L:"#2ca02c", I:"#1f77b4", W:"#e07b00", "":"#b8b8b8"},
+      lights:{R:"#d64545", Y:"#d99a00", G:"#2ca02c"}
+    },
+    dark: {
+      panelStroke:"#3a3a44", grid:"#3f3f48", axis:"#9a9a94", label:"#c8c8c2", leader:"#4a4a52",
+      faded:"#4a4a52", dotStroke:"#1e1e24", qOpacity:0.5,
+      q:{ul:"#16324a", ur:"#1a3a1e", ll:"#3a1e18", lr:"#3a3416"},
+      corner:{lead:"#5fcf6f", impr:"#5fb0ea", lag:"#e07a68", weak:"#d9a94a"},
+      cats:{L:"#3fbf4f", I:"#4a9fe0", W:"#f0913a", "":"#6a6a66"},
+      lights:{R:"#e56a6a", Y:"#e8b93a", G:"#4fc45f"}
+    }
+  };
+  var CAT_NAME = {L:"領先追強", I:"改善翻正", W:"領先轉弱", "":"落後／其他"};
+
+  function isDark(){
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t) return t === "dark";                                  // 手動指定優先
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;  // 否則跟系統
+  }
+  function T(){ return isDark() ? THEMES.dark : THEMES.light; }
+
+  var NS = "http://www.w3.org/2000/svg";
+  // plot 幾何（正方形；四周留邊給軸標籤）
+  var X0=56, Y0=18, L=520;
+  var D = null;   // 資料，載入後填
+  var state = { span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null };
+
+  var scaffold = document.getElementById("scaffold");
+  var themesG  = document.getElementById("themes");
+  var slider   = document.getElementById("slider");
+
+  function el(tag, attrs){ var e=document.createElementNS(NS,tag);
+    for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function cur(){ return D.spans[state.span]; }
+
+  // 依「當前 span 全部點」算座標軸範圍（固定，播放時不跳軸）
+  function computeReach(){
+    var m=3, ts=cur().themes, i, j, s, p;
+    for(i=0;i<ts.length;i++){ s=ts[i].series;
+      for(j=0;j<s.length;j++){ p=s[j];
+        m=Math.max(m, Math.abs(p.x-100), Math.abs(p.y-100)); } }
+    return m+1;
+  }
+  var reach, lo, hi;
+  function sx(v){ return X0 + (v-lo)/(hi-lo)*L; }
+  function sy(v){ return Y0 + (1-(v-lo)/(hi-lo))*L; }
+
+  // 尾巴 / 當前點：所有題材對齊「最新那格」，pos 0..frames-1（右=最新）
+  function endIndex(s){ var f=cur().frames; return Math.min(s.length-1, Math.max(0, s.length - f + state.pos)); }
+
+  function buildScaffold(){
+    var th=T();
+    scaffold.innerHTML="";
+    var cx=sx(100), cy=sy(100), X1=X0+L, Y1=Y0+L;
+    var tint=[[X0,Y0,cx-X0,cy-Y0,th.q.ul],   // 左上 改善
+              [cx,Y0,X1-cx,cy-Y0,th.q.ur],   // 右上 領先
+              [X0,cy,cx-X0,Y1-cy,th.q.ll],   // 左下 落後
+              [cx,cy,X1-cx,Y1-cy,th.q.lr]];  // 右下 轉弱
+    tint.forEach(function(t){ scaffold.appendChild(el("rect",{x:t[0],y:t[1],width:t[2],height:t[3],fill:t[4],opacity:th.qOpacity})); });
+    scaffold.appendChild(el("rect",{x:X0,y:Y0,width:L,height:L,fill:"none",stroke:th.panelStroke,"stroke-width":1}));
+    scaffold.appendChild(el("line",{x1:cx,y1:Y0,x2:cx,y2:Y1,stroke:th.grid,"stroke-width":1,"stroke-dasharray":"4 4"}));
+    scaffold.appendChild(el("line",{x1:X0,y1:cy,x2:X1,y2:cy,stroke:th.grid,"stroke-width":1,"stroke-dasharray":"4 4"}));
+    var corners=[["領先",X1-8,Y0+18,"end",th.corner.lead],["改善",X0+8,Y0+18,"start",th.corner.impr],
+                 ["落後",X0+8,Y1-8,"start",th.corner.lag],["轉弱",X1-8,Y1-8,"end",th.corner.weak]];
+    corners.forEach(function(c){ var t=el("text",{x:c[1],y:c[2],"text-anchor":c[3],
+      "font-size":13,"font-weight":600,fill:c[4],opacity:0.8}); t.textContent=c[0]; scaffold.appendChild(t); });
+    var xc=el("text",{x:X0+L/2,y:Y0+L+30,"text-anchor":"middle","font-size":12,fill:th.axis});
+    xc.textContent="RS-Ratio 相對強度 →（越右越強）"; scaffold.appendChild(xc);
+    var yc=el("text",{x:16,y:Y0+L/2,"text-anchor":"middle","font-size":12,fill:th.axis,
+      transform:"rotate(-90 16 "+(Y0+L/2)+")"}); yc.textContent="RS-Momentum 相對動能 →"; scaffold.appendChild(yc);
+  }
+
+  function radius(tv){
+    var ts=cur().themes, i, mn=1e18, mx=0;
+    for(i=0;i<ts.length;i++){ mn=Math.min(mn,ts[i].tv); mx=Math.max(mx,ts[i].tv); }
+    var f = mx>mn ? (tv-mn)/(mx-mn) : 0.5;
+    return 5+9*f;
+  }
+
+  function drawThemes(){
+    var th=T();
+    themesG.innerHTML="";
+    var ts=cur().themes, tail=cur().tail, selMode=Object.keys(state.sel).length>0, i;
+    // 未選中的先畫、選中的後畫（疊在上層）
+    var order=ts.slice().sort(function(a,b){ return (state.sel[a.name]?1:0)-(state.sel[b.name]?1:0); });
+    var labels=[];   // 標籤先收集，全畫完點線後再統一避讓＋畫（在最上層）
+    for(i=0;i<order.length;i++){
+      var item=order[i], s=item.series, picked=!!state.sel[item.name];
+      var faded = selMode && !picked;
+      var end=endIndex(s), start=Math.max(0, end-tail+1);
+      var segpts=[], j;
+      for(j=start;j<=end;j++) segpts.push(s[j]);
+      var last=s[end];
+      var col = faded ? th.faded : th.cats[last.c];
+      var g=el("g",{}); g.style.cursor="pointer";
+      // 尾巴線
+      var pl=el("polyline",{points:segpts.map(function(p){return sx(p.x).toFixed(1)+","+sy(p.y).toFixed(1);}).join(" "),
+        fill:"none",stroke:col,"stroke-width":picked?3:(faded?1:1.6),"stroke-linecap":"round","stroke-linejoin":"round",
+        opacity:faded?0.35:(selMode?0.9:0.5)});
+      g.appendChild(pl);
+      // 尾巴的點（由小到大）＋當前點
+      for(j=0;j<segpts.length;j++){
+        var p=segpts[j], isCur=(j===segpts.length-1);
+        var r = isCur ? (radius(item.tv)*(picked?1.25:1)) : (2+3*j/Math.max(1,segpts.length-1));
+        var pc = faded ? th.faded : th.cats[p.c];
+        var c=el("circle",{cx:sx(p.x).toFixed(1),cy:sy(p.y).toFixed(1),r:r.toFixed(1),fill:pc,
+          opacity:faded?0.4:(isCur?1:0.55)});
+        if(isCur && !faded){ c.setAttribute("stroke",th.dotStroke); c.setAttribute("stroke-width",picked?2:1.3); }
+        g.appendChild(c);
+      }
+      // 點擊熱區（疊在當前點上，較大好點）
+      var hit=el("circle",{cx:sx(last.x).toFixed(1),cy:sy(last.y).toFixed(1),r:13,fill:"transparent"});
+      g.appendChild(hit);
+      (function(name){ g.addEventListener("click",function(e){ e.stopPropagation(); toggle(name); }); })(item.name);
+      themesG.appendChild(g);
+      // 收集標籤（faded 不標）：預設往右標，往右會超出畫布右界(600)就改往左
+      if(!faded){
+        var ax=sx(last.x), estW=item.name.length*11.5;   // 估中文字寬（font-size 11）
+        var side=(ax+9+estW>594)?"L":"R";
+        labels.push({name:item.name, ax:ax, ay:sy(last.y), side:side, picked:picked, color:col});
+      }
+    }
+    drawLabels(labels, th);
+  }
+
+  // 標籤自動避讓：同一側依 y 排序，太近就往下錯開；被推離錨點就畫一條細引導線
+  function drawLabels(labels, th){
+    var GAP=13, top=Y0+2, bot=Y0+L-2;
+    ["L","R"].forEach(function(sideKey){
+      var arr=labels.filter(function(l){return l.side===sideKey;}).sort(function(a,b){return a.ay-b.ay;});
+      var prevY=-1e9, k;
+      for(k=0;k<arr.length;k++){ var y=arr[k].ay; if(y<prevY+GAP) y=prevY+GAP; arr[k].ly=y; prevY=y; }
+      // 若被推超出下界，改從底往上收，避免擠出畫布
+      if(arr.length && arr[arr.length-1].ly>bot){
+        var yy=bot;
+        for(k=arr.length-1;k>=0;k--){ if(arr[k].ly>yy) arr[k].ly=yy; if(arr[k].ly<top) arr[k].ly=top; yy=arr[k].ly-GAP; }
+      }
+    });
+    labels.forEach(function(l){
+      var lx = l.ax + (l.side==="L" ? -9 : 9);
+      if(Math.abs(l.ly-l.ay)>7){   // 標籤被錯開離點了 → 細引導線連回錨點
+        themesG.appendChild(el("line",{x1:l.ax.toFixed(1),y1:l.ay.toFixed(1),x2:lx.toFixed(1),y2:l.ly.toFixed(1),
+          stroke:th.leader,"stroke-width":0.7,opacity:0.7}));
+      }
+      var tx=el("text",{x:lx.toFixed(1),y:(l.ly+3.5).toFixed(1),"text-anchor":l.side==="L"?"end":"start",
+        fill:l.picked?l.color:th.label,"font-size":l.picked?13:11,"font-weight":l.picked?600:400});
+      tx.textContent=l.name; themesG.appendChild(tx);
+    });
+  }
+
+  function toggle(name){
+    if(state.sel[name]){ delete state.sel[name]; if(state.focus===name) state.focus=lastSel(); }
+    else { state.sel[name]=true; state.focus=name; }
+    drawThemes(); renderChips(); renderSide();
+  }
+  function lastSel(){ var k=Object.keys(state.sel); return k.length?k[k.length-1]:null; }
+
+  function renderChips(){
+    var th=T(), box=document.getElementById("chips"); box.innerHTML="";
+    cur().themes.forEach(function(item){
+      var b=document.createElement("div"); b.className="chip"+(state.sel[item.name]?" on":"");
+      b.innerHTML='<span class="dot" style="background:'+th.cats[item.cat]+'"></span>'+item.name;
+      b.addEventListener("click",function(e){ e.stopPropagation(); toggle(item.name); });
+      box.appendChild(b);
+    });
+    var all=document.createElement("div"); all.className="chip"; all.textContent="顯示全部";
+    all.addEventListener("click",function(e){ e.stopPropagation(); state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide(); });
+    box.appendChild(all);
+  }
+
+  function renderSide(){
+    var th=T(), side=document.getElementById("side");
+    var keys=Object.keys(state.sel);
+    if(keys.length===0){
+      side.innerHTML='<div class="hint">點圖上任一題材（或下方名稱）看它的成分股訊號燈；可多選比較多個題材的軌跡。</div>';
+      return;
+    }
+    var focus = state.focus && state.sel[state.focus] ? state.focus : keys[keys.length-1];
+    var item = cur().themes.filter(function(t){return t.name===focus;})[0];
+    var html="";
+    if(keys.length>1){
+      html+='<div class="hint" style="margin-bottom:8px;">已選 '+keys.length+' 個題材：'+keys.join("、")+'（下方顯示最後點的）</div>';
+    }
+    if(item){
+      var s=item.series, last=s[endIndex(s)];
+      html+='<h3><span class="dot" style="background:'+th.cats[last.c]+'"></span>'+item.name+
+            ' <span style="font-weight:400;color:var(--sub);font-size:12px;">'+CAT_NAME[last.c]+'</span></h3>';
+      // 主角燈號統計
+      var stars=item.stocks.filter(function(x){return x.lt;});
+      var rr=stars.filter(function(x){return x.lt==="R";}).length,
+          yy=stars.filter(function(x){return x.lt==="Y";}).length,
+          gg=stars.filter(function(x){return x.lt==="G";}).length;
+      var tally='總成交額 '+item.tv+' 億　·　成分股 '+item.stocks.length+' 檔';
+      if(stars.length) tally+='　·　主角燈 🔴'+rr+' 🟡'+yy+' 🟢'+gg;
+      html+='<div class="sub-tally">'+tally+'　·　★＝圖上權重主角</div>';
+
+      // 依成交額 top-16
+      item.stocks.slice(0,16).forEach(function(x){
+        if(x.lt){
+          // 主角：紅黃綠燈 + 位階/RSI/排列 +（有訊號才）短訊號第二行
+          var lc = th.lights[x.lt] || th.lights.G;
+          var arrColor = x.arr==="多"?th.lights.G:(x.arr==="空"?th.lights.R:"var(--sub)");
+          html+='<div class="stk">'+
+                '<span class="lt" style="background:'+lc+'"></span>'+
+                '<span class="nm">'+(x.star?'<span class="star">★</span>':'')+x.name+
+                ' <span class="code">'+x.code+'</span></span>'+
+                '<span class="met">位階'+x.pos+' RSI'+x.rsi+' <b style="color:'+arrColor+';font-weight:600">'+x.arr+'</b></span>'+
+                '<span class="tv">'+x.tv+'億</span></div>';
+          if(x.sig) html+='<div class="sig" style="color:'+lc+'">'+x.sig+'</div>';
+        } else {
+          // 非主角：只有成交額 bar（沒算訊號）
+          var mx=Math.max.apply(null, item.stocks.map(function(z){return z.tv;}))||1;
+          var w=Math.round(x.tv/mx*100);
+          html+='<div class="stk">'+
+                '<span class="lt" style="background:var(--line)"></span>'+
+                '<span class="nm">'+x.name+' <span class="code">'+x.code+'</span></span>'+
+                '<span class="tvbar"><i style="width:'+w+'%"></i></span>'+
+                '<span class="tv">'+x.tv+'億</span></div>';
+        }
+      });
+      if(item.stocks.length>16) html+='<div class="hint" style="margin-top:6px;">…其餘 '+(item.stocks.length-16)+' 檔略</div>';
+    }
+    side.innerHTML=html;
+  }
+
+  function updateDay(){
+    var ts=cur().themes; if(!ts.length){ document.getElementById("day").textContent="—"; return; }
+    var s=ts[0].series, d=s[endIndex(s)].d;
+    document.getElementById("day").textContent=d;
+  }
+
+  function setSpan(sp){
+    stopPlay();
+    state.span=sp;
+    reach=computeReach(); lo=100-reach; hi=100+reach;
+    slider.max = cur().frames-1; slider.value = cur().frames-1; state.pos=cur().frames-1;
+    document.querySelectorAll("#spanBtns button").forEach(function(b){ b.classList.toggle("on", b.dataset.span===sp); });
+    buildScaffold(); drawThemes(); renderChips(); renderSide(); updateDay();
+  }
+
+  function stopPlay(){ state.playing=false; if(state.timer){ clearInterval(state.timer); state.timer=null; }
+    document.getElementById("play").textContent="▶ 播放"; }
+  function play(){
+    if(state.playing){ stopPlay(); return; }
+    state.playing=true; document.getElementById("play").textContent="⏸ 暫停";
+    state.pos=0; slider.value=0; drawThemes(); updateDay();
+    state.timer=setInterval(function(){
+      state.pos++;
+      if(state.pos>=cur().frames){ stopPlay(); state.pos=cur().frames-1; }
+      slider.value=state.pos; drawThemes(); updateDay();
+    }, 220);
+  }
+
+  // ── 深色／淺色切換 ──
+  function updateThemeBtn(){
+    document.getElementById("themeBtn").textContent = isDark() ? "☀️ 淺色" : "🌙 深色";
+  }
+  function redrawAll(){ buildScaffold(); drawThemes(); renderChips(); renderSide(); }
+  document.getElementById("themeBtn").addEventListener("click",function(){
+    document.documentElement.setAttribute("data-theme", isDark()?"light":"dark");
+    updateThemeBtn(); redrawAll();
+  });
+  // 系統深淺色變了、且用戶沒手動指定過 → 跟著變
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){
+    if(!document.documentElement.getAttribute("data-theme")){ updateThemeBtn(); if(D) redrawAll(); }
+  });
+
+  // ── 載入資料：優先 fetch 最新 json，失敗（離線／file://）退回內嵌 fallback ──
+  function loadData(){
+    return fetch("rrg_web.json", {cache:"no-cache"})
+      .then(function(res){ if(!res.ok) throw 0; return res.json(); })
+      .catch(function(){ return window.RRG_DATA; });   // rrg_web_data.js 提供
+  }
+
+  function boot(data){
+    D = data;
+    if(!D){ document.getElementById("meta").textContent="⚠️ 資料載入失敗，請重新整理或檢查連線。"; return; }
+    state.span = D.default_span || "month";
+    document.getElementById("meta").textContent =
+      "更新 "+D.generated+"　·　基準："+D.benchmark+"　·　母體："+(D.mode==="fine"?"細分題材":"官方產業別")+
+      "　·　點大小＝成交額，點題材看成分股訊號燈";
+    var sb=document.getElementById("spanBtns");
+    ["week","month","quarter","half","year"].forEach(function(sp){
+      if(!D.spans[sp]) return;
+      var b=document.createElement("button"); b.dataset.span=sp; b.textContent=D.span_labels[sp]||sp;
+      b.addEventListener("click",function(){ setSpan(sp); }); sb.appendChild(b);
+    });
+    slider.addEventListener("input",function(){ stopPlay(); state.pos=+slider.value; drawThemes(); updateDay(); });
+    document.getElementById("play").addEventListener("click",play);
+    document.getElementById("rrg").addEventListener("click",function(){ /* 點空白不清選，避免誤觸；用「顯示全部」清 */ });
+    updateThemeBtn();
+    setSpan(state.span);
+  }
+
+  loadData().then(boot);
+
+  // ── PWA：註冊 service worker + 檢查更新鍵 ──
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",function(){
+      navigator.serviceWorker.register("sw.js").then(function(reg){
+        document.getElementById("checkUpdate").addEventListener("click",function(){
+          reg.update();
+          if(reg.waiting){ reg.waiting.postMessage({type:"SKIP_WAITING"}); }
+          // 新版接管後自動重整一次
+          navigator.serviceWorker.addEventListener("controllerchange",function(){ window.location.reload(); });
+          document.getElementById("checkUpdate").textContent="✓";
+          setTimeout(function(){ document.getElementById("checkUpdate").textContent="🔄"; },1500);
+        });
+      }).catch(function(){ /* file:// 或不支援就算了 */ });
+    });
+  }
+})();
+</script>
+</body>
+</html>
