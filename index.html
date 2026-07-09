@@ -97,6 +97,15 @@
   .chip{display:flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border:1px solid var(--line);
     background:var(--card);color:var(--ink);border-radius:14px;cursor:pointer;}
   .chip.on{border-color:var(--ink);border-width:2px;padding:2px 8px;}
+
+  /* 搜尋框 / 尾巴 slider / 可點圖例（策略篩選）*/
+  .search{font:inherit;font-size:13px;padding:5px 10px;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);border-radius:7px;min-width:150px;-webkit-appearance:none;}
+  .tailrange{width:110px;vertical-align:middle;}
+  .legend span[data-cat]{cursor:pointer;user-select:none;padding:2px 7px;border-radius:6px;
+    border:1px solid transparent;}
+  .legend span[data-cat].off{opacity:0.3;}
+  .legend span[data-cat].sel{border-color:currentColor;}
 </style>
 </head>
 <body>
@@ -107,6 +116,7 @@
       <div class="meta" id="meta">載入中…</div>
     </div>
     <div class="tools">
+      <button id="downloadBtn" title="下載目前這張圖 PNG">⬇️ 圖</button>
       <button id="themeBtn" title="切換深色／淺色">🌙 深色</button>
       <button id="checkUpdate" title="檢查有沒有新版">🔄</button>
     </div>
@@ -115,13 +125,26 @@
   <div class="bar">
     <span class="lbl">時間粒度</span>
     <div class="grp" id="spanBtns"></div>
+    <span class="lbl">成交值</span>
+    <div class="grp" id="floorBtns"></div>
+    <span class="lbl">速度</span>
+    <div class="grp" id="speedBtns"></div>
   </div>
 
-  <div class="legend">
-    <span><i class="dot" style="background:var(--leading)"></i>領先追強</span>
-    <span><i class="dot" style="background:var(--improving)"></i>改善翻正</span>
-    <span><i class="dot" style="background:var(--weakening)"></i>領先轉弱</span>
-    <span><i class="dot" style="background:var(--lag)"></i>落後／其他</span>
+  <div class="bar">
+    <input type="search" id="search" class="search" placeholder="🔍 搜尋題材…" autocomplete="off">
+    <span class="lbl">尾巴</span>
+    <input type="range" id="tailRange" class="tailrange" min="2" max="20" value="8">
+    <span class="day" id="tailVal" style="min-width:auto;text-align:left">8 天</span>
+    <button id="labelBtn" class="on" title="開關題材標籤">🏷️ 標籤</button>
+  </div>
+
+  <!-- 圖例＝策略分類篩選：點某類只看那類題材，可多選，再點取消 -->
+  <div class="legend" id="legend">
+    <span data-cat="L"><i class="dot" style="background:var(--leading)"></i>領先追強</span>
+    <span data-cat="I"><i class="dot" style="background:var(--improving)"></i>改善翻正</span>
+    <span data-cat="W"><i class="dot" style="background:var(--weakening)"></i>領先轉弱</span>
+    <span data-cat=""><i class="dot" style="background:var(--lag)"></i>落後／其他</span>
   </div>
 
   <div class="main">
@@ -184,7 +207,10 @@
   // plot 幾何（正方形；四周留邊給軸標籤）
   var X0=56, Y0=18, L=520;
   var D = null;   // 資料，載入後填
-  var state = { span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null };
+  var state = { span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
+                floor:100, speed:220, search:"", cats:{}, tail:null, labels:true };
+  //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
+  //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
 
   var scaffold = document.getElementById("scaffold");
   var themesG  = document.getElementById("themes");
@@ -194,9 +220,24 @@
     for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
   function cur(){ return D.spans[state.span]; }
 
+  // 經「成交值門檻＋策略分類＋搜尋」三重篩選後、要顯示的題材（sel 高亮不在此篩）
+  function visibleThemes(){
+    var ts=cur().themes, out=[], q=state.search.trim().toLowerCase();
+    var hasCat=Object.keys(state.cats).length>0, i;
+    for(i=0;i<ts.length;i++){
+      var t=ts[i];
+      if(state.floor && t.tv < state.floor) continue;      // 成交值旋鈕
+      if(hasCat && !state.cats[t.cat]) continue;           // 策略分類篩選
+      if(q && t.name.toLowerCase().indexOf(q)<0) continue; // 搜尋
+      out.push(t);
+    }
+    return out;
+  }
+
   // 依「當前 span 全部點」算座標軸範圍（固定，播放時不跳軸）
   function computeReach(){
-    var m=3, ts=cur().themes, i, j, s, p;
+    var m=3, ts=visibleThemes(), i, j, s, p;
+    if(!ts.length) ts=cur().themes;                        // 篩到空時用全部，軸才算得出來
     for(i=0;i<ts.length;i++){ s=ts[i].series;
       for(j=0;j<s.length;j++){ p=s[j];
         m=Math.max(m, Math.abs(p.x-100), Math.abs(p.y-100)); } }
@@ -232,7 +273,8 @@
   }
 
   function radius(tv){
-    var ts=cur().themes, i, mn=1e18, mx=0;
+    var ts=visibleThemes(), i, mn=1e18, mx=0;
+    if(!ts.length) return 8;
     for(i=0;i<ts.length;i++){ mn=Math.min(mn,ts[i].tv); mx=Math.max(mx,ts[i].tv); }
     var f = mx>mn ? (tv-mn)/(mx-mn) : 0.5;
     return 5+9*f;
@@ -241,7 +283,7 @@
   function drawThemes(){
     var th=T();
     themesG.innerHTML="";
-    var ts=cur().themes, tail=cur().tail, selMode=Object.keys(state.sel).length>0, i;
+    var ts=visibleThemes(), tail=state.tail||cur().tail, selMode=Object.keys(state.sel).length>0, i;
     // 未選中的先畫、選中的後畫（疊在上層）
     var order=ts.slice().sort(function(a,b){ return (state.sel[a.name]?1:0)-(state.sel[b.name]?1:0); });
     var labels=[];   // 標籤先收集，全畫完點線後再統一避讓＋畫（在最上層）
@@ -281,7 +323,7 @@
         labels.push({name:item.name, ax:ax, ay:sy(last.y), side:side, picked:picked, color:col});
       }
     }
-    drawLabels(labels, th);
+    if(state.labels) drawLabels(labels, th);               // 標籤開關關掉時不畫
   }
 
   // 標籤自動避讓：同一側依 y 排序，太近就往下錯開；被推離錨點就畫一條細引導線
@@ -318,7 +360,7 @@
 
   function renderChips(){
     var th=T(), box=document.getElementById("chips"); box.innerHTML="";
-    cur().themes.forEach(function(item){
+    visibleThemes().forEach(function(item){
       var b=document.createElement("div"); b.className="chip"+(state.sel[item.name]?" on":"");
       b.innerHTML='<span class="dot" style="background:'+th.cats[item.cat]+'"></span>'+item.name;
       b.addEventListener("click",function(e){ e.stopPropagation(); toggle(item.name); });
@@ -393,6 +435,9 @@
   function setSpan(sp){
     stopPlay();
     state.span=sp;
+    state.tail=null;                                        // 尾巴長度回到該 span 預設
+    var tr=document.getElementById("tailRange");
+    if(tr){ tr.value=cur().tail; document.getElementById("tailVal").textContent=cur().tail+" 天"; }
     reach=computeReach(); lo=100-reach; hi=100+reach;
     slider.max = cur().frames-1; slider.value = cur().frames-1; state.pos=cur().frames-1;
     document.querySelectorAll("#spanBtns button").forEach(function(b){ b.classList.toggle("on", b.dataset.span===sp); });
@@ -409,7 +454,62 @@
       state.pos++;
       if(state.pos>=cur().frames){ stopPlay(); state.pos=cur().frames-1; }
       slider.value=state.pos; drawThemes(); updateDay();
-    }, 220);
+    }, state.speed);
+  }
+
+  // ── 控制列：互斥切換按鈕（成交值旋鈕／速度）──
+  function buildToggle(containerId, opts, current, cb){
+    var box=document.getElementById(containerId); box.innerHTML="";
+    opts.forEach(function(o){
+      var b=document.createElement("button"); b.textContent=o[0];
+      b.classList.toggle("on", o[1]===current);
+      b.addEventListener("click",function(){
+        box.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on"); cb(o[1]);
+      });
+      box.appendChild(b);
+    });
+  }
+
+  // 篩選（成交值/分類/搜尋）變動後重畫；把已選但被篩掉的題材取消，避免高亮到看不見的點
+  function applyFilter(){
+    reach=computeReach(); lo=100-reach; hi=100+reach;       // 顯示的題材變了→重算軸範圍
+    var vis={}; visibleThemes().forEach(function(t){ vis[t.name]=1; });
+    Object.keys(state.sel).forEach(function(n){ if(!vis[n]) delete state.sel[n]; });
+    if(state.focus && !vis[state.focus]) state.focus=lastSel();
+    buildScaffold(); drawThemes(); renderChips(); renderSide();
+  }
+
+  // 圖例樣式：有選分類時，選中的加 .sel、其餘 .off；全不選＝全部正常
+  function syncLegend(){
+    var has=Object.keys(state.cats).length>0;
+    document.querySelectorAll("#legend span[data-cat]").forEach(function(sp){
+      var c=sp.getAttribute("data-cat");
+      sp.classList.toggle("sel", has && !!state.cats[c]);
+      sp.classList.toggle("off", has && !state.cats[c]);
+    });
+  }
+
+  // 下載目前這張 SVG 圖成 PNG（補背景色，因為 SVG 本身透明）
+  function downloadPng(){
+    var svg=document.getElementById("rrg");
+    var xml=new XMLSerializer().serializeToString(svg);
+    var svg64=btoa(unescape(encodeURIComponent(xml)));
+    var img=new Image();
+    img.onload=function(){
+      var scale=2, vb=svg.viewBox.baseVal;
+      var cv=document.createElement("canvas"); cv.width=vb.width*scale; cv.height=vb.height*scale;
+      var ctx=cv.getContext("2d");
+      ctx.fillStyle=getComputedStyle(document.body).backgroundColor||"#ffffff";
+      ctx.fillRect(0,0,cv.width,cv.height);
+      ctx.drawImage(img,0,0,cv.width,cv.height);
+      cv.toBlob(function(blob){
+        var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+        a.download="RRG_"+(D.generated||"")+"_"+state.span+".png"; a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+      });
+    };
+    img.src="data:image/svg+xml;base64,"+svg64;
   }
 
   // ── 深色／淺色切換 ──
@@ -439,16 +539,43 @@
     state.span = D.default_span || "month";
     document.getElementById("meta").textContent =
       "更新 "+D.generated+"　·　基準："+D.benchmark+"　·　母體："+(D.mode==="fine"?"細分題材":"官方產業別")+
-      "　·　點大小＝成交額，點題材看成分股訊號燈";
+      "　·　點大小＝成交額，點題材看成分股訊號燈　·　v1.1";
     var sb=document.getElementById("spanBtns");
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
       var b=document.createElement("button"); b.dataset.span=sp; b.textContent=D.span_labels[sp]||sp;
       b.addEventListener("click",function(){ setSpan(sp); }); sb.appendChild(b);
     });
+    // 成交值旋鈕（依 tv 億元篩題材）：全部/100/200/500 億，預設 100（開圖先看大題材）
+    buildToggle("floorBtns", [["全部",0],["100億",100],["200億",200],["500億",500]], state.floor,
+      function(v){ state.floor=v; applyFilter(); });
+    // 動圖速度：慢/中/快＝400/220/100ms，預設中
+    buildToggle("speedBtns", [["慢",400],["中",220],["快",100]], state.speed,
+      function(v){ state.speed=v; });
+    // 搜尋題材（即時篩）
+    document.getElementById("search").addEventListener("input",function(){
+      state.search=this.value; applyFilter(); });
+    // 尾巴長度（軌跡顯示幾天）
+    document.getElementById("tailRange").addEventListener("input",function(){
+      state.tail=+this.value; document.getElementById("tailVal").textContent=this.value+" 天"; drawThemes(); });
+    // 標籤一鍵開關
+    document.getElementById("labelBtn").addEventListener("click",function(){
+      state.labels=!state.labels; this.classList.toggle("on",state.labels); drawThemes(); });
+    // 圖例＝策略分類篩選（可多選）
+    document.querySelectorAll("#legend span[data-cat]").forEach(function(sp){
+      sp.addEventListener("click",function(){
+        var c=this.getAttribute("data-cat");
+        if(state.cats[c]) delete state.cats[c]; else state.cats[c]=true;
+        syncLegend(); applyFilter(); });
+    });
+    // 下載目前這張圖
+    document.getElementById("downloadBtn").addEventListener("click",downloadPng);
+
     slider.addEventListener("input",function(){ stopPlay(); state.pos=+slider.value; drawThemes(); updateDay(); });
     document.getElementById("play").addEventListener("click",play);
-    document.getElementById("rrg").addEventListener("click",function(){ /* 點空白不清選，避免誤觸；用「顯示全部」清 */ });
+    // 點圖空白處＝清空選取（有選才清，避免無謂重繪）
+    document.getElementById("rrg").addEventListener("click",function(){
+      if(Object.keys(state.sel).length){ state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide(); } });
     updateThemeBtn();
     setSpan(state.span);
   }
