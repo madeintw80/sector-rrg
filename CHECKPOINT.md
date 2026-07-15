@@ -1,59 +1,58 @@
 # CHECKPOINT
 
-Updated: 2026-07-15T19:24:56+08:00
+Updated: 2026-07-15T22:39:12+08:00
 Task Lead: Echo
-Status: complete
+Status: ready_for_review
 Branch: master
-Last verified commit: cee758e
+Last verified commit: 99e6ac7
 
 ## PM requested
 
-- 在題材成分股下鑽畫面解釋紅燈、黃燈、一般、★ 與 RSI，並讓使用者知道建議使用順序。
+- 加強觀察設定中題材分類按鈕的文字對比；原本選取「領先主軸」後，深色與淺色模式都幾乎看不到文字。
 
 ## Completed
 
-- 在成分股統計下方新增常駐使用順序：「先看 ★ 主角 → 燈號 → RSI 與原因」。
-- 新增可展開的「燈號、★、RSI 怎麼看？」說明，涵蓋紅／黃／綠／一般、★ 與 RSI 14 日門檻。
-- 明確說明「一般＝未計算技術燈號」，不是安全評等；多訊號時燈號取紅 ＞ 黃 ＞ 綠。
-- PWA cache 更新為 `rrg-v2.0.1`，畫面版本更新為 `UI v2.0.1`。
-- `HoldingsRadar/web/` 來源 UI 本機 commit：`088c72a`（只含 `index.html`、`sw.js`）。
-- `sector-rrg` 公開 repo 本機實作 commit：`a3bff54`（只含 `index.html`、`sw.js`）。
-- PM 已授權 push；18:01 每日同步 commit `cee758e` 已包含 UI／文件 commits 並推到 `origin/master`。
-- 公開 GitHub Pages 已顯示 `UI v2.0.1` 與完整使用說明。
+- 修正 `.legend-btn.sel` 的 CSS specificity：選取文字改用 `--btn-on-ink`，會隨深／淺主題的選取底色切換正確高對比字色。
+- 選取文字加粗為 700；未選取分類透明度由 0.42 提高為 0.72，避免其餘選項也過淡。
+- PWA cache 更新為 `rrg-v2.0.2`，畫面版本更新為 `UI v2.0.2`。
+- `HoldingsRadar/web/` 來源 UI 本機 commit：`2f3bdcc`（只含 `index.html`、`sw.js`）。
+- `sector-rrg` 公開 repo 本機實作 commit：`99e6ac7`（只含 `index.html`、`sw.js`）。
 
 ## Current state
 
-- UI、來源同步、push 與公開頁驗證均已完成。
+- 來源與公開 repo 的本機檔案已同步並 commit；尚未 push，公開 GitHub Pages 仍是 `UI v2.0.1`。
 - `HoldingsRadar/web/index.html`、`web/sw.js` 與 `sector-rrg/index.html`、`sw.js` 的 SHA-256 完全一致。
 
 ## Verification
 
-- 判定文案已對照 `rrg_web_export.py` 與 `radar/technicals.py`：★ 為每題材成交額前 8 名；RSI 為 14 日；本站過熱警示門檻 `>=75`、超賣門檻 `<=30`；紅訊號優先於黃訊號。
-- 390×844：說明預設收合、展開後 6 個圖例完整可讀；頁面寬 375px、scroll width 375px，無水平溢出。
-- 1280×720：題材下鑽維持 360px 側欄；說明展開寬 322.7px，無水平溢出。
-- 實測「瀏覽題材 → 光學鏡頭 → 展開說明」互動成功；展開／收合符號正確切換。
+- 1280×720 深色模式：選取底色 `rgb(220,232,239)`、文字 `rgb(11,17,23)`，WCAG 對比 15.21:1。
+- 1280×720 淺色模式：選取底色 `rgb(19,35,49)`、文字白色，WCAG 對比 16:1。
+- 390×844：頁面 client width 與 scroll width 均 375px，無水平溢出；選取字重 700、未選透明度 0.72。
 - Browser console error／warning：0；`git diff --check` 通過。
-- 行情資料、RRG 計算、API、排程、輸出格式與資料檔未修改。
-- `git push origin master` 回報 `Everything up-to-date`；`a3bff54` 與 `156909f` 均為遠端 `cee758e` 的祖先。
-- 公開 `index.html` HTTP 200，確認含「燈號、★、RSI 怎麼看？」與 `UI v2.0.1`；公開 `sw.js` HTTP 200，確認含 `rrg-v2.0.1`。
+- 兩個 repo 對應檔案 SHA-256 一致；行情資料、RRG 計算、API、排程、輸出格式與資料檔未修改。
 
 ## Decisions and assumptions
 
-- 完整說明放在成分股清單正上方，預設收合；避免占滿手機畫面，但保留第一眼可見的使用順序。
-- 文案採實際程式判定，不把燈號或 RSI 寫成直接買賣指令。
-- PM 於本回合明確授權 push；公開發布範圍只包含既有 UI commits 與排程產生的當日資料 commit。
+- 沿用既有主題變數，不寫死單一顏色；確保深色與淺色模式都使用與選取底色配對的前景色。
+- 本回合 PM 要求修正，但未再次授權 push；依生產保護規則停在本機 commit。
 
 ## Next actions
 
-1. 無；18:01 每日資料同步後 UI v2.0.1 與使用說明仍保留。
+1. PM 若確認要發布，明確回覆 `push` 後再推送 `sector-rrg/master`，並驗證公開頁 `UI v2.0.2` 與 `rrg-v2.0.2`。
 
 ## Risks / blockers
 
-- 無 blocker。
+- 無程式 blocker；公開站尚未發布本修正。
 - `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 產生檔變更仍保留，未納入本次 commit、未修改或清除。
+
+## Previous eval_record (pending Batnini transcription)
+
+```json
+{"task_id":"CE-005","completed_at":"2026-07-15T19:24:56+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":25,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit 088c72a","projects/sector-rrg commits a3bff54 and cee758e","projects/sector-rrg/CHECKPOINT.md","public GitHub Pages UI v2.0.1"],"notes":"完成燈號、主角與 RSI 使用說明、響應式驗證及 PM 授權後公開發布；公開頁 HTTP 200 驗證通過"}
+```
 
 ## eval_record
 
 ```json
-{"task_id":"CE-005","completed_at":"2026-07-15T19:24:56+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":25,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit 088c72a","projects/sector-rrg commits a3bff54 and cee758e","projects/sector-rrg/CHECKPOINT.md","public GitHub Pages UI v2.0.1"],"notes":"完成燈號、主角與 RSI 使用說明、響應式驗證及 PM 授權後公開發布；公開頁 HTTP 200 驗證通過"}
+{"task_id":"CE-006","completed_at":"2026-07-15T22:39:12+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"quick","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":15,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit 2f3bdcc","projects/sector-rrg commit 99e6ac7","projects/sector-rrg/CHECKPOINT.md","dark contrast 15.21:1 and light contrast 16:1"],"notes":"修正題材分類選取文字的主題色覆蓋問題，提高未選項目可讀性，並完成桌機雙主題與手機版驗證；依生產保護規則尚未 push"}
 ```
