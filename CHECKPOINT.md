@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-15T13:44:00+08:00
+Updated: 2026-07-15T13:49:00+08:00
 Task Lead: Echo
-Status: ready_for_review
+Status: complete
 Branch: master
-Last verified commit: 0931a14
+Last verified commit: 50a5e58
 
 ## PM requested
 
@@ -18,11 +18,13 @@ Last verified commit: 0931a14
 - UI 方向選定為「決策摘要 → 訊號卡 → 時間視角 → RRG 下鑽」。
 - staging 版已完成主要資訊架構、響應式控制列、題材下鑽與狀態設計。
 - 已補齊 `AGENTS.md`、`PROJECT.md`、`CHECKPOINT.md`、`TASKS.md`、`DECISIONS.md`。
+- `HoldingsRadar/web/` 來源 UI commit：`54e0523`（只含 `index.html`、`manifest.json`、`sw.js`）。
+- `sector-rrg` 實作 commit：`50a5e58`，已 push 到 `origin/master`。
 
 ## Current state
 
-- 本機瀏覽器 smoke test 與視覺 QA 已完成。
-- 正式 repo 尚未寫入，下一步是同步來源端與公開 repo 後 commit／push。
+- 本機與公開頁 smoke test、視覺 QA、commit、push 均已完成。
+- 公開站已顯示 UI v2.0；本回合無進行中的 UI 工作。
 
 ## Verification
 
@@ -33,6 +35,7 @@ Last verified commit: 0931a14
 - loading／empty／error state 均實看；empty 可清除篩選恢復 57 個題材；error 有原因與重試。
 - Browser console error／warning：0；`manifest.json` 解析成功；44 個 HTML id 無重複。
 - `rrg_web.json`、`rrg_web_data.js` SHA-256 與正式 repo 相同，確認未修改資料。
+- 公開 GitHub Pages：title／H1／UI v2.0／主軸摘要均已生效，資料日期維持 2026-07-14，SVG 88 個繪圖節點，console 0 error／0 warning。
 
 ## Decisions and assumptions
 
@@ -41,10 +44,9 @@ Last verified commit: 0931a14
 
 ## Next actions
 
-1. 完成本機 smoke test與修正。
-2. 同步來源端與公開 repo，精準 commit UI 檔後 push。
-3. 驗證 GitHub Pages 新版。
+1. 下一次每日資料同步後，確認 UI 仍維持 v2.0；若回退，先檢查來源端 commit `54e0523` 是否仍在。
 
 ## Risks / blockers
 
-- `HoldingsRadar` 目前已有 `web/rrg_web.json`、`web/rrg_web_data.js` 產生檔變更；必須保留且不得混入 UI commit。
+- 無 blocker。
+- `HoldingsRadar` 仍保留原有 `web/rrg_web.json`、`web/rrg_web_data.js` 產生檔變更；未被 UI commit stage、修改或清除。
