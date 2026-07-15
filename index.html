@@ -106,10 +106,20 @@
   .span-tabs{display:grid;grid-template-columns:repeat(5,minmax(105px,1fr));gap:7px;}
   .span-tabs button{width:100%;padding-inline:8px;}
   .quick-row{display:grid;grid-template-columns:minmax(240px,1fr) minmax(220px,auto);gap:10px;align-items:start;}
-  .search-wrap{display:block;}
+  .search-wrap{display:block;position:relative;z-index:8;}
   .search{width:100%;min-height:44px;padding:10px 13px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
     border-radius:9px;-webkit-appearance:none;}
   .search::placeholder{color:var(--sub);}
+  .search-suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:20;max-height:min(360px,52vh);overflow:auto;
+    padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);}
+  .search-option{display:grid;grid-template-columns:46px minmax(0,1fr);gap:10px;align-items:center;width:100%;min-height:50px;
+    padding:8px 10px;border:0;background:transparent;text-align:left;}
+  .search-option:hover,.search-option.active{background:color-mix(in srgb,var(--focus) 12%,var(--surface-2));}
+  .search-option-kind{display:inline-flex;align-items:center;justify-content:center;min-height:24px;padding:2px 6px;border:1px solid var(--line);
+    border-radius:999px;color:var(--sub);font-size:11px;font-weight:700;}
+  .search-option-main{min-width:0;}.search-option-main strong{display:block;color:var(--ink);font-weight:700;}
+  .search-option-meta{display:block;color:var(--sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .search-no-result{padding:13px 12px;color:var(--sub);font-size:13px;}
   .advanced{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
   .advanced summary{min-height:42px;padding:10px 14px;cursor:pointer;color:var(--sub);}
   .advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:14px;padding:4px 14px 14px;}
@@ -161,6 +171,7 @@
   .guide-badge.normal{background:var(--line);color:var(--sub);}.guide-badge.star{color:var(--weakening);background:transparent;font-size:15px;}
   .stock-guide-note{margin:1px 0 0;padding-top:8px;border-top:1px solid var(--line);color:var(--sub);font-size:11px;line-height:1.5;}
   .stk{display:grid;grid-template-columns:38px minmax(85px,1fr) auto 52px;align-items:center;gap:7px;font-size:13px;padding:7px 0;border-top:1px solid var(--line);}
+  .stk.search-hit{margin-inline:-8px;padding-inline:8px;border-radius:8px;background:color-mix(in srgb,var(--focus) 13%,transparent);}
   .stk .lt{display:inline-flex;align-items:center;justify-content:center;width:38px;min-height:22px;border-radius:999px;color:#fff;font-size:10px;font-weight:700;}
   .stk .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .stk .nm .code{color:var(--sub);font-size:11px;}
@@ -218,7 +229,8 @@
     .decision-panel h2{font-size:19px}.decision-date{justify-self:start}.signal-grid{grid-template-columns:1fr;gap:7px;margin-bottom:12px}
     .signal-card{min-height:64px;padding:10px 12px}.control-panel{padding:14px}.span-tabs{grid-template-columns:repeat(5,1fr);gap:5px}
     .span-tabs button{min-width:0;min-height:52px;padding:6px 3px;font-size:12px;line-height:1.25}.quick-row{grid-template-columns:1fr}.advanced-grid{grid-template-columns:1fr}
-    .legend{grid-template-columns:repeat(2,1fr)}.legend-btn{font-size:12px}.chart-area{padding:6px}.chart-frame{min-height:0}
+    .legend{grid-template-columns:repeat(2,1fr)}.legend-btn{font-size:12px}.search-suggestions{max-height:42vh}.search-option{grid-template-columns:40px minmax(0,1fr)}
+    .chart-area{padding:6px}.chart-frame{min-height:0}
     .player{grid-template-columns:auto minmax(90px,1fr) auto}.player #gifBtn{grid-column:1/-1;width:100%}.player .day{text-align:right}
     .side{padding:15px}.stk{grid-template-columns:38px minmax(75px,1fr) 48px}.stk .met{grid-column:2/4}.stk .tvbar{display:none}.sig{padding-left:45px}
   }
@@ -280,10 +292,13 @@
       <div class="span-tabs" id="spanBtns" aria-label="時間視角"></div>
     </div>
     <div class="quick-row">
-      <label class="search-wrap">
-        <span class="sr-only">搜尋題材</span>
-        <input type="search" id="search" class="search" placeholder="搜尋題材，例如 AI 伺服器" autocomplete="off">
-      </label>
+      <div class="search-wrap" id="searchWrap">
+        <label class="sr-only" for="search">搜尋題材、公司名或股號</label>
+        <input type="search" id="search" class="search" placeholder="搜尋題材、公司名或股號，例如 AI 伺服器、台積電、2330"
+          autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
+          aria-controls="searchSuggestions" aria-expanded="false">
+        <div class="search-suggestions" id="searchSuggestions" role="listbox" aria-label="搜尋建議" hidden></div>
+      </div>
       <details class="advanced" id="advancedControls">
         <summary>進階控制</summary>
         <div class="advanced-grid">
@@ -530,7 +545,7 @@
   var X0=56, Y0=18, L=520;
   var D = null;   // 資料，載入後填
   var state = { span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
-                floor:100, speed:220, search:"", cats:{}, tail:null, labels:true };
+                floor:100, speed:220, search:"", stockFocus:null, cats:{}, tail:null, labels:true };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
   var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
@@ -607,18 +622,112 @@
     document.getElementById("themeSummary").textContent=count?"瀏覽 "+count+" 個符合條件的題材":"沒有符合條件的題材";
   }
 
+  // 搜尋忽略空格與常見分隔符，讓「AI 伺服器」「臻鼎 KY」也能命中原始名稱。
+  function normalizeSearch(value){
+    return String(value||"").toLowerCase().replace(/[\s\-_.·・\/／()（）]+/g,"");
+  }
+  function themeMatchesSearch(item, q){
+    if(!q) return true;
+    if(normalizeSearch(item.name).indexOf(q)>=0) return true;
+    return (item.stocks||[]).some(function(stock){
+      return normalizeSearch(stock.name).indexOf(q)>=0 || normalizeSearch(stock.code).indexOf(q)>=0 ||
+        normalizeSearch(stock.name+" "+stock.code).indexOf(q)>=0;
+    });
+  }
+
   // 經「成交值門檻＋策略分類＋搜尋」三重篩選後、要顯示的題材（sel 高亮不在此篩）
   function visibleThemes(){
-    var ts=cur().themes, out=[], q=state.search.trim().toLowerCase();
+    var ts=cur().themes, out=[], q=normalizeSearch(state.search);
     var hasCat=Object.keys(state.cats).length>0, i;
     for(i=0;i<ts.length;i++){
       var t=ts[i];
       if(state.floor && t.tv < state.floor) continue;      // 成交值旋鈕
       if(hasCat && !state.cats[currentPoint(t).c]) continue; // 策略分類隨時間軸更新
-      if(q && t.name.toLowerCase().indexOf(q)<0) continue; // 搜尋
+      if(!themeMatchesSearch(t,q)) continue;               // 題材、公司名或股號
       out.push(t);
     }
     return out;
+  }
+
+  var searchActiveIndex=-1, searchOptionCache=[];
+  function searchRank(value,q){
+    var n=normalizeSearch(value); return n===q?0:(n.indexOf(q)===0?1:2);
+  }
+  function collectSearchSuggestions(raw){
+    var q=normalizeSearch(raw), found=[];
+    if(!q || !D) return found;
+    cur().themes.forEach(function(theme){
+      if(normalizeSearch(theme.name).indexOf(q)>=0){
+        found.push({kind:"theme",kindLabel:"題材",label:theme.name,meta:"題材名稱 · "+(theme.stocks||[]).length+" 檔成分股",
+          theme:theme.name,searchTerm:theme.name,score:searchRank(theme.name,q),tv:theme.tv||0});
+      }
+      (theme.stocks||[]).forEach(function(stock){
+        var byName=normalizeSearch(stock.name).indexOf(q)>=0, byCode=normalizeSearch(stock.code).indexOf(q)>=0,
+            byBoth=normalizeSearch(stock.name+" "+stock.code).indexOf(q)>=0;
+        if(!byName && !byCode && !byBoth) return;
+        found.push({kind:"stock",kindLabel:"個股",label:stock.name+" "+stock.code,meta:"所屬題材："+theme.name,
+          theme:theme.name,stockCode:String(stock.code),searchTerm:stock.name+" "+stock.code,
+          score:Math.min(byName?searchRank(stock.name,q):9,byCode?searchRank(stock.code,q):9,byBoth?searchRank(stock.name+" "+stock.code,q):9),tv:theme.tv||0});
+      });
+    });
+    found.sort(function(a,b){
+      return a.score-b.score || (a.kind===b.kind?0:(a.kind==="theme"?-1:1)) || b.tv-a.tv || a.label.localeCompare(b.label,"zh-Hant");
+    });
+    return found.slice(0,10);
+  }
+  function closeSearchSuggestions(){
+    var input=document.getElementById("search"), box=document.getElementById("searchSuggestions");
+    box.hidden=true; box.innerHTML=""; searchActiveIndex=-1; searchOptionCache=[];
+    input.setAttribute("aria-expanded","false"); input.removeAttribute("aria-activedescendant");
+  }
+  function setSearchActive(index){
+    var input=document.getElementById("search"), options=document.querySelectorAll("#searchSuggestions .search-option");
+    if(!options.length) return;
+    searchActiveIndex=(index+options.length)%options.length;
+    options.forEach(function(option,i){
+      var active=i===searchActiveIndex; option.classList.toggle("active",active); option.setAttribute("aria-selected",active?"true":"false");
+    });
+    input.setAttribute("aria-activedescendant",options[searchActiveIndex].id);
+    options[searchActiveIndex].scrollIntoView({block:"nearest"});
+  }
+  function syncFloorButtons(){
+    document.querySelectorAll("#floorBtns button").forEach(function(b){
+      var active=+b.dataset.value===state.floor; b.classList.toggle("on",active); b.setAttribute("aria-pressed",active?"true":"false");
+    });
+  }
+  function chooseSearchSuggestion(entry){
+    var input=document.getElementById("search"), target=cur().themes.filter(function(t){return t.name===entry.theme;})[0];
+    input.value=entry.label; state.search=entry.searchTerm; state.stockFocus=entry.stockCode||null;
+    if(target){
+      if(state.floor && target.tv<state.floor){ state.floor=0; syncFloorButtons(); }
+      if(Object.keys(state.cats).length && !state.cats[currentPoint(target).c]){ state.cats={}; syncLegend(); }
+    }
+    document.getElementById("themeBrowser").open=true; applyFilter();
+    if(target){
+      state.sel={}; state.sel[target.name]=true; state.focus=target.name;
+      drawThemes(); renderChips(); renderSide();
+    }
+    closeSearchSuggestions(); input.focus();
+  }
+  function renderSearchSuggestions(){
+    var input=document.getElementById("search"), box=document.getElementById("searchSuggestions"), raw=input.value.trim();
+    if(!raw){ closeSearchSuggestions(); return; }
+    searchOptionCache=collectSearchSuggestions(raw); searchActiveIndex=-1; box.innerHTML=""; box.hidden=false;
+    input.setAttribute("aria-expanded","true"); input.removeAttribute("aria-activedescendant");
+    if(!searchOptionCache.length){
+      var empty=document.createElement("div"); empty.className="search-no-result"; empty.setAttribute("role","option"); empty.setAttribute("aria-disabled","true");
+      empty.textContent="找不到題材、公司名或股號"; box.appendChild(empty); return;
+    }
+    searchOptionCache.forEach(function(entry,index){
+      var option=document.createElement("button"); option.type="button"; option.className="search-option"; option.id="searchOption"+index;
+      option.setAttribute("role","option"); option.setAttribute("aria-selected","false");
+      var kind=document.createElement("span"); kind.className="search-option-kind"; kind.textContent=entry.kindLabel;
+      var main=document.createElement("span"); main.className="search-option-main";
+      var label=document.createElement("strong"); label.textContent=entry.label;
+      var meta=document.createElement("span"); meta.className="search-option-meta"; meta.textContent=entry.meta;
+      main.appendChild(label); main.appendChild(meta); option.appendChild(kind); option.appendChild(main);
+      option.addEventListener("click",function(){ chooseSearchSuggestion(entry); }); box.appendChild(option);
+    });
   }
 
   // 依「當前 span 全部點」算座標軸範圍（固定，播放時不跳軸）
@@ -741,6 +850,7 @@
   }
 
   function toggle(name){
+    state.stockFocus=null;
     if(state.sel[name]){ delete state.sel[name]; if(state.focus===name) state.focus=lastSel(); }
     else { state.sel[name]=true; state.focus=name; }
     drawThemes(); renderChips(); renderSide();
@@ -757,7 +867,7 @@
       box.appendChild(b);
     });
     var all=document.createElement("button"); all.type="button"; all.className="chip"; all.textContent="清除題材選取";
-    all.addEventListener("click",function(e){ e.stopPropagation(); state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide(); });
+    all.addEventListener("click",function(e){ e.stopPropagation(); state.sel={}; state.focus=null; state.stockFocus=null; drawThemes(); renderChips(); renderSide(); });
     box.appendChild(all);
     syncEmptyState();
   }
@@ -798,15 +908,21 @@
               '<p class="stock-guide-note">同時有多個訊號時，燈號取最嚴重者（紅 ＞ 黃 ＞ 綠）。燈號與 RSI 是篩選提醒，不是單獨的買賣指令。</p>'+
             '</div></details>';
 
-      // 依成交額 top-16
-      item.stocks.slice(0,16).forEach(function(x){
+      // 搜尋個股時把命中的股票置頂並高亮；其餘仍維持成交額順序與 top-16。
+      var displayStocks=item.stocks.slice(), focusedStock=null;
+      if(state.stockFocus){
+        focusedStock=displayStocks.filter(function(x){return String(x.code)===String(state.stockFocus);})[0]||null;
+        if(focusedStock) displayStocks=[focusedStock].concat(displayStocks.filter(function(x){return x!==focusedStock;}));
+      }
+      displayStocks.slice(0,16).forEach(function(x){
+        var hitClass=focusedStock===x?" search-hit":"";
         if(x.lt){
           // 主角：紅黃綠燈 + 位階/RSI/排列 +（有訊號才）短訊號第二行
           var lc = th.lights[x.lt] || th.lights.G;
           var lightName={R:"紅燈",Y:"黃燈",G:"綠燈"}[x.lt]||"訊號";
           var lightInk=x.lt==="Y"?"#1b1608":"#ffffff";
           var arrColor = x.arr==="多"?th.lights.G:(x.arr==="空"?th.lights.R:"var(--sub)");
-          html+='<div class="stk">'+
+          html+='<div class="stk'+hitClass+'">'+
                 '<span class="lt" style="background:'+lc+';color:'+lightInk+'">'+lightName+'</span>'+
                 '<span class="nm">'+(x.star?'<span class="star">★</span>':'')+x.name+
                 ' <span class="code">'+x.code+'</span></span>'+
@@ -817,7 +933,7 @@
           // 非主角：只有成交額 bar（沒算訊號）
           var mx=Math.max.apply(null, item.stocks.map(function(z){return z.tv;}))||1;
           var w=Math.round(x.tv/mx*100);
-          html+='<div class="stk">'+
+          html+='<div class="stk'+hitClass+'">'+
                 '<span class="lt" style="background:var(--line);color:var(--sub)">一般</span>'+
                 '<span class="nm">'+x.name+' <span class="code">'+x.code+'</span></span>'+
                 '<span class="tvbar"><i style="width:'+w+'%"></i></span>'+
@@ -1041,7 +1157,7 @@
     state.span = D.default_span || "month";
     if(!D.spans[state.span]) state.span=Object.keys(D.spans)[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0.3"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0.4"];
     if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
     metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
@@ -1058,9 +1174,24 @@
     // 動圖速度：慢/中/快＝400/220/100ms，預設中
     buildToggle("speedBtns", [["慢",400],["中",220],["快",100]], state.speed,
       function(v){ state.speed=v; });
-    // 搜尋題材（即時篩）
-    document.getElementById("search").addEventListener("input",function(){
-      state.search=this.value; document.getElementById("themeBrowser").open=!!this.value.trim(); applyFilter(); });
+    // 即時搜尋＋可用方向鍵／Enter 操作的建議選單。
+    var searchInput=document.getElementById("search"), searchWrap=document.getElementById("searchWrap");
+    searchInput.addEventListener("input",function(){
+      state.search=this.value; state.stockFocus=null; document.getElementById("themeBrowser").open=!!this.value.trim();
+      applyFilter(); renderSearchSuggestions();
+    });
+    searchInput.addEventListener("focus",function(){ renderSearchSuggestions(); });
+    searchInput.addEventListener("keydown",function(e){
+      if(e.key==="ArrowDown" || e.key==="ArrowUp"){
+        e.preventDefault(); if(document.getElementById("searchSuggestions").hidden) renderSearchSuggestions();
+        if(searchOptionCache.length) setSearchActive(searchActiveIndex+(e.key==="ArrowDown"?1:-1));
+      }else if(e.key==="Enter" && searchOptionCache.length){
+        e.preventDefault(); chooseSearchSuggestion(searchOptionCache[searchActiveIndex>=0?searchActiveIndex:0]);
+      }else if(e.key==="Escape"){
+        e.preventDefault(); closeSearchSuggestions();
+      }
+    });
+    document.addEventListener("click",function(e){ if(!searchWrap.contains(e.target)) closeSearchSuggestions(); });
     // 尾巴長度（軌跡顯示幾天）
     document.getElementById("tailRange").addEventListener("input",function(){
       state.tail=+this.value; document.getElementById("tailVal").textContent=this.value+" 天"; drawThemes(); });
@@ -1082,12 +1213,9 @@
       });
     });
     document.getElementById("resetFilters").addEventListener("click",function(){
-      state.floor=0; state.search=""; state.cats={}; state.sel={}; state.focus=null;
+      state.floor=0; state.search=""; state.stockFocus=null; state.cats={}; state.sel={}; state.focus=null;
       document.getElementById("search").value="";
-      document.querySelectorAll("#floorBtns button").forEach(function(b){
-        var active=b.dataset.value==="0"; b.classList.toggle("on",active); b.setAttribute("aria-pressed",active?"true":"false");
-      });
-      syncLegend(); applyFilter();
+      syncFloorButtons(); syncLegend(); closeSearchSuggestions(); applyFilter();
     });
     // 下載目前這張圖（靜態 PNG）＋ 動圖（GIF，可發 LINE）
     document.getElementById("downloadBtn").addEventListener("click",downloadPng);
@@ -1097,7 +1225,7 @@
     document.getElementById("play").addEventListener("click",play);
     // 點圖空白處＝清空選取（有選才清，避免無謂重繪）
     document.getElementById("rrg").addEventListener("click",function(){
-      if(Object.keys(state.sel).length){ state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide(); } });
+      if(Object.keys(state.sel).length){ state.sel={}; state.focus=null; state.stockFocus=null; drawThemes(); renderChips(); renderSide(); } });
     updateThemeBtn();
     setSpan(state.span);
     if(UI_DEMO==="empty"){
