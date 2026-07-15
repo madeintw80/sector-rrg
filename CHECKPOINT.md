@@ -1,14 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-15T22:39:12+08:00
+Updated: 2026-07-15T22:43:25+08:00
 Task Lead: Echo
-Status: ready_for_review
+Status: in_progress
 Branch: master
 Last verified commit: 99e6ac7
 
 ## PM requested
 
-- 加強觀察設定中題材分類按鈕的文字對比；原本選取「領先主軸」後，深色與淺色模式都幾乎看不到文字。
+- 放大電腦版字級並改善寬螢幕兩側留白；目前手機版維持不變。
 
 ## Completed
 
@@ -20,8 +20,7 @@ Last verified commit: 99e6ac7
 
 ## Current state
 
-- 來源與公開 repo 的本機檔案已同步並 commit；尚未 push，公開 GitHub Pages 仍是 `UI v2.0.1`。
-- `HoldingsRadar/web/index.html`、`web/sw.js` 與 `sector-rrg/index.html`、`sw.js` 的 SHA-256 完全一致。
+- 正在設計只作用於桌機寬度的版面與字級規則；前一輪 `UI v2.0.2` 對比修正仍在本機、尚未 push。
 
 ## Verification
 
@@ -38,7 +37,7 @@ Last verified commit: 99e6ac7
 
 ## Next actions
 
-1. PM 若確認要發布，明確回覆 `push` 後再推送 `sector-rrg/master`，並驗證公開頁 `UI v2.0.2` 與 `rrg-v2.0.2`。
+1. 完成桌機寬版 CSS，實測 1280／1440／2048 與 390 寬度，再同步來源與公開 repo。
 
 ## Risks / blockers
 
