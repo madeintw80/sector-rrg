@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-15T22:58:51+08:00
+Updated: 2026-07-15T23:09:16+08:00
 Task Lead: Echo
-Status: in_progress
+Status: ready_for_review
 Branch: master
-Last verified commit: a793c5c
+Last verified commit: 2d7e7f0
 
 ## PM requested
 
@@ -12,6 +12,13 @@ Last verified commit: a793c5c
 
 ## Completed
 
+- 搜尋索引擴充為題材名稱、公司名、股號；比對會忽略空格、連字號與常見分隔符，`AI 伺服器` 可正確命中 `AI伺服器`。
+- 新增即時搜尋建議，清楚標示「題材」或「個股」及所屬題材；支援滑鼠、方向鍵、Enter 與 Esc。
+- 選取公司後會直接開啟所屬題材，將命中公司置頂高亮；若成交值或象限篩選擋住該結果，會自動解除衝突條件。
+- 無建議時顯示「找不到題材、公司名或股號」，搜尋框與空結果文案不再只描述題材。
+- PWA cache 更新為 `rrg-v2.0.4`，畫面版本更新為 `UI v2.0.4`。
+- `HoldingsRadar/web/` 來源 UI 本機 commit：`c3b07ee`（只含 `index.html`、`sw.js`）。
+- `sector-rrg` 公開 repo 本機實作 commit：`2d7e7f0`（只含 `index.html`、`sw.js`）。
 - 主內容最大寬度由 1240px 放寬為 1760px；桌機右欄改為 360–440px 自適應，圖表會使用其餘空間。
 - 1280px 以上採 16px 正文與較大標題／控制項；1600px 以上採 17px 正文、15px 成分股主文字與 13–14px 輔助資訊。
 - 720px 以下的手機規則未修改，維持既有字級、單欄排列與觸控尺寸。
@@ -26,10 +33,19 @@ Last verified commit: a793c5c
 
 ## Current state
 
-- 正在擴充前端搜尋索引與可存取的即時建議介面；前兩輪本機 UI commits 尚未 push。
+- 智慧搜尋、桌機寬版與對比修正均已同步兩個 repo 並完成本機 commits；尚未 push，公開 GitHub Pages 仍是 `UI v2.0.1`。
+- `HoldingsRadar/web/index.html`、`web/sw.js` 與 `sector-rrg/index.html`、`sw.js` 的 SHA-256 完全一致。
 
 ## Verification
 
+- `AI 伺服器`：忽略空格後顯示唯一「題材｜AI伺服器」建議，圖表與題材清單均正確過濾。
+- `2330`／`台積電`：均顯示「個股｜台積電 2330｜所屬題材：晶圓代工」；點選後開啟晶圓代工並將台積電置頂高亮。
+- 低成交題材測試 `2634`：預設 100 億門檻下原本為空；點選「漢翔 2634」後自動切至「全部」、開啟軍工國防並高亮漢翔。
+- 鍵盤測試：ArrowDown 設定 active option、Enter 選取 AI伺服器並開啟題材、Esc 關閉建議。
+- 390×844：建議框寬 317.3px，位於 375px client width 內；選項高 56.5px、輸入字級 15px，頁面與選單無水平溢出。
+- 深／淺主題建議框文字與底色正常；主頁 Browser console error／warning：0。
+- 390×844 強制 loading／empty／error 狀態皆正常，建議框保持關閉且無水平溢出。
+- `git diff --check` 通過；兩個 repo UI 檔 SHA-256 一致；資料、計算、API、排程與部署程式未修改。
 - 1280×720：正文 16px、內容區 1264.7px、圖表 820.7px、右欄 360px，無水平溢出。
 - 1440×900：正文 16px、內容區 1424.7px、圖表 937.5px、右欄 403.2px，無水平溢出。
 - 2048×1024：正文 17px、標題 32px、內容區 1760px、圖表 1236px、右欄 440px；成分股主文字 15px，右欄與每列均無溢出。
@@ -46,6 +62,8 @@ Last verified commit: a793c5c
 
 ## Decisions and assumptions
 
+- 搜尋建議以 10 筆為上限；題材完全／前綴匹配優先，再依所屬題材成交額排序個股結果。
+- 使用者明確選取建議時，結果可自動解除會擋住目標的成交值或象限篩選；直接輸入但未選取時仍保留既有篩選條件。
 - 超寬桌機保留適度邊界，不把內容無上限拉滿；1760px 在資訊密度與閱讀視線跨度間折衷。
 - 桌機用 1280px／1600px 兩段式放大，避免同一套大字套到手機造成擁擠。
 - 沿用既有主題變數，不寫死單一顏色；確保深色與淺色模式都使用與選取底色配對的前景色。
@@ -53,11 +71,11 @@ Last verified commit: a793c5c
 
 ## Next actions
 
-1. 完成搜尋與建議選單，實測題材、空格、公司名、股號、鍵盤與手機版後同步兩個 repo。
+1. PM 若確認要發布，明確回覆 `push` 後再推送 `sector-rrg/master`，並驗證公開頁 `UI v2.0.4` 與 `rrg-v2.0.4`。
 
 ## Risks / blockers
 
-- 無程式 blocker；公開站尚未發布 `UI v2.0.2` 對比修正與本次 `UI v2.0.3` 桌機寬版。
+- 無程式 blocker；公開站尚未發布 `UI v2.0.2`–`v2.0.4` 的對比、桌機寬版與智慧搜尋。
 - `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 產生檔變更仍保留，未納入本次 commit、未修改或清除。
 
 ## Previous eval_records (pending Batnini transcription)
@@ -70,8 +88,14 @@ Last verified commit: a793c5c
 {"task_id":"CE-006","completed_at":"2026-07-15T22:39:12+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"quick","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":15,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit 2f3bdcc","projects/sector-rrg commit 99e6ac7","projects/sector-rrg/CHECKPOINT.md","dark contrast 15.21:1 and light contrast 16:1"],"notes":"修正題材分類選取文字的主題色覆蓋問題，提高未選項目可讀性，並完成桌機雙主題與手機版驗證；依生產保護規則尚未 push"}
 ```
 
-## eval_record
+## Previous eval_record (CE-007, pending Batnini transcription)
 
 ```json
 {"task_id":"CE-007","completed_at":"2026-07-15T22:55:11+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":35,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit 550f7ae","projects/sector-rrg commit a793c5c","projects/sector-rrg/CHECKPOINT.md","responsive tests at widths 390, 1280, 1440, 2048 and 2560"],"notes":"放寬桌機內容區並以兩段式斷點放大字級及成分股右欄；手機規則維持不變，多尺寸、互動與 UI 狀態驗證通過，依保護規則尚未 push"}
+```
+
+## eval_record
+
+```json
+{"task_id":"CE-008","completed_at":"2026-07-15T23:09:16+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":25,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit c3b07ee","projects/sector-rrg commit 2d7e7f0","projects/sector-rrg/CHECKPOINT.md","browser tests for AI space query, 2330, 台積電, 2634, keyboard and 390px mobile"],"notes":"搜尋擴充至題材、公司名與股號，加入可存取的即時建議、直接題材下鑽與公司高亮；低成交篩選衝突可自動解除，多尺寸與 UI 狀態驗證通過，依保護規則尚未 push"}
 ```
