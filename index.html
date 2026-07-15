@@ -146,6 +146,19 @@
   .side-empty{padding:4px 0;}
   .side-empty p,.hint{margin:0;color:var(--sub);font-size:13px;}
   .sub-tally{color:var(--sub);font-size:12px;margin-bottom:10px;}
+  .stock-guide-flow{margin:-3px 0 9px;color:var(--ink);font-size:12px;font-weight:600;}
+  .stock-guide{margin:0 0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
+  .stock-guide summary{display:flex;align-items:center;min-height:40px;padding:8px 10px;cursor:pointer;color:var(--sub);font-size:12px;font-weight:700;}
+  .stock-guide summary::marker{color:var(--sub);}
+  .stock-guide summary::before{content:"＋";margin-right:6px;color:var(--sub);font-weight:700;}
+  .stock-guide[open] summary::before{content:"－";}
+  .stock-guide-body{display:grid;gap:8px;padding:2px 10px 11px;}
+  .stock-guide-row{display:grid;grid-template-columns:46px minmax(0,1fr);gap:8px;align-items:start;color:var(--sub);font-size:11px;line-height:1.5;}
+  .stock-guide-row b{color:var(--ink);font-weight:700;}
+  .guide-badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px;padding:2px 5px;border-radius:999px;color:#fff;font-size:10px;font-weight:700;}
+  .guide-badge.red{background:var(--lt-r);}.guide-badge.yellow{background:var(--lt-y);color:#1b1608;}.guide-badge.green{background:var(--lt-g);}
+  .guide-badge.normal{background:var(--line);color:var(--sub);}.guide-badge.star{color:var(--weakening);background:transparent;font-size:15px;}
+  .stock-guide-note{margin:1px 0 0;padding-top:8px;border-top:1px solid var(--line);color:var(--sub);font-size:11px;line-height:1.5;}
   .stk{display:grid;grid-template-columns:38px minmax(85px,1fr) auto 52px;align-items:center;gap:7px;font-size:13px;padding:7px 0;border-top:1px solid var(--line);}
   .stk .lt{display:inline-flex;align-items:center;justify-content:center;width:38px;min-height:22px;border-radius:999px;color:#fff;font-size:10px;font-weight:700;}
   .stk .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -746,7 +759,17 @@
           gg=stars.filter(function(x){return x.lt==="G";}).length;
       var tally='總成交額 '+item.tv+' 億　·　成分股 '+item.stocks.length+' 檔';
       if(stars.length) tally+='　·　主角燈 紅 '+rr+'／黃 '+yy+'／綠 '+gg;
-      html+='<div class="sub-tally">'+tally+'　·　★＝圖上權重主角</div>';
+      html+='<div class="sub-tally">'+tally+'</div>'+
+            '<div class="stock-guide-flow">建議順序：先看 ★ 主角 → 燈號 → RSI 與原因</div>'+
+            '<details class="stock-guide"><summary>燈號、★、RSI 怎麼看？</summary><div class="stock-guide-body">'+
+              '<div class="stock-guide-row"><span class="guide-badge red">紅燈</span><span><b>優先處理。</b>至少有一項高風險訊號，例如深度回撤、跌破年線、爆量或逼近 52 週低點。</span></div>'+
+              '<div class="stock-guide-row"><span class="guide-badge yellow">黃燈</span><span><b>提高警覺。</b>出現短中期轉弱或過熱，例如回撤、跌破 MA20／MA60，或 RSI 過熱。</span></div>'+
+              '<div class="stock-guide-row"><span class="guide-badge green">綠燈</span><span><b>目前沒有紅／黃警訊。</b>若下方另有「RSI 超賣」，仍要等價格轉強確認。</span></div>'+
+              '<div class="stock-guide-row"><span class="guide-badge normal">一般</span><span><b>未計算技術燈號。</b>非 ★ 成分股只顯示成交額，不代表安全或危險。</span></div>'+
+              '<div class="stock-guide-row"><span class="guide-badge star">★</span><span><b>題材主角。</b>每個題材成交額前 8 名，並依成交額加權構成圖上的題材位置。</span></div>'+
+              '<div class="stock-guide-row"><span class="guide-badge normal">RSI</span><span><b>14 日動能，範圍 0–100。</b>本站以 ≥75 為偏熱、≤30 為超賣；30–75 多半屬中間區。</span></div>'+
+              '<p class="stock-guide-note">同時有多個訊號時，燈號取最嚴重者（紅 ＞ 黃 ＞ 綠）。燈號與 RSI 是篩選提醒，不是單獨的買賣指令。</p>'+
+            '</div></details>';
 
       // 依成交額 top-16
       item.stocks.slice(0,16).forEach(function(x){
@@ -991,7 +1014,7 @@
     state.span = D.default_span || "month";
     if(!D.spans[state.span]) state.span=Object.keys(D.spans)[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0.1"];
     if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
     metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
