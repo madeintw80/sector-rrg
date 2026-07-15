@@ -8,7 +8,8 @@
 
 ## Todo（依優先順序）
 
-1. [ ] 觀察下一次每日資料同步後，確認 UI 仍維持 v2.0。
+1. [ ] PM 明確授權後，push `HoldingsRadar` 與 `sector-rrg` 的本機 UI commits。
+2. [ ] 觀察下一次每日資料同步後，確認 UI 仍維持 v2.0.1。
 
 ## Done
 
@@ -17,6 +18,7 @@
 - [x] 2026-07-15：完成決策摘要、訊號層級、響應式控制與 loading／empty／error UI。
 - [x] 2026-07-15：來源 UI commit `54e0523`；公開 repo 實作 commit `50a5e58` 已 push。
 - [x] 2026-07-15：公開 GitHub Pages UI v2.0、資料、圖表與 console 已驗證。
+- [x] 2026-07-15：新增紅／黃／綠／一般、★、RSI 與建議使用順序說明；完成 390×844、1280×720 驗證並建立本機 commits。
 
 ## Backlog / 之後再說
 
