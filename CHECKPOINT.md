@@ -1,14 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-15T22:55:11+08:00
+Updated: 2026-07-15T22:58:51+08:00
 Task Lead: Echo
-Status: ready_for_review
+Status: in_progress
 Branch: master
 Last verified commit: a793c5c
 
 ## PM requested
 
-- 放大電腦版字級並改善寬螢幕兩側留白；目前手機版維持不變。
+- 修正搜尋提示與實際功能不一致：搜尋需支援題材關鍵字、公司名與股號，`AI 伺服器` 等含空格輸入也要命中，並自動顯示可選建議。
 
 ## Completed
 
@@ -26,8 +26,7 @@ Last verified commit: a793c5c
 
 ## Current state
 
-- 桌機寬版、前一輪對比修正與兩個 repo 同步都已完成本機 commit；尚未 push，公開 GitHub Pages 仍是 `UI v2.0.1`。
-- `HoldingsRadar/web/index.html`、`web/sw.js` 與 `sector-rrg/index.html`、`sw.js` 的 SHA-256 完全一致。
+- 正在擴充前端搜尋索引與可存取的即時建議介面；前兩輪本機 UI commits 尚未 push。
 
 ## Verification
 
@@ -54,7 +53,7 @@ Last verified commit: a793c5c
 
 ## Next actions
 
-1. PM 若確認要發布，明確回覆 `push` 後再推送 `sector-rrg/master`，並驗證公開頁 `UI v2.0.3` 與 `rrg-v2.0.3`。
+1. 完成搜尋與建議選單，實測題材、空格、公司名、股號、鍵盤與手機版後同步兩個 repo。
 
 ## Risks / blockers
 
