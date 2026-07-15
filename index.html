@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <!-- viewport-fit=cover：讓底色延伸到 iPhone 瀏海區 -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>題材輪動 RRG · 互動版</title>
+<title>台股題材輪動｜Professional Investment Workbench</title>
 
 <!-- PWA 設定 -->
 <link rel="manifest" href="manifest.json">
@@ -20,200 +20,280 @@
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("rrg-theme")||"dark");}catch(e){}</script>
 
 <style>
-  /* ── 淺色（預設）── */
   :root{
-    --bg:#f7f7f5; --card:#ffffff; --line:#e3e3de; --ink:#1f1f1d; --sub:#6b6b66;
-    --btn-on:#1f1f1d; --btn-on-ink:#ffffff; --hover:#c7c7c0;
-    --leading:#2ca02c; --improving:#1f77b4; --weakening:#e07b00; --lag:#b8b8b8;
-    --lt-r:#d64545; --lt-y:#d99a00; --lt-g:#2ca02c;   /* 訊號燈 紅/黃/綠 */
-    --bar-bg:#eeeeea; --bar-fill:#9ecae1;
+    --bg:#edf2f5;--surface:#ffffff;--surface-2:#f5f8fa;--line:#d8e1e7;--ink:#0d1720;--sub:#5f7180;
+    --btn-on:#132331;--btn-on-ink:#ffffff;--hover:#aab9c4;--focus:#1d7fc3;
+    --leading:#168a55;--improving:#1678c4;--weakening:#b96509;--lag:#778590;
+    --lt-r:#c54444;--lt-y:#a96e00;--lt-g:#168a55;--bar-bg:#e6edf1;--bar-fill:#79b7da;
+    --shadow:0 14px 36px rgba(25,48,66,.08);
   }
-  /* ── 系統深色時預設跟隨（沒手動指定 data-theme 才生效）── */
-  @media (prefers-color-scheme: dark){
+  @media (prefers-color-scheme:dark){
     :root{
-      --bg:#16161a; --card:#1e1e24; --line:#33333c; --ink:#e8e8e4; --sub:#9a9a94;
-      --btn-on:#e8e8e4; --btn-on-ink:#16161a; --hover:#55555f;
-      --leading:#3fbf4f; --improving:#4a9fe0; --weakening:#f0913a; --lag:#6a6a66;
-      --lt-r:#e56a6a; --lt-y:#e8b93a; --lt-g:#4fc45f;
-      --bar-bg:#2a2a32; --bar-fill:#2f5f7a;
+      --bg:#0b1117;--surface:#121b24;--surface-2:#182431;--line:#263643;--ink:#f1f5f7;--sub:#92a4b3;
+      --btn-on:#dce8ef;--btn-on-ink:#0b1117;--hover:#587083;--focus:#78c8ff;
+      --leading:#51d88a;--improving:#54adf5;--weakening:#ffb15c;--lag:#788792;
+      --lt-r:#ff7e7e;--lt-y:#f5c965;--lt-g:#57da90;--bar-bg:#22303b;--bar-fill:#39789b;
+      --shadow:0 18px 48px rgba(0,0,0,.22);
     }
   }
-  /* ── 手動切換：data-theme 蓋過系統偏好 ── */
   :root[data-theme="light"]{
-    --bg:#f7f7f5; --card:#ffffff; --line:#e3e3de; --ink:#1f1f1d; --sub:#6b6b66;
-    --btn-on:#1f1f1d; --btn-on-ink:#ffffff; --hover:#c7c7c0;
-    --leading:#2ca02c; --improving:#1f77b4; --weakening:#e07b00; --lag:#b8b8b8;
-    --lt-r:#d64545; --lt-y:#d99a00; --lt-g:#2ca02c;
-    --bar-bg:#eeeeea; --bar-fill:#9ecae1;
+    --bg:#edf2f5;--surface:#ffffff;--surface-2:#f5f8fa;--line:#d8e1e7;--ink:#0d1720;--sub:#5f7180;
+    --btn-on:#132331;--btn-on-ink:#ffffff;--hover:#aab9c4;--focus:#1d7fc3;
+    --leading:#168a55;--improving:#1678c4;--weakening:#b96509;--lag:#778590;
+    --lt-r:#c54444;--lt-y:#a96e00;--lt-g:#168a55;--bar-bg:#e6edf1;--bar-fill:#79b7da;
+    --shadow:0 14px 36px rgba(25,48,66,.08);
   }
   :root[data-theme="dark"]{
-    --bg:#16161a; --card:#1e1e24; --line:#33333c; --ink:#e8e8e4; --sub:#9a9a94;
-    --btn-on:#e8e8e4; --btn-on-ink:#16161a; --hover:#55555f;
-    --leading:#3fbf4f; --improving:#4a9fe0; --weakening:#f0913a; --lag:#6a6a66;
-    --lt-r:#e56a6a; --lt-y:#e8b93a; --lt-g:#4fc45f;
-    --bar-bg:#2a2a32; --bar-fill:#2f5f7a;
+    --bg:#0b1117;--surface:#121b24;--surface-2:#182431;--line:#263643;--ink:#f1f5f7;--sub:#92a4b3;
+    --btn-on:#dce8ef;--btn-on-ink:#0b1117;--hover:#587083;--focus:#78c8ff;
+    --leading:#51d88a;--improving:#54adf5;--weakening:#ffb15c;--lag:#788792;
+    --lt-r:#ff7e7e;--lt-y:#f5c965;--lt-g:#57da90;--bar-bg:#22303b;--bar-fill:#39789b;
+    --shadow:0 18px 48px rgba(0,0,0,.22);
   }
 
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;font-size:15px;line-height:1.5;
-    -webkit-tap-highlight-color:transparent;}
-  /* padding 用 env(safe-area-inset-*) 讓內容避開 iPhone 瀏海／狀態列（時間·訊號·電量），
-     不然裝成 PWA 全螢幕時，最上面的標題和按鈕會被系統狀態列蓋住 */
-  .wrap{max-width:1080px;margin:0 auto;
-    padding:16px;
-    padding-top:max(16px, env(safe-area-inset-top));
-    padding-left:max(16px, env(safe-area-inset-left));
-    padding-right:max(16px, env(safe-area-inset-right));
-    padding-bottom:max(16px, env(safe-area-inset-bottom));}
-  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
-  h1{font-size:20px;font-weight:600;margin:0 0 2px;}
-  .tools{display:flex;gap:6px;flex:0 0 auto;}
-  /* meta：每個詞組整塊不換行（只在「·」處斷行），避免中文逐字硬切成「加權指/數」那種亂樣 */
-  .meta{color:var(--sub);font-size:13px;margin-bottom:12px;line-height:1.55;word-break:keep-all;}
-  .meta span{white-space:nowrap;}
-  .meta span:not(:last-child)::after{content:"　·　";opacity:.55;}
-  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;}
-  .bar .grp{display:flex;gap:6px;align-items:center;}
-  .lbl{font-size:13px;color:var(--sub);margin-right:2px;}
-  button{font:inherit;font-size:13px;padding:5px 11px;border:1px solid var(--line);
-    background:var(--card);color:var(--ink);border-radius:7px;cursor:pointer;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;
+    font-size:15px;line-height:1.5;-webkit-tap-highlight-color:transparent;}
+  button,input,summary{font:inherit;}
+  button{min-height:44px;padding:9px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    border-radius:9px;cursor:pointer;transition:border-color .16s ease,background .16s ease,transform .16s ease;}
   button:hover{border-color:var(--hover);}
-  button.on{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}
-  .tools button{padding:5px 9px;}
-  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--sub);margin:2px 0 10px;}
-  .legend span{display:flex;align-items:center;gap:5px;}
+  button:active{transform:translateY(1px);}
+  button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid color-mix(in srgb,var(--focus) 40%,transparent);outline-offset:2px;}
+  button.on,button[aria-pressed="true"]{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}
+  button:disabled{cursor:not-allowed;opacity:.55;}
+  [hidden]{display:none!important;}
+  .skip-link{position:absolute;left:12px;top:-60px;z-index:1000;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px;}
+  .skip-link:focus{top:12px;}
+  .app-shell{max-width:1240px;margin:0 auto;padding:24px;padding-top:max(24px,env(safe-area-inset-top));
+    padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right));
+    padding-bottom:max(28px,env(safe-area-inset-bottom));}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:8px;}
+  .eyebrow,.section-kicker{display:block;margin-bottom:5px;color:var(--sub);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
+  h1{margin:0;font-size:26px;line-height:1.25;letter-spacing:-.02em;}
+  .tagline{margin:5px 0 0;color:var(--sub);}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .tools button{white-space:nowrap;background:transparent;}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 18px;color:var(--sub);font-size:13px;font-variant-numeric:tabular-nums;}
+  .meta span{white-space:nowrap;}
+  .meta span:not(:last-child)::after{content:"";}
+  .status-panel{display:flex;align-items:center;gap:14px;padding:18px 20px;margin-bottom:16px;background:var(--surface);
+    border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);}
+  .status-panel strong{display:block;margin-bottom:2px;}
+  .status-panel p{margin:0;color:var(--sub);}
+  .status-panel.is-error{border-color:color-mix(in srgb,var(--lt-r) 55%,var(--line));}
+  .status-spinner{width:24px;height:24px;border:3px solid var(--line);border-top-color:var(--improving);border-radius:50%;animation:spin .9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.status-spinner{animation:none;border-top-color:var(--line);}}
+  .decision-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;padding:22px 24px;margin-bottom:14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);}
+  .decision-panel h2{max-width:850px;margin:0;font-size:24px;line-height:1.35;letter-spacing:-.02em;}
+  .decision-panel p{max-width:850px;margin:8px 0 0;color:var(--sub);}
+  .decision-date{color:var(--sub);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+  .signal-card{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"label count" "names names";gap:4px 12px;text-align:left;
+    min-height:92px;padding:14px 16px;background:var(--surface);box-shadow:none;}
+  .signal-card[data-signal-cat="L"]{border-top:3px solid var(--leading);}
+  .signal-card[data-signal-cat="I"]{border-top:3px solid var(--improving);}
+  .signal-card[data-signal-cat="W"]{border-top:3px solid var(--weakening);}
+  .signal-label{grid-area:label;color:var(--sub);font-size:13px;}
+  .signal-count{grid-area:count;justify-self:end;font-size:13px;font-variant-numeric:tabular-nums;}
+  .signal-names{grid-area:names;font-size:15px;line-height:1.45;}
+  .control-panel{padding:18px 20px;margin-bottom:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;}
+  .control-head{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:18px;margin-bottom:14px;}
+  .control-head h2{margin:0;font-size:16px;}
+  .span-tabs{display:grid;grid-template-columns:repeat(5,minmax(105px,1fr));gap:7px;}
+  .span-tabs button{width:100%;padding-inline:8px;}
+  .quick-row{display:grid;grid-template-columns:minmax(240px,1fr) minmax(220px,auto);gap:10px;align-items:start;}
+  .search-wrap{display:block;}
+  .search{width:100%;min-height:44px;padding:10px 13px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);
+    border-radius:9px;-webkit-appearance:none;}
+  .search::placeholder{color:var(--sub);}
+  .advanced{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
+  .advanced summary{min-height:42px;padding:10px 14px;cursor:pointer;color:var(--sub);}
+  .advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:14px;padding:4px 14px 14px;}
+  .field{display:flex;flex-direction:column;gap:7px;}
+  .field-label{color:var(--sub);font-size:12px;}
+  .grp{display:flex;flex-wrap:wrap;gap:6px;}
+  .grp button{min-height:40px;padding:7px 11px;font-size:13px;}
+  .range-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;}
+  .tailrange{width:100%;}
+  .day{color:var(--sub);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .legend{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px;}
+  .legend-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:7px 9px;color:var(--sub);background:transparent;}
+  .legend-btn.off{opacity:.42;}
+  .legend-btn.sel{border-color:currentColor;color:var(--ink);}
   .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto;}
-  .main{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;}
-  @media(max-width:860px){.main{grid-template-columns:1fr;}}
-  .chart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;}
+  .workspace{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start;}
+  .chart-area,.side{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);}
+  .chart-area{padding:10px;}
+  .chart-frame{position:relative;min-height:320px;}
   svg{width:100%;height:auto;display:block;}
-  .side{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:120px;}
-  .side h3{font-size:15px;margin:0 0 6px;font-weight:600;display:flex;align-items:center;gap:6px;}
-  .hint{color:var(--sub);font-size:13px;}
-  .sub-tally{color:var(--sub);font-size:12px;margin-bottom:8px;}
-
-  /* 成分股列 */
-  .stk{display:flex;align-items:center;gap:7px;font-size:13px;padding:4px 0;border-top:1px solid var(--line);}
-  .stk .lt{flex:0 0 10px;width:10px;height:10px;border-radius:50%;}
-  .stk .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .chart-status{position:absolute;inset:14px;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;background:color-mix(in srgb,var(--surface) 94%,transparent);border:1px dashed var(--line);border-radius:12px;}
+  .chart-status strong{font-size:17px;}
+  .chart-status p{margin:6px 0 14px;color:var(--sub);}
+  .player{display:grid;grid-template-columns:auto minmax(120px,1fr) auto auto;gap:10px;align-items:center;margin:10px 0 2px;}
+  .player input[type=range]{width:100%;}
+  .theme-browser{margin-top:8px;border-top:1px solid var(--line);}
+  .theme-browser summary{min-height:44px;padding:12px 4px;cursor:pointer;color:var(--sub);}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 6px;}
+  .chip{min-height:36px;padding:6px 10px;border-radius:18px;font-size:12px;}
+  .chip.on{box-shadow:0 0 0 2px var(--focus) inset;}
+  .side{padding:18px;min-height:180px;}
+  .side h2,.side h3{display:flex;align-items:center;gap:7px;margin:0 0 8px;font-size:17px;}
+  .side-empty{padding:4px 0;}
+  .side-empty p,.hint{margin:0;color:var(--sub);font-size:13px;}
+  .sub-tally{color:var(--sub);font-size:12px;margin-bottom:10px;}
+  .stk{display:grid;grid-template-columns:38px minmax(85px,1fr) auto 52px;align-items:center;gap:7px;font-size:13px;padding:7px 0;border-top:1px solid var(--line);}
+  .stk .lt{display:inline-flex;align-items:center;justify-content:center;width:38px;min-height:22px;border-radius:999px;color:#fff;font-size:10px;font-weight:700;}
+  .stk .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .stk .nm .code{color:var(--sub);font-size:11px;}
-  .stk .met{flex:0 0 auto;color:var(--sub);font-size:11px;font-variant-numeric:tabular-nums;}
-  .stk .tvbar{flex:0 0 46px;height:7px;background:var(--bar-bg);border-radius:4px;overflow:hidden;}
+  .stk .met{color:var(--sub);font-size:11px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .stk .tvbar{width:46px;height:7px;background:var(--bar-bg);border-radius:4px;overflow:hidden;}
   .stk .tvbar i{display:block;height:100%;background:var(--bar-fill);}
-  .stk .tv{flex:0 0 46px;text-align:right;color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums;}
-  .star{color:#e0a800;}
-  .sig{font-size:11px;line-height:1.35;padding:0 0 4px 17px;}
+  .stk .tv{text-align:right;color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums;}
+  .star{color:var(--weakening);}
+  .sig{font-size:11px;line-height:1.4;padding:0 0 6px 45px;}
+  .disclaimer{margin:16px 0 0;color:var(--sub);font-size:12px;text-align:center;}
 
-  .player{display:flex;align-items:center;gap:12px;margin:14px 0 8px;}
-  .player input[type=range]{flex:1;}
-  .day{font-variant-numeric:tabular-nums;font-size:13px;color:var(--sub);min-width:96px;text-align:right;}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
-  .chip{display:flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border:1px solid var(--line);
-    background:var(--card);color:var(--ink);border-radius:14px;cursor:pointer;}
-  .chip.on{border-color:var(--ink);border-width:2px;padding:2px 8px;}
-
-  /* 搜尋框 / 尾巴 slider / 可點圖例（策略篩選）*/
-  .search{font:inherit;font-size:13px;padding:5px 10px;border:1px solid var(--line);
-    background:var(--card);color:var(--ink);border-radius:7px;min-width:150px;-webkit-appearance:none;}
-  .tailrange{width:110px;vertical-align:middle;}
-  .legend span[data-cat]{cursor:pointer;user-select:none;padding:2px 7px;border-radius:6px;
-    border:1px solid transparent;}
-  .legend span[data-cat].off{opacity:0.3;}
-  .legend span[data-cat].sel{border-color:currentColor;}
-
-  /* ── 手機版：把上方標題/資訊/控制列全部收緊，讓四象限圖一進畫面就完整看到、不被截 ── */
-  @media(max-width:640px){
-    .wrap{padding:10px;
-      padding-top:max(10px, env(safe-area-inset-top));
-      padding-left:max(10px, env(safe-area-inset-left));
-      padding-right:max(10px, env(safe-area-inset-right));
-      padding-bottom:max(10px, env(safe-area-inset-bottom));}
-    h1{font-size:17px;}
-    .meta{font-size:12px;margin-bottom:8px;line-height:1.4;}
-    .bar{gap:6px;margin-bottom:8px;}
-    button{padding:5px 9px;}
-    .lbl{margin-right:0;}
-    .legend{gap:9px;margin:0 0 8px;}
-    .search{min-width:120px;}
-    .player{margin:10px 0 6px;}
-  }
-
-  /* ── 圖片預覽彈窗（下載/存相簿/分享）：iOS 沒法從網頁直接寫相簿，
-        改成跳出圖片讓用戶「長按存到相簿」或走分享面板傳 LINE ── */
-  .ov{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;
-    z-index:999;padding:16px;padding-top:max(16px,env(safe-area-inset-top));}
-  .ov-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;
-    max-width:min(94vw,560px);max-height:88vh;overflow:auto;display:flex;flex-direction:column;gap:11px;}
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.76);display:flex;align-items:center;justify-content:center;z-index:999;
+    padding:16px;padding-top:max(16px,env(safe-area-inset-top));}
+  .ov-box{max-width:min(94vw,560px);max-height:88vh;overflow:auto;display:flex;flex-direction:column;gap:11px;padding:14px;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;}
   .ov-img{width:100%;height:auto;border-radius:8px;display:block;background:var(--bg);}
-  .ov-tip{font-size:13px;color:var(--sub);line-height:1.55;}
-  .ov-tip b{color:var(--ink);}
-  .ov-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .ov-btns button,.ov-btns .ov-dl{font:inherit;font-size:14px;padding:9px 15px;border-radius:9px;
-    border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-decoration:none;}
-  .ov-share{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}
-  .ov-close{margin-left:auto;}
+  .ov-tip{font-size:13px;color:var(--sub);line-height:1.55;}.ov-tip b{color:var(--ink);}
+  .ov-btns{display:flex;gap:8px;flex-wrap:wrap;}.ov-btns .ov-dl{display:inline-flex;align-items:center;min-height:44px;padding:9px 15px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;text-decoration:none;}
+  .ov-share{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}.ov-close{margin-left:auto;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+  @media(max-width:980px){.workspace{grid-template-columns:1fr}.side{min-height:150px}.control-head{grid-template-columns:1fr}.span-tabs{justify-self:stretch}}
+  @media(max-width:720px){
+    .app-shell{padding:14px;padding-top:max(14px,env(safe-area-inset-top));padding-left:max(14px,env(safe-area-inset-left));
+      padding-right:max(14px,env(safe-area-inset-right));padding-bottom:max(18px,env(safe-area-inset-bottom));}
+    .topbar{display:block}.eyebrow{margin-bottom:3px}h1{font-size:22px}.tagline{font-size:13px}.tools{display:grid;grid-template-columns:repeat(3,1fr);margin-top:14px}
+    .tools button{padding-inline:6px}.meta{margin-bottom:12px;gap:4px 12px;font-size:12px}.decision-panel{grid-template-columns:1fr;gap:10px;padding:17px}
+    .decision-panel h2{font-size:19px}.decision-date{justify-self:start}.signal-grid{grid-template-columns:1fr;gap:7px;margin-bottom:12px}
+    .signal-card{min-height:64px;padding:10px 12px}.control-panel{padding:14px}.span-tabs{grid-template-columns:repeat(5,1fr);gap:5px}
+    .span-tabs button{min-width:0;min-height:52px;padding:6px 3px;font-size:12px;line-height:1.25}.quick-row{grid-template-columns:1fr}.advanced-grid{grid-template-columns:1fr}
+    .legend{grid-template-columns:repeat(2,1fr)}.legend-btn{font-size:12px}.chart-area{padding:6px}.chart-frame{min-height:0}
+    .player{grid-template-columns:auto minmax(90px,1fr) auto}.player #gifBtn{grid-column:1/-1;width:100%}.player .day{text-align:right}
+    .side{padding:15px}.stk{grid-template-columns:38px minmax(75px,1fr) 48px}.stk .met{grid-column:2/4}.stk .tvbar{display:none}.sig{padding-left:45px}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="head">
-    <h1>題材輪動 RRG · 互動版</h1>
-    <div class="tools">
-      <button id="downloadBtn" title="目前這張圖（靜態）→ 跳預覽，可存到相簿或分享">⬇️ 圖</button>
-      <button id="themeBtn" title="切換深色／淺色">🌙 深色</button>
-      <button id="checkUpdate" title="檢查網站程式有沒有新版（不會重抓股價，資料每晚自動更新）">🔄</button>
-    </div>
-  </div>
-  <!-- meta 移到標題列外、佔滿整行寬度，才不會被右上按鈕擠成左邊窄窄一條 -->
-  <div class="meta" id="meta">載入中…</div>
-
-  <div class="bar">
-    <span class="lbl">時間粒度</span>
-    <div class="grp" id="spanBtns"></div>
-    <span class="lbl">成交值</span>
-    <div class="grp" id="floorBtns"></div>
-    <span class="lbl">速度</span>
-    <div class="grp" id="speedBtns"></div>
-  </div>
-
-  <div class="bar">
-    <input type="search" id="search" class="search" placeholder="🔍 搜尋題材…" autocomplete="off">
-    <span class="lbl">尾巴</span>
-    <input type="range" id="tailRange" class="tailrange" min="2" max="20" value="8">
-    <span class="day" id="tailVal" style="min-width:auto;text-align:left">8 天</span>
-    <button id="labelBtn" class="on" title="開關題材標籤">🏷️ 標籤</button>
-  </div>
-
-  <!-- 圖例＝策略分類篩選：點某類只看那類題材，可多選，再點取消 -->
-  <div class="legend" id="legend">
-    <span data-cat="L"><i class="dot" style="background:var(--leading)"></i>領先追強</span>
-    <span data-cat="I"><i class="dot" style="background:var(--improving)"></i>改善翻正</span>
-    <span data-cat="W"><i class="dot" style="background:var(--weakening)"></i>領先轉弱</span>
-    <span data-cat=""><i class="dot" style="background:var(--lag)"></i>落後／其他</span>
-  </div>
-
-  <div class="main">
+<a class="skip-link" href="#workbench">跳到輪動圖表</a>
+<div class="app-shell">
+  <header class="topbar">
     <div>
-      <div class="chart">
+      <span class="eyebrow">Professional Investment Workbench</span>
+      <h1>台股題材輪動</h1>
+      <p class="tagline">先看資金主軸，再下鑽成分股訊號</p>
+    </div>
+    <div class="tools" aria-label="工具">
+      <button id="downloadBtn" title="匯出目前這張靜態圖">匯出圖</button>
+      <button id="themeBtn" title="切換深色或淺色">切換主題</button>
+      <button id="checkUpdate" title="檢查網站程式是否有新版">檢查更新</button>
+    </div>
+  </header>
+  <div class="meta" id="meta" aria-live="polite"><span>正在讀取最新盤後資料…</span></div>
+
+  <section class="status-panel" id="appState" role="status" aria-live="polite">
+    <span class="status-spinner" aria-hidden="true"></span>
+    <div>
+      <strong id="appStateTitle">正在整理今日輪動</strong>
+      <p id="appStateText">載入最新題材位置與成交額，完成後會先顯示主軸與觀察名單。</p>
+    </div>
+    <button id="retryBtn" hidden>重新載入</button>
+  </section>
+
+  <section class="decision-panel" id="decisionPanel" aria-labelledby="decisionTitle" hidden>
+    <div>
+      <span class="section-kicker">目前輪動到哪</span>
+      <h2 id="decisionTitle">正在計算輪動主軸…</h2>
+      <p id="decisionSummary"></p>
+    </div>
+    <span class="decision-date" id="decisionDate">—</span>
+  </section>
+
+  <section class="signal-grid" id="signalGrid" aria-label="輪動訊號摘要" hidden>
+    <button type="button" class="signal-card" data-signal-cat="L" aria-pressed="false">
+      <span class="signal-label">領先主軸</span><strong class="signal-count" id="leadingCount">0 個</strong>
+      <span class="signal-names" id="leadingNames">—</span>
+    </button>
+    <button type="button" class="signal-card" data-signal-cat="I" aria-pressed="false">
+      <span class="signal-label">改善蓄勢</span><strong class="signal-count" id="improvingCount">0 個</strong>
+      <span class="signal-names" id="improvingNames">—</span>
+    </button>
+    <button type="button" class="signal-card" data-signal-cat="W" aria-pressed="false">
+      <span class="signal-label">轉弱警戒</span><strong class="signal-count" id="weakeningCount">0 個</strong>
+      <span class="signal-names" id="weakeningNames">—</span>
+    </button>
+  </section>
+
+  <section class="control-panel" id="controls" aria-labelledby="controlsTitle" hidden>
+    <div class="control-head">
+      <div><span class="section-kicker">觀察設定</span><h2 id="controlsTitle">選擇時間視角</h2></div>
+      <div class="span-tabs" id="spanBtns" aria-label="時間視角"></div>
+    </div>
+    <div class="quick-row">
+      <label class="search-wrap">
+        <span class="sr-only">搜尋題材</span>
+        <input type="search" id="search" class="search" placeholder="搜尋題材，例如 AI 伺服器" autocomplete="off">
+      </label>
+      <details class="advanced" id="advancedControls">
+        <summary>進階控制</summary>
+        <div class="advanced-grid">
+          <div class="field"><span class="field-label">最低成交值</span><div class="grp" id="floorBtns"></div></div>
+          <div class="field"><span class="field-label">播放速度</span><div class="grp" id="speedBtns"></div></div>
+          <label class="field"><span class="field-label">軌跡長度</span><span class="range-row">
+            <input type="range" id="tailRange" class="tailrange" min="2" max="20" value="8"><span class="day" id="tailVal">8 天</span>
+          </span></label>
+          <div class="field"><span class="field-label">圖表顯示</span><button id="labelBtn" class="on" aria-pressed="true">顯示題材標籤</button></div>
+        </div>
+      </details>
+    </div>
+    <div class="legend" id="legend" aria-label="象限篩選">
+      <button type="button" class="legend-btn" data-cat="L" aria-pressed="false"><i class="dot" style="background:var(--leading)"></i>領先主軸</button>
+      <button type="button" class="legend-btn" data-cat="I" aria-pressed="false"><i class="dot" style="background:var(--improving)"></i>改善蓄勢</button>
+      <button type="button" class="legend-btn" data-cat="W" aria-pressed="false"><i class="dot" style="background:var(--weakening)"></i>轉弱警戒</button>
+      <button type="button" class="legend-btn" data-cat="" aria-pressed="false"><i class="dot" style="background:var(--lag)"></i>落後觀察</button>
+    </div>
+  </section>
+
+  <main class="workspace" id="workbench" hidden>
+    <section class="chart-area" aria-label="題材輪動圖表">
+      <div class="chart-frame">
+        <div class="chart-status" id="chartState" role="status" hidden>
+          <strong>沒有符合條件的題材</strong>
+          <p>請清除搜尋、降低成交值門檻，或取消象限篩選。</p>
+          <button id="resetFilters">清除所有篩選</button>
+        </div>
         <svg id="rrg" viewBox="0 0 600 588" role="img" aria-label="題材輪動 RRG 四象限互動圖">
-          <g id="scaffold"></g>
-          <g id="themes"></g>
+          <g id="scaffold"></g><g id="themes"></g>
         </svg>
       </div>
       <div class="player">
-        <button id="play">▶ 播放</button>
-        <input type="range" id="slider" min="0" max="19" value="19">
+        <button id="play">播放輪動</button>
+        <input type="range" id="slider" min="0" max="19" value="19" aria-label="輪動日期">
         <span class="day" id="day">—</span>
-        <button id="gifBtn" title="把時間動畫做成動圖（GIF）→ 跳預覽，可存到相簿或直接分享 LINE（自動循環）">🎬 動圖</button>
+        <button id="gifBtn" title="匯出完整時間動畫">匯出動圖</button>
       </div>
-      <div class="chips" id="chips"></div>
-    </div>
+      <details class="theme-browser" id="themeBrowser">
+        <summary id="themeSummary">瀏覽題材</summary>
+        <div class="chips" id="chips"></div>
+      </details>
+    </section>
 
-    <div class="side" id="side">
-      <div class="hint">點圖上任一題材（或下方名稱）看它的成分股訊號燈；可多選比較多個題材的軌跡。</div>
-    </div>
-  </div>
+    <aside class="side" id="side" aria-live="polite">
+      <div class="side-empty"><span class="section-kicker">我該看什麼</span><h2>選一個題材看成分股</h2>
+        <p>點圖上題材或展開題材清單，可查看成交額、主角股與紅黃綠燈；也能多選比較軌跡。</p></div>
+    </aside>
+  </main>
+  <p class="disclaimer">公開市場資料視覺化，僅供個人研究，不構成投資建議。</p>
 </div>
 
 <!-- 離線 fallback：file:// 雙擊或 fetch 失敗時用這份內嵌資料（window.RRG_DATA）-->
@@ -413,6 +493,8 @@
                 floor:100, speed:220, search:"", cats:{}, tail:null, labels:true };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
+  var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
+  var dataSource = "network";
 
   var scaffold = document.getElementById("scaffold");
   var themesG  = document.getElementById("themes");
@@ -422,6 +504,69 @@
     for(var k in attrs) e.setAttribute(k, attrs[k]); return e; }
   function cur(){ return D.spans[state.span]; }
 
+  function setAppState(kind, title, text, retry){
+    var box=document.getElementById("appState");
+    box.hidden = kind==="ready";
+    box.classList.toggle("is-error",kind==="error");
+    box.querySelector(".status-spinner").hidden = kind!=="loading";
+    document.getElementById("appStateTitle").textContent=title||"";
+    document.getElementById("appStateText").textContent=text||"";
+    document.getElementById("retryBtn").hidden=!retry;
+  }
+
+  function showWorkbench(){
+    ["decisionPanel","signalGrid","controls","workbench"].forEach(function(id){ document.getElementById(id).hidden=false; });
+    setAppState("ready");
+  }
+
+  function currentPoint(item){ var s=item.series; return s[endIndex(s)]; }
+  function signalScore(item, cat){
+    var s=item.series, end=endIndex(s), p=s[end], prev=s[Math.max(0,end-1)];
+    var motion=(p.x-prev.x)+(p.y-prev.y), turnover=Math.log((item.tv||0)+1);
+    if(cat==="L") return (p.x-100)*1.2+(p.y-100)+motion*.5+turnover*.18;
+    if(cat==="I") return (p.y-100)*1.4+motion+turnover*.14;
+    if(cat==="W") return (item.tv||0)+Math.max(0,100-p.y)*12;
+    return item.tv||0;
+  }
+  function rankedBy(cat){
+    return cur().themes.filter(function(item){ return currentPoint(item).c===cat; })
+      .sort(function(a,b){ return signalScore(b,cat)-signalScore(a,cat); });
+  }
+  function topNames(items, n){ return items.slice(0,n).map(function(x){return x.name;}).join("、")||"目前無明確訊號"; }
+
+  // 決策摘要跟著時間軸更新，先回答主軸、下一棒與風險。
+  function renderDecision(){
+    if(!D || !cur() || !cur().themes.length) return;
+    var leading=rankedBy("L"), improving=rankedBy("I"), weakening=rankedBy("W");
+    document.getElementById("leadingCount").textContent=leading.length+" 個";
+    document.getElementById("improvingCount").textContent=improving.length+" 個";
+    document.getElementById("weakeningCount").textContent=weakening.length+" 個";
+    document.getElementById("leadingNames").textContent=topNames(leading,3);
+    document.getElementById("improvingNames").textContent=topNames(improving,3);
+    document.getElementById("weakeningNames").textContent=topNames(weakening,3);
+    var title,summary;
+    if(leading.length && improving.length){
+      title="主軸在「"+leading[0].name+"」，下一棒留意「"+improving[0].name+"」";
+      summary="領先區共 "+leading.length+" 個題材；改善區的 "+topNames(improving,2)+" 正在累積動能。轉弱區有 "+weakening.length+" 個，追價前先看軌跡是否持續。";
+    }else if(leading.length){
+      title="目前由「"+leading[0].name+"」領先，改善區訊號偏少";
+      summary="領先區共 "+leading.length+" 個題材；下一棒尚未形成一致方向，優先追蹤領先題材能否維持右上移動。";
+    }else{
+      title="輪動尚未形成清楚主軸";
+      summary="目前沒有題材站穩領先區；先觀察改善區的 "+topNames(improving,2)+"，避免只憑單日成交值追價。";
+    }
+    var first=cur().themes[0], date=currentPoint(first).d;
+    document.getElementById("decisionTitle").textContent=title;
+    document.getElementById("decisionSummary").textContent=summary;
+    document.getElementById("decisionDate").textContent=date+"｜"+(D.span_labels[state.span]||state.span);
+  }
+
+  function syncEmptyState(){
+    var count=visibleThemes().length;
+    document.getElementById("chartState").hidden=count>0;
+    document.getElementById("themeSummary").textContent=count?"瀏覽 "+count+" 個符合條件的題材":"沒有符合條件的題材";
+  }
+
   // 經「成交值門檻＋策略分類＋搜尋」三重篩選後、要顯示的題材（sel 高亮不在此篩）
   function visibleThemes(){
     var ts=cur().themes, out=[], q=state.search.trim().toLowerCase();
@@ -429,7 +574,7 @@
     for(i=0;i<ts.length;i++){
       var t=ts[i];
       if(state.floor && t.tv < state.floor) continue;      // 成交值旋鈕
-      if(hasCat && !state.cats[t.cat]) continue;           // 策略分類篩選
+      if(hasCat && !state.cats[currentPoint(t).c]) continue; // 策略分類隨時間軸更新
       if(q && t.name.toLowerCase().indexOf(q)<0) continue; // 搜尋
       out.push(t);
     }
@@ -549,7 +694,9 @@
       }
       var tx=el("text",{x:lx.toFixed(1),y:(l.ly+3.5).toFixed(1),"text-anchor":l.side==="L"?"end":"start",
         fill:l.picked?l.color:th.label,"font-size":l.picked?13:11,"font-weight":l.picked?600:400});
-      tx.textContent=l.name; themesG.appendChild(tx);
+      tx.textContent=l.name; tx.style.cursor="pointer";
+      (function(name){ tx.addEventListener("click",function(e){ e.stopPropagation(); toggle(name); }); })(l.name);
+      themesG.appendChild(tx);
     });
   }
 
@@ -563,21 +710,23 @@
   function renderChips(){
     var th=T(), box=document.getElementById("chips"); box.innerHTML="";
     visibleThemes().forEach(function(item){
-      var b=document.createElement("div"); b.className="chip"+(state.sel[item.name]?" on":"");
-      b.innerHTML='<span class="dot" style="background:'+th.cats[item.cat]+'"></span>'+item.name;
+      var b=document.createElement("button"); b.type="button"; b.className="chip"+(state.sel[item.name]?" on":"");
+      b.setAttribute("aria-pressed",state.sel[item.name]?"true":"false");
+      b.innerHTML='<span class="dot" style="background:'+th.cats[currentPoint(item).c]+'"></span>'+item.name;
       b.addEventListener("click",function(e){ e.stopPropagation(); toggle(item.name); });
       box.appendChild(b);
     });
-    var all=document.createElement("div"); all.className="chip"; all.textContent="顯示全部";
+    var all=document.createElement("button"); all.type="button"; all.className="chip"; all.textContent="清除題材選取";
     all.addEventListener("click",function(e){ e.stopPropagation(); state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide(); });
     box.appendChild(all);
+    syncEmptyState();
   }
 
   function renderSide(){
     var th=T(), side=document.getElementById("side");
     var keys=Object.keys(state.sel);
     if(keys.length===0){
-      side.innerHTML='<div class="hint">點圖上任一題材（或下方名稱）看它的成分股訊號燈；可多選比較多個題材的軌跡。</div>';
+      side.innerHTML='<div class="side-empty"><span class="section-kicker">我該看什麼</span><h2>選一個題材看成分股</h2><p>點圖上題材或展開題材清單，可查看成交額、主角股與紅黃綠燈；也能多選比較軌跡。</p></div>';
       return;
     }
     var focus = state.focus && state.sel[state.focus] ? state.focus : keys[keys.length-1];
@@ -588,15 +737,15 @@
     }
     if(item){
       var s=item.series, last=s[endIndex(s)];
-      html+='<h3><span class="dot" style="background:'+th.cats[last.c]+'"></span>'+item.name+
-            ' <span style="font-weight:400;color:var(--sub);font-size:12px;">'+CAT_NAME[last.c]+'</span></h3>';
+      html+='<span class="section-kicker">題材下鑽</span><h2><span class="dot" style="background:'+th.cats[last.c]+'"></span>'+item.name+
+            ' <span style="font-weight:400;color:var(--sub);font-size:12px;">'+CAT_NAME[last.c]+'</span></h2>';
       // 主角燈號統計
       var stars=item.stocks.filter(function(x){return x.lt;});
       var rr=stars.filter(function(x){return x.lt==="R";}).length,
           yy=stars.filter(function(x){return x.lt==="Y";}).length,
           gg=stars.filter(function(x){return x.lt==="G";}).length;
       var tally='總成交額 '+item.tv+' 億　·　成分股 '+item.stocks.length+' 檔';
-      if(stars.length) tally+='　·　主角燈 🔴'+rr+' 🟡'+yy+' 🟢'+gg;
+      if(stars.length) tally+='　·　主角燈 紅 '+rr+'／黃 '+yy+'／綠 '+gg;
       html+='<div class="sub-tally">'+tally+'　·　★＝圖上權重主角</div>';
 
       // 依成交額 top-16
@@ -604,9 +753,11 @@
         if(x.lt){
           // 主角：紅黃綠燈 + 位階/RSI/排列 +（有訊號才）短訊號第二行
           var lc = th.lights[x.lt] || th.lights.G;
+          var lightName={R:"紅燈",Y:"黃燈",G:"綠燈"}[x.lt]||"訊號";
+          var lightInk=x.lt==="Y"?"#1b1608":"#ffffff";
           var arrColor = x.arr==="多"?th.lights.G:(x.arr==="空"?th.lights.R:"var(--sub)");
           html+='<div class="stk">'+
-                '<span class="lt" style="background:'+lc+'"></span>'+
+                '<span class="lt" style="background:'+lc+';color:'+lightInk+'">'+lightName+'</span>'+
                 '<span class="nm">'+(x.star?'<span class="star">★</span>':'')+x.name+
                 ' <span class="code">'+x.code+'</span></span>'+
                 '<span class="met">位階'+x.pos+' RSI'+x.rsi+' <b style="color:'+arrColor+';font-weight:600">'+x.arr+'</b></span>'+
@@ -617,7 +768,7 @@
           var mx=Math.max.apply(null, item.stocks.map(function(z){return z.tv;}))||1;
           var w=Math.round(x.tv/mx*100);
           html+='<div class="stk">'+
-                '<span class="lt" style="background:var(--line)"></span>'+
+                '<span class="lt" style="background:var(--line);color:var(--sub)">一般</span>'+
                 '<span class="nm">'+x.name+' <span class="code">'+x.code+'</span></span>'+
                 '<span class="tvbar"><i style="width:'+w+'%"></i></span>'+
                 '<span class="tv">'+x.tv+'億</span></div>';
@@ -642,20 +793,22 @@
     if(tr){ tr.value=cur().tail; document.getElementById("tailVal").textContent=cur().tail+" 天"; }
     reach=computeReach(); lo=100-reach; hi=100+reach;
     slider.max = cur().frames-1; slider.value = cur().frames-1; state.pos=cur().frames-1;
-    document.querySelectorAll("#spanBtns button").forEach(function(b){ b.classList.toggle("on", b.dataset.span===sp); });
-    buildScaffold(); drawThemes(); renderChips(); renderSide(); updateDay();
+    document.querySelectorAll("#spanBtns button").forEach(function(b){
+      var active=b.dataset.span===sp; b.classList.toggle("on",active); b.setAttribute("aria-pressed",active?"true":"false");
+    });
+    buildScaffold(); drawThemes(); renderChips(); renderSide(); updateDay(); renderDecision(); syncEmptyState();
   }
 
   function stopPlay(){ state.playing=false; if(state.timer){ clearInterval(state.timer); state.timer=null; }
-    document.getElementById("play").textContent="▶ 播放"; }
+    document.getElementById("play").textContent="播放輪動"; }
   function play(){
     if(state.playing){ stopPlay(); return; }
-    state.playing=true; document.getElementById("play").textContent="⏸ 暫停";
-    state.pos=0; slider.value=0; drawThemes(); updateDay();
+    state.playing=true; document.getElementById("play").textContent="暫停";
+    state.pos=0; slider.value=0; drawThemes(); updateDay(); renderDecision();
     state.timer=setInterval(function(){
       state.pos++;
       if(state.pos>=cur().frames){ stopPlay(); state.pos=cur().frames-1; }
-      slider.value=state.pos; drawThemes(); updateDay();
+      slider.value=state.pos; drawThemes(); updateDay(); renderDecision();
     }, state.speed);
   }
 
@@ -663,11 +816,12 @@
   function buildToggle(containerId, opts, current, cb){
     var box=document.getElementById(containerId); box.innerHTML="";
     opts.forEach(function(o){
-      var b=document.createElement("button"); b.textContent=o[0];
+      var b=document.createElement("button"); b.type="button"; b.textContent=o[0]; b.dataset.value=String(o[1]);
       b.classList.toggle("on", o[1]===current);
+      b.setAttribute("aria-pressed",o[1]===current?"true":"false");
       b.addEventListener("click",function(){
-        box.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
-        b.classList.add("on"); cb(o[1]);
+        box.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); x.setAttribute("aria-pressed","false"); });
+        b.classList.add("on"); b.setAttribute("aria-pressed","true"); cb(o[1]);
       });
       box.appendChild(b);
     });
@@ -679,16 +833,20 @@
     var vis={}; visibleThemes().forEach(function(t){ vis[t.name]=1; });
     Object.keys(state.sel).forEach(function(n){ if(!vis[n]) delete state.sel[n]; });
     if(state.focus && !vis[state.focus]) state.focus=lastSel();
-    buildScaffold(); drawThemes(); renderChips(); renderSide();
+    buildScaffold(); drawThemes(); renderChips(); renderSide(); syncEmptyState();
   }
 
   // 圖例樣式：有選分類時，選中的加 .sel、其餘 .off；全不選＝全部正常
   function syncLegend(){
     var has=Object.keys(state.cats).length>0;
-    document.querySelectorAll("#legend span[data-cat]").forEach(function(sp){
+    document.querySelectorAll("#legend [data-cat]").forEach(function(sp){
       var c=sp.getAttribute("data-cat");
       sp.classList.toggle("sel", has && !!state.cats[c]);
       sp.classList.toggle("off", has && !state.cats[c]);
+      sp.setAttribute("aria-pressed",has && !!state.cats[c]?"true":"false");
+    });
+    document.querySelectorAll("[data-signal-cat]").forEach(function(card){
+      var c=card.getAttribute("data-signal-cat"); card.setAttribute("aria-pressed",has && !!state.cats[c]?"true":"false");
     });
   }
 
@@ -802,7 +960,7 @@
 
   // ── 深色／淺色切換 ──
   function updateThemeBtn(){
-    document.getElementById("themeBtn").textContent = isDark() ? "☀️ 淺色" : "🌙 深色";
+    document.getElementById("themeBtn").textContent = isDark() ? "淺色模式" : "深色模式";
   }
   function redrawAll(){ buildScaffold(); drawThemes(); renderChips(); renderSide(); }
   document.getElementById("themeBtn").addEventListener("click",function(){
@@ -819,23 +977,29 @@
   // ── 載入資料：優先 fetch 最新 json，失敗（離線／file://）退回內嵌 fallback ──
   function loadData(){
     return fetch("rrg_web.json", {cache:"no-cache"})
-      .then(function(res){ if(!res.ok) throw 0; return res.json(); })
-      .catch(function(){ return window.RRG_DATA; });   // rrg_web_data.js 提供
+      .then(function(res){ if(!res.ok) throw 0; dataSource="network"; return res.json(); })
+      .catch(function(){ dataSource=window.RRG_DATA?"fallback":"error"; return window.RRG_DATA||null; });
   }
 
   function boot(data){
     D = data;
-    if(!D){ document.getElementById("meta").textContent="⚠️ 資料載入失敗，請重新整理或檢查連線。"; return; }
+    if(!D || !D.spans || !Object.keys(D.spans).length){
+      document.getElementById("meta").innerHTML="<span>資料暫時無法使用</span>";
+      setAppState("error","資料載入失敗","目前無法取得線上資料，也找不到可用的離線快照。請確認連線後重試。",true);
+      return;
+    }
     state.span = D.default_span || "month";
-    // 精簡：去掉冗長操作說明＋benchmark 的 ticker 括號。每項包成一個 span（配合 CSS 整塊不換行，斷行才乾淨）
+    if(!D.spans[state.span]) state.span=Object.keys(D.spans)[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["更新 "+D.generated, "基準 "+benchShort, "點大小＝成交額", "v1.6"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0"];
+    if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
     metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
+    showWorkbench();
     var sb=document.getElementById("spanBtns");
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
-      var b=document.createElement("button"); b.dataset.span=sp; b.textContent=D.span_labels[sp]||sp;
+      var b=document.createElement("button"); b.type="button"; b.dataset.span=sp; b.textContent=D.span_labels[sp]||sp; b.setAttribute("aria-pressed","false");
       b.addEventListener("click",function(){ setSpan(sp); }); sb.appendChild(b);
     });
     // 成交值旋鈕（依 tv 億元篩題材）：全部/100/200/500 億，預設 100（開圖先看大題材）
@@ -846,34 +1010,54 @@
       function(v){ state.speed=v; });
     // 搜尋題材（即時篩）
     document.getElementById("search").addEventListener("input",function(){
-      state.search=this.value; applyFilter(); });
+      state.search=this.value; document.getElementById("themeBrowser").open=!!this.value.trim(); applyFilter(); });
     // 尾巴長度（軌跡顯示幾天）
     document.getElementById("tailRange").addEventListener("input",function(){
       state.tail=+this.value; document.getElementById("tailVal").textContent=this.value+" 天"; drawThemes(); });
     // 標籤一鍵開關
     document.getElementById("labelBtn").addEventListener("click",function(){
-      state.labels=!state.labels; this.classList.toggle("on",state.labels); drawThemes(); });
+      state.labels=!state.labels; this.classList.toggle("on",state.labels); this.setAttribute("aria-pressed",state.labels?"true":"false"); drawThemes(); });
     // 圖例＝策略分類篩選（可多選）
-    document.querySelectorAll("#legend span[data-cat]").forEach(function(sp){
+    document.querySelectorAll("#legend [data-cat]").forEach(function(sp){
       sp.addEventListener("click",function(){
         var c=this.getAttribute("data-cat");
         if(state.cats[c]) delete state.cats[c]; else state.cats[c]=true;
         syncLegend(); applyFilter(); });
     });
+    // 摘要卡是快速篩選：再點一次同一張卡就回到全部。
+    document.querySelectorAll("[data-signal-cat]").forEach(function(card){
+      card.addEventListener("click",function(){
+        var c=this.getAttribute("data-signal-cat"), only=Object.keys(state.cats).length===1 && state.cats[c];
+        state.cats={}; if(!only) state.cats[c]=true; syncLegend(); applyFilter();
+      });
+    });
+    document.getElementById("resetFilters").addEventListener("click",function(){
+      state.floor=0; state.search=""; state.cats={}; state.sel={}; state.focus=null;
+      document.getElementById("search").value="";
+      document.querySelectorAll("#floorBtns button").forEach(function(b){
+        var active=b.dataset.value==="0"; b.classList.toggle("on",active); b.setAttribute("aria-pressed",active?"true":"false");
+      });
+      syncLegend(); applyFilter();
+    });
     // 下載目前這張圖（靜態 PNG）＋ 動圖（GIF，可發 LINE）
     document.getElementById("downloadBtn").addEventListener("click",downloadPng);
     document.getElementById("gifBtn").addEventListener("click",downloadGif);
 
-    slider.addEventListener("input",function(){ stopPlay(); state.pos=+slider.value; drawThemes(); updateDay(); });
+    slider.addEventListener("input",function(){ stopPlay(); state.pos=+slider.value; drawThemes(); updateDay(); renderDecision(); });
     document.getElementById("play").addEventListener("click",play);
     // 點圖空白處＝清空選取（有選才清，避免無謂重繪）
     document.getElementById("rrg").addEventListener("click",function(){
       if(Object.keys(state.sel).length){ state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide(); } });
     updateThemeBtn();
     setSpan(state.span);
+    if(UI_DEMO==="empty"){
+      state.search="__ui_empty_state__"; document.getElementById("search").value="不會存在的測試題材";
+      document.getElementById("themeBrowser").open=true; applyFilter();
+    }
   }
 
-  loadData().then(boot);
+  document.getElementById("retryBtn").addEventListener("click",function(){ location.assign(location.pathname); });
+  if(UI_DEMO!=="loading") loadData().then(function(data){ boot(UI_DEMO==="error"?null:data); });
 
   // ── PWA：註冊 service worker + 檢查更新鍵 ──
   if("serviceWorker" in navigator){
@@ -890,17 +1074,17 @@
         function applyWaiting(){ if(reg.waiting){ reg.waiting.postMessage({type:"SKIP_WAITING"}); return true; } return false; }
         applyWaiting();                                    // 進站時若早已有新版在等，直接套用
         btn.addEventListener("click",function(){
-          btn.textContent="⏳";
+          btn.textContent="檢查中…";
           reg.update().then(function(){
-            if(applyWaiting()){ btn.textContent="更新中"; return; }   // 有新版 → 立刻換
+            if(applyWaiting()){ btn.textContent="更新中…"; return; }   // 有新版 → 立刻換
             var sw=reg.installing;
             if(sw){                                                  // 正在下載新版 → 裝好再換
-              btn.textContent="更新中";
+              btn.textContent="更新中…";
               sw.addEventListener("statechange",function(){ if(sw.state==="installed") applyWaiting(); });
             } else {
-              btn.textContent="✓ 已最新"; setTimeout(function(){ btn.textContent="🔄"; },1500);
+              btn.textContent="已是最新"; setTimeout(function(){ btn.textContent="檢查更新"; },1500);
             }
-          }).catch(function(){ btn.textContent="🔄"; });
+          }).catch(function(){ btn.textContent="檢查更新"; });
         });
       }).catch(function(){ /* file:// 或不支援就算了 */ });
     });
