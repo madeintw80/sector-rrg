@@ -122,8 +122,9 @@
   .day{color:var(--sub);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;}
   .legend{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px;}
   .legend-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:7px 9px;color:var(--sub);background:transparent;}
-  .legend-btn.off{opacity:.42;}
-  .legend-btn.sel{border-color:currentColor;color:var(--ink);}
+  .legend-btn.off{opacity:.72;}
+  /* 已選底色在深／淺主題相反，字色必須跟著 --btn-on-ink，不能再被 --ink 覆蓋。 */
+  .legend-btn.sel{border-color:var(--btn-on);color:var(--btn-on-ink);font-weight:700;}
   .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto;}
   .workspace{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start;}
   .chart-area,.side{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);}
@@ -1014,7 +1015,7 @@
     state.span = D.default_span || "month";
     if(!D.spans[state.span]) state.span=Object.keys(D.spans)[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0.1"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0.2"];
     if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
     metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
