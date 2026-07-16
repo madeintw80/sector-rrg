@@ -120,6 +120,11 @@
   .search-option-main{min-width:0;}.search-option-main strong{display:block;color:var(--ink);font-weight:700;}
   .search-option-meta{display:block;color:var(--sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .search-no-result{padding:13px 12px;color:var(--sub);font-size:13px;}
+  .company-card{margin-bottom:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);}
+  .company-card h2{margin:3px 0 7px;font-size:20px;}.company-code{color:var(--sub);font-size:13px;font-weight:500;}
+  .company-meta{color:var(--sub);font-size:13px;line-height:1.55;}.company-topics{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .company-topic{padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;}
+  .company-coverage{margin:10px 0 0;color:var(--sub);font-size:12px;line-height:1.5;}
   .advanced{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
   .advanced summary{min-height:42px;padding:10px 14px;cursor:pointer;color:var(--sub);}
   .advanced-grid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:14px;padding:4px 14px 14px;}
@@ -294,7 +299,7 @@
     <div class="quick-row">
       <div class="search-wrap" id="searchWrap">
         <label class="sr-only" for="search">搜尋題材、公司名或股號</label>
-        <input type="search" id="search" class="search" placeholder="搜尋題材、公司名或股號，例如 AI 伺服器、台積電、2330"
+        <input type="search" id="search" class="search" placeholder="搜尋全市場題材、公司名或股號，例如台玻、萬潤、2330"
           autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
           aria-controls="searchSuggestions" aria-expanded="false">
         <div class="search-suggestions" id="searchSuggestions" role="listbox" aria-label="搜尋建議" hidden></div>
@@ -545,7 +550,7 @@
   var X0=56, Y0=18, L=520;
   var D = null;   // 資料，載入後填
   var state = { span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
-                floor:100, speed:220, search:"", stockFocus:null, cats:{}, tail:null, labels:true };
+                floor:100, speed:220, search:"", stockFocus:null, companyFocus:null, cats:{}, tail:null, labels:true };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
   var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
@@ -618,13 +623,25 @@
 
   function syncEmptyState(){
     var count=visibleThemes().length;
-    document.getElementById("chartState").hidden=count>0;
+    var box=document.getElementById("chartState"); box.hidden=count>0;
+    if(!count && state.companyFocus){
+      box.querySelector("strong").textContent=state.companyFocus.name+"已納入全市場索引";
+      box.querySelector("p").textContent="右側可查看 MoneyDJ 題材與官方產業；主圖仍只顯示目前的核心輪動題材。";
+    }else{
+      box.querySelector("strong").textContent="沒有符合條件的題材";
+      box.querySelector("p").textContent="請清除搜尋、降低成交值門檻，或取消象限篩選。";
+    }
     document.getElementById("themeSummary").textContent=count?"瀏覽 "+count+" 個符合條件的題材":"沒有符合條件的題材";
   }
 
   // 搜尋忽略空格與常見分隔符，讓「AI 伺服器」「臻鼎 KY」也能命中原始名稱。
   function normalizeSearch(value){
     return String(value||"").toLowerCase().replace(/[\s\-_.·・\/／()（）]+/g,"");
+  }
+  function escapeHtml(value){
+    return String(value==null?"":value).replace(/[&<>"']/g,function(ch){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];
+    });
   }
   function themeMatchesSearch(item, q){
     if(!q) return true;
@@ -661,15 +678,38 @@
         found.push({kind:"theme",kindLabel:"題材",label:theme.name,meta:"題材名稱 · "+(theme.stocks||[]).length+" 檔成分股",
           theme:theme.name,searchTerm:theme.name,score:searchRank(theme.name,q),tv:theme.tv||0});
       }
-      (theme.stocks||[]).forEach(function(stock){
-        var byName=normalizeSearch(stock.name).indexOf(q)>=0, byCode=normalizeSearch(stock.code).indexOf(q)>=0,
-            byBoth=normalizeSearch(stock.name+" "+stock.code).indexOf(q)>=0;
-        if(!byName && !byCode && !byBoth) return;
-        found.push({kind:"stock",kindLabel:"個股",label:stock.name+" "+stock.code,meta:"所屬題材："+theme.name,
-          theme:theme.name,stockCode:String(stock.code),searchTerm:stock.name+" "+stock.code,
-          score:Math.min(byName?searchRank(stock.name,q):9,byCode?searchRank(stock.code,q):9,byBoth?searchRank(stock.name+" "+stock.code,q):9),tv:theme.tv||0});
-      });
     });
+    // 新資料直接查全市場 universe；舊離線資料沒有 universe 時才退回核心題材成分股。
+    if(D.universe && D.universe.length){
+      var themeByName={}; cur().themes.forEach(function(t){themeByName[t.name]=t;});
+      D.universe.forEach(function(company){
+        var byName=normalizeSearch(company.name).indexOf(q)>=0, byCode=normalizeSearch(company.code).indexOf(q)>=0,
+            byBoth=normalizeSearch(company.name+" "+company.code).indexOf(q)>=0,
+            byTopic=normalizeSearch((company.topics||[]).join(" ")).indexOf(q)>=0;
+        if(!byName && !byCode && !byBoth && !byTopic) return;
+        var linked=(company.rrg||[]).map(function(name){return themeByName[name];}).filter(Boolean)
+          .sort(function(a,b){return (b.tv||0)-(a.tv||0);});
+        var topics=(company.topics||[]), topicText=topics.slice(0,3).join("、")+(topics.length>3?"…":"");
+        var meta=linked.length?"RRG題材："+linked.map(function(x){return x.name;}).slice(0,2).join("、"):
+          (company.source==="moneydj"?"MoneyDJ：":"官方產業補底：")+(topicText||"未分類");
+        var directScore=Math.min(byName?searchRank(company.name,q):9,byCode?searchRank(company.code,q):9,
+          byBoth?searchRank(company.name+" "+company.code,q):9);
+        found.push({kind:"stock",kindLabel:"個股",label:company.name+" "+company.code,meta:meta,
+          theme:linked.length?linked[0].name:null,stockCode:String(company.code),searchTerm:company.name+" "+company.code,
+          company:company,score:Math.min(directScore,byTopic?3:9),tv:linked.length?(linked[0].tv||0):(company.tv||0)});
+      });
+    }else{
+      cur().themes.forEach(function(theme){
+        (theme.stocks||[]).forEach(function(stock){
+          var byName=normalizeSearch(stock.name).indexOf(q)>=0, byCode=normalizeSearch(stock.code).indexOf(q)>=0,
+              byBoth=normalizeSearch(stock.name+" "+stock.code).indexOf(q)>=0;
+          if(!byName && !byCode && !byBoth) return;
+          found.push({kind:"stock",kindLabel:"個股",label:stock.name+" "+stock.code,meta:"所屬題材："+theme.name,
+            theme:theme.name,stockCode:String(stock.code),searchTerm:stock.name+" "+stock.code,
+            score:Math.min(byName?searchRank(stock.name,q):9,byCode?searchRank(stock.code,q):9,byBoth?searchRank(stock.name+" "+stock.code,q):9),tv:theme.tv||0});
+        });
+      });
+    }
     found.sort(function(a,b){
       return a.score-b.score || (a.kind===b.kind?0:(a.kind==="theme"?-1:1)) || b.tv-a.tv || a.label.localeCompare(b.label,"zh-Hant");
     });
@@ -698,6 +738,7 @@
   function chooseSearchSuggestion(entry){
     var input=document.getElementById("search"), target=cur().themes.filter(function(t){return t.name===entry.theme;})[0];
     input.value=entry.label; state.search=entry.searchTerm; state.stockFocus=entry.stockCode||null;
+    state.companyFocus=entry.company||null;
     if(target){
       if(state.floor && target.tv<state.floor){ state.floor=0; syncFloorButtons(); }
       if(Object.keys(state.cats).length && !state.cats[currentPoint(target).c]){ state.cats={}; syncLegend(); }
@@ -706,6 +747,8 @@
     if(target){
       state.sel={}; state.sel[target.name]=true; state.focus=target.name;
       drawThemes(); renderChips(); renderSide();
+    }else if(entry.kind==="stock"){
+      state.sel={}; state.focus=null; drawThemes(); renderChips(); renderSide();
     }
     closeSearchSuggestions(); input.focus();
   }
@@ -850,7 +893,7 @@
   }
 
   function toggle(name){
-    state.stockFocus=null;
+    state.stockFocus=null; state.companyFocus=null;
     if(state.sel[name]){ delete state.sel[name]; if(state.focus===name) state.focus=lastSel(); }
     else { state.sel[name]=true; state.focus=name; }
     drawThemes(); renderChips(); renderSide();
@@ -867,21 +910,34 @@
       box.appendChild(b);
     });
     var all=document.createElement("button"); all.type="button"; all.className="chip"; all.textContent="清除題材選取";
-    all.addEventListener("click",function(e){ e.stopPropagation(); state.sel={}; state.focus=null; state.stockFocus=null; drawThemes(); renderChips(); renderSide(); });
+    all.addEventListener("click",function(e){ e.stopPropagation(); state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null; drawThemes(); renderChips(); renderSide(); });
     box.appendChild(all);
     syncEmptyState();
+  }
+
+  function renderCompanyCard(company, linkedToRrg){
+    var topics=(company.topics||[]).map(function(x){return '<span class="company-topic">'+escapeHtml(x)+'</span>';}).join("");
+    var industries=(company.industries||[]).filter(function(x){return x!=="電子工業";});
+    var market=company.market==="tse"?"上市":"上櫃";
+    var source=company.source==="moneydj"?"MoneyDJ 全產業目錄":"FinMind 官方產業補底";
+    var coverage=linkedToRrg?"已連到目前主圖核心題材，並將命中公司置頂。":"已納入全市場公司與題材索引；目前未落在主圖核心題材，但不再從搜尋與題材資料中消失。";
+    return '<div class="company-card"><span class="section-kicker">全市場個股</span><h2>'+escapeHtml(company.name)+
+      ' <span class="company-code">'+escapeHtml(company.code)+'</span></h2><div class="company-meta">'+market+
+      (industries.length?'　·　官方產業 '+escapeHtml(industries.join("、")):'')+'　·　成交額 '+escapeHtml(company.tv||0)+' 億</div>'+
+      '<div class="company-topics">'+topics+'</div><p class="company-coverage">題材來源：'+source+'。'+coverage+'</p></div>';
   }
 
   function renderSide(){
     var th=T(), side=document.getElementById("side");
     var keys=Object.keys(state.sel);
+    var companyHtml=state.companyFocus?renderCompanyCard(state.companyFocus,keys.length>0):"";
     if(keys.length===0){
-      side.innerHTML='<div class="side-empty"><span class="section-kicker">我該看什麼</span><h2>選一個題材看成分股</h2><p>點圖上題材或展開題材清單，可查看成交額、主角股與紅黃綠燈；也能多選比較軌跡。</p></div>';
+      side.innerHTML=companyHtml||'<div class="side-empty"><span class="section-kicker">我該看什麼</span><h2>選一個題材看成分股</h2><p>點圖上題材或展開題材清單，可查看成交額、主角股與紅黃綠燈；也能多選比較軌跡。</p></div>';
       return;
     }
     var focus = state.focus && state.sel[state.focus] ? state.focus : keys[keys.length-1];
     var item = cur().themes.filter(function(t){return t.name===focus;})[0];
-    var html="";
+    var html=companyHtml;
     if(keys.length>1){
       html+='<div class="hint" style="margin-bottom:8px;">已選 '+keys.length+' 個題材：'+keys.join("、")+'（下方顯示最後點的）</div>';
     }
@@ -1157,7 +1213,8 @@
     state.span = D.default_span || "month";
     if(!D.spans[state.span]) state.span=Object.keys(D.spans)[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.0.4"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.1.0"];
+    if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
     metaItems.forEach(function(t){ var s=document.createElement("span"); s.textContent=t; metaEl.appendChild(s); });
@@ -1177,7 +1234,7 @@
     // 即時搜尋＋可用方向鍵／Enter 操作的建議選單。
     var searchInput=document.getElementById("search"), searchWrap=document.getElementById("searchWrap");
     searchInput.addEventListener("input",function(){
-      state.search=this.value; state.stockFocus=null; document.getElementById("themeBrowser").open=!!this.value.trim();
+      state.search=this.value; state.stockFocus=null; state.companyFocus=null; document.getElementById("themeBrowser").open=!!this.value.trim();
       applyFilter(); renderSearchSuggestions();
     });
     searchInput.addEventListener("focus",function(){ renderSearchSuggestions(); });
@@ -1213,7 +1270,7 @@
       });
     });
     document.getElementById("resetFilters").addEventListener("click",function(){
-      state.floor=0; state.search=""; state.stockFocus=null; state.cats={}; state.sel={}; state.focus=null;
+      state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.sel={}; state.focus=null;
       document.getElementById("search").value="";
       syncFloorButtons(); syncLegend(); closeSearchSuggestions(); applyFilter();
     });
@@ -1225,7 +1282,7 @@
     document.getElementById("play").addEventListener("click",play);
     // 點圖空白處＝清空選取（有選才清，避免無謂重繪）
     document.getElementById("rrg").addEventListener("click",function(){
-      if(Object.keys(state.sel).length){ state.sel={}; state.focus=null; state.stockFocus=null; drawThemes(); renderChips(); renderSide(); } });
+      if(Object.keys(state.sel).length){ state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null; drawThemes(); renderChips(); renderSide(); } });
     updateThemeBtn();
     setSpan(state.span);
     if(UI_DEMO==="empty"){
