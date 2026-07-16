@@ -1,12 +1,16 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T14:11:47+08:00
+Updated: 2026-07-16T17:41:25+08:00
 Task Lead: Echo
-Status: complete
+Status: in_progress
 Branch: master
-Last verified commit: 9529a30
+Last verified commit: 81fe199
 
 ## PM requested
+
+- 2026-07-16：新增題材分類的「強勢起始組」本機預覽；預設只選領先續強與改善接近領先的題材，並改善手機搜尋選取／取消、樣本不足與已選狀態對比。先啟動本機頁面給 PM 驗收，不 push／deploy。
+- 2026-07-16：題材分類搜尋需支援公司名與股號；命中公司後直接列出其所屬受控題材，供逐一或批次加入目前比較。本輪仍只更新本機預覽，不 push／deploy。
+- 2026-07-16：PM 驗收桌機與手機本機預覽後，明確授權將強勢起始組、搜尋對比與公司→題材搜尋正式 commit、push、deploy；發布版號為 UI／PWA v4.1.1。
 
 - PM 追加明確授權：本輪完成後直接 commit＋push，將 UI v3.0.1／v3.0.2／v4.0.0 與 schema v4 發布至公開 GitHub Pages；發布後需驗證公開頁、資料與 PWA cache。
 - 將桌面首屏改成投資工作台：左側集中品牌、資料摘要、輪動結論、訊號與控制；中央以 RRG 為首屏主視覺；右側保留題材下鑽與公司圖卡。
@@ -88,6 +92,7 @@ Last verified commit: 9529a30
 
 ## Verification
 
+- UI v4.1.1-local 公司搜尋：`台積電`／`2330` 可映射到 `IC製造`（35 家）與 `晶圓代工`（7 家），兩者皆符合門檻；全市場 universe 題材名稱／別名對 canonical catalog 的未映射數為 0。兩份前端來源 hash 相同、3 段 inline script 均通過語法解析，本機 `http://127.0.0.1:8774/` 回應 HTTP 200。
 - 公開首頁與 `sw.js`：HTTP 200；`UI v4.0.0=True`、手機三分頁=True、題材模式=True、`rrg-v4.0.0=True`。
 - 公開 `rrg_web.json`：HTTP 200、16,724,540 bytes、schema=4、來源標籤 836、合併後 809、可比較 371、別名 27、min/default/max=5／12／20、weight cap=0.3、warning=0.6，五 spans 皆 371。
 - 公開 390×844 PWA：三分頁各 116×46px；搜尋「散熱」加入 6／20，圖上六個標籤完整；`散熱模組` 顯示 18 檔與單股主導／30% 封頂警告，台達電公司圖卡寬 325px，scroll width=client width，console error／warning=0。

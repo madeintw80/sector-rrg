@@ -50,6 +50,11 @@
     --lt-r:#ff7e7e;--lt-y:#f5c965;--lt-g:#57da90;--bar-bg:#22303b;--bar-fill:#39789b;
     --shadow:0 18px 48px rgba(0,0,0,.22);
   }
+  :root{
+    --topic-selected:#0a56b0;--topic-selected-ink:#ffffff;--topic-selected-border:#8cc5ff;
+    --topic-disabled:color-mix(in srgb,var(--surface-2) 76%,var(--line));
+    --topic-disabled-ink:color-mix(in srgb,var(--ink) 72%,var(--sub));
+  }
 
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -118,15 +123,35 @@
   .search::placeholder{color:var(--sub);}
   .search-suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:20;max-height:min(360px,52vh);overflow:auto;
     padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);}
-  .search-option{display:grid;grid-template-columns:46px minmax(0,1fr);gap:10px;align-items:center;width:100%;min-height:50px;
-    padding:8px 10px;border:0;background:transparent;text-align:left;}
+  .search-option{display:grid;grid-template-columns:46px minmax(0,1fr);gap:10px;align-items:center;width:100%;min-height:52px;
+    margin-bottom:4px;padding:8px 10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);text-align:left;}
+  .search-option:last-child{margin-bottom:0;}
   .search-option:hover,.search-option.active{background:color-mix(in srgb,var(--focus) 12%,var(--surface-2));}
   .search-option-kind{display:inline-flex;align-items:center;justify-content:center;min-height:24px;padding:2px 6px;border:1px solid var(--line);
     border-radius:999px;color:var(--sub);font-size:11px;font-weight:700;}
   .search-option-main{min-width:0;}.search-option-main strong{display:block;color:var(--ink);font-weight:700;}
   .search-option-meta{display:block;color:var(--sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .search-option[aria-pressed="true"]{background:var(--topic-selected);color:var(--topic-selected-ink);border-color:var(--topic-selected-border);}
+  .search-option[aria-pressed="true"]:hover,.search-option[aria-pressed="true"].active{
+    background:color-mix(in srgb,var(--topic-selected) 84%,var(--bg));border-color:var(--topic-selected-border);}
+  .search-option[aria-pressed="true"] .search-option-main strong,
+  .search-option[aria-pressed="true"] .search-option-meta,
+  .search-option[aria-pressed="true"] .search-option-kind{color:var(--topic-selected-ink);}
+  .search-option[aria-pressed="true"] .search-option-kind{border-color:color-mix(in srgb,var(--topic-selected-ink) 70%,transparent);}
+  .search-option:disabled,.search-option:disabled:hover{opacity:1;background:var(--topic-disabled);color:var(--topic-disabled-ink);
+    border-color:color-mix(in srgb,var(--topic-disabled-ink) 45%,var(--line));transform:none;}
+  .search-option:disabled .search-option-main strong,
+  .search-option:disabled .search-option-meta,
+  .search-option:disabled .search-option-kind{color:var(--topic-disabled-ink);}
   .search-no-result{padding:13px 12px;color:var(--sub);font-size:13px;}
   .topic-picker{margin-top:10px;padding:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;}
+  .topic-starter{margin-bottom:10px;padding:10px;border:1px solid color-mix(in srgb,var(--improving) 55%,var(--line));
+    border-radius:10px;background:color-mix(in srgb,var(--improving) 8%,var(--surface));}
+  .topic-starter-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .topic-starter-copy{min-width:0;}.topic-starter-copy strong{display:block;font-size:14px;}
+  .topic-starter-copy span{display:block;margin-top:2px;color:var(--sub);font-size:12px;line-height:1.4;}
+  .topic-starter-head button{min-height:40px;padding:7px 10px;white-space:nowrap;}
+  .topic-starter-note{margin:7px 0 0;color:var(--sub);font-size:11px;line-height:1.45;}
   .topic-picker-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
   .topic-picker-head strong{font-size:13px;}.topic-picker-head span{color:var(--sub);font-size:12px;}
   .topic-actions{display:grid;grid-template-columns:1fr auto;gap:7px;margin-bottom:8px;}
@@ -134,6 +159,8 @@
   .topic-selected{display:flex;flex-wrap:wrap;gap:6px;}
   .topic-selected .chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;min-height:36px;text-align:left;}
   .topic-empty{margin:0;color:var(--sub);font-size:12px;line-height:1.45;}
+  .topic-compare{width:100%;margin-top:9px;background:var(--topic-selected);color:var(--topic-selected-ink);border-color:var(--topic-selected-border);}
+  .topic-compare:hover{background:color-mix(in srgb,var(--topic-selected) 84%,var(--bg));border-color:var(--topic-selected-border);}
   .quality-warning{margin:8px 0;padding:9px 10px;border-left:3px solid var(--weakening);background:var(--surface-2);color:var(--sub);font-size:12px;line-height:1.45;}
   .company-card{margin-bottom:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);}
   .company-card:focus{outline:3px solid color-mix(in srgb,var(--focus) 45%,transparent);outline-offset:2px;}
@@ -315,10 +342,10 @@
 
       <section class="control-panel" id="controls" aria-labelledby="controlsTitle" hidden>
         <div class="mode-block">
-          <span class="field-label">分析模式</span>
-          <div class="mode-tabs" id="modeBtns" aria-label="分析模式">
+          <span class="field-label">分類方式</span>
+          <div class="mode-tabs" id="modeBtns" aria-label="分類方式">
             <button type="button" data-mode="industry" aria-pressed="true">產業分類</button>
-            <button type="button" data-mode="topic" aria-pressed="false">題材標籤</button>
+            <button type="button" data-mode="topic" aria-pressed="false">題材分類</button>
           </div>
           <p class="mode-help" id="modeHelp">回答「全市場資金往哪個產業移動」，三層分類彼此互斥且完整覆蓋。</p>
         </div>
@@ -339,12 +366,20 @@
             <div class="search-suggestions" id="searchSuggestions" role="listbox" aria-label="搜尋建議" hidden></div>
           </div>
           <div class="topic-picker" id="topicPicker" hidden>
+            <div class="topic-starter">
+              <div class="topic-starter-head">
+                <div class="topic-starter-copy"><strong>強勢起始組</strong><span id="strongStarterMeta">領先續強 5 · 改善轉強 3</span></div>
+                <button type="button" id="useStrongStarter">套用這組</button>
+              </div>
+              <p class="topic-starter-note">只使用領先續強或改善接近領先的題材；是 RRG 篩選起點，不代表買進建議。</p>
+            </div>
             <div class="topic-picker-head"><strong>目前比較</strong><span id="topicCount">0／20</span></div>
             <div class="topic-actions">
-              <button type="button" id="addTopicMatches">加入前 12 個搜尋命中</button>
+              <button type="button" id="addTopicMatches">加入搜尋命中</button>
               <button type="button" id="clearTopics">清除</button>
             </div>
             <div class="topic-selected" id="topicSelected"></div>
+            <button type="button" class="topic-compare" id="compareTopics">開始比較（0）</button>
           </div>
           <details class="advanced" id="advancedControls">
             <summary>進階控制</summary>
@@ -598,12 +633,12 @@
   var D = null;   // 資料，載入後填
   var state = { mode:"industry", level:"subindustry", span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
                 floor:100, speed:220, search:"", stockFocus:null, companyFocus:null, cats:{}, tail:null, labels:true,
-                topicSelected:{}, topicNotice:"" };
+                topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
   var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
   var dataSource = "network";
-  var topicCatalogById={};
+  var topicCatalogById={}, topicCatalogByName={}, strongStarterCache={};
 
   var scaffold = document.getElementById("scaffold");
   var themesG  = document.getElementById("themes");
@@ -633,6 +668,86 @@
     return {frames:span.frames,tail:span.tail,date:span.date,themes:themes};
   }
   function themeKey(item){ return item.id||item.name; }
+
+  var STRONG_STARTER_LIMIT=8;
+  function rawTopicSpan(){
+    return D && D.topic_rrg && D.topic_rrg.spans ? D.topic_rrg.spans[state.span] : null;
+  }
+  function rawTopicPoint(point){
+    return Array.isArray(point)?{x:+point[0],y:+point[1],c:point[2]||""}:point;
+  }
+  function analyzeTopicStrength(item){
+    var series=item&&item.series||[];
+    if(series.length<2) return null;
+    var end=rawTopicPoint(series[series.length-1]), steps=Math.min(3,series.length-1),
+        prev=rawTopicPoint(series[series.length-1-steps]), dx=end.x-prev.x, dy=end.y-prev.y, avgDx=dx/steps;
+    if(end.x>100 && end.y>100 && !(dx<0 && dy<0)){
+      return {type:"L",label:"領先續強",score:(end.x-100)*1.2+(end.y-100)*.8+dx*1.5+dy*.8};
+    }
+    if(end.x<100 && end.y>100 && avgDx>0){
+      var periods=(100-end.x)/avgDx;
+      if(periods<=3 && dy>=-.8){
+        return {type:"I",label:"改善→領先",score:(3-periods)*2+(end.y-100)+dx*1.3+dy*.5};
+      }
+    }
+    return null;
+  }
+  function rawTopicById(id){
+    var span=rawTopicSpan(), themes=span&&span.themes||[];
+    for(var i=0;i<themes.length;i++) if(themes[i].id===id) return themes[i];
+    return null;
+  }
+  function topicStrengthStatus(id){
+    var item=rawTopicById(id), analysis=analyzeTopicStrength(item);
+    if(analysis) return analysis.label;
+    var series=item&&item.series||[];
+    if(!series.length) return "";
+    var point=rawTopicPoint(series[series.length-1]);
+    return {L:"領先",I:"改善",W:"轉弱","":"落後"}[point.c]||"";
+  }
+  function topicOverlapHigh(a,b){
+    var as=(topicCatalogById[a.id]&&topicCatalogById[a.id].stocks||[]).map(function(x){return String(x.code);}),
+        bs=(topicCatalogById[b.id]&&topicCatalogById[b.id].stocks||[]).map(function(x){return String(x.code);});
+    if(!as.length || !bs.length) return false;
+    var lookup={}; as.forEach(function(code){lookup[code]=true;});
+    var common=bs.filter(function(code){return lookup[code];}).length;
+    return common/Math.min(as.length,bs.length)>=.8;
+  }
+  function buildStrongStarter(){
+    if(strongStarterCache[state.span]) return strongStarterCache[state.span];
+    var span=rawTopicSpan(), leading=[], improving=[];
+    (span&&span.themes||[]).forEach(function(item){
+      var meta=topicCatalogById[item.id], analysis=analyzeTopicStrength(item);
+      if(!meta || !meta.eligible || !analysis) return;
+      var row={id:item.id,name:item.name,type:analysis.type,label:analysis.label,score:analysis.score};
+      (analysis.type==="L"?leading:improving).push(row);
+    });
+    leading.sort(function(a,b){return b.score-a.score;});
+    improving.sort(function(a,b){return b.score-a.score;});
+    var picked=[];
+    function addFrom(rows,target){
+      for(var i=0;i<rows.length && picked.filter(function(x){return x.type===rows[i].type;}).length<target;i++){
+        if(!picked.some(function(existing){return topicOverlapHigh(existing,rows[i]);})) picked.push(rows[i]);
+      }
+    }
+    addFrom(leading,5); addFrom(improving,3);
+    leading.concat(improving).sort(function(a,b){return b.score-a.score;}).forEach(function(row){
+      if(picked.length>=STRONG_STARTER_LIMIT || picked.some(function(x){return x.id===row.id;})) return;
+      if(!picked.some(function(existing){return topicOverlapHigh(existing,row);})) picked.push(row);
+    });
+    var result={items:picked.slice(0,STRONG_STARTER_LIMIT)};
+    result.leadingCount=result.items.filter(function(x){return x.type==="L";}).length;
+    result.improvingCount=result.items.filter(function(x){return x.type==="I";}).length;
+    strongStarterCache[state.span]=result;
+    return result;
+  }
+  function seedStrongStarter(){
+    var group=buildStrongStarter();
+    state.topicSelected={}; state.topicNotice="";
+    group.items.forEach(function(item){state.topicSelected[item.id]=true;});
+    state.topicStarterSpan=state.span;
+    if(!group.items.length) state.topicNotice="目前期間沒有符合領先續強或改善接近領先的題材";
+  }
 
   function setAppState(kind, title, text, retry){
     var box=document.getElementById("appState");
@@ -782,13 +897,54 @@
       ((D.topic_rrg&&D.topic_rrg.catalog)||[]).forEach(function(topic){
         var names=[topic.name].concat(topic.aliases||[]), matched=names.filter(function(name){return normalizeSearch(name).indexOf(q)>=0;});
         if(!matched.length) return;
-        var aliasText=(topic.aliases||[]).length?" · 別名 "+topic.aliases.join("、"):"";
+        var aliasText=(topic.aliases||[]).length?" · 別名 "+topic.aliases.join("、"):"",
+            strength=topic.eligible?topicStrengthStatus(topic.id):"";
         found.push({kind:"topic-rrg",kindLabel:topic.eligible?"可比較":"不足",label:topic.name,
-          meta:topic.member_count+" 家公司"+aliasText+(topic.eligible?"":" · 少於 "+D.topic_rrg.min_members+" 家，不入圖"),
-          topicId:topic.id,eligible:topic.eligible,priority:topic.eligible?0:2,score:Math.min.apply(null,matched.map(function(name){return searchRank(name,q);})),
+          meta:(strength?strength+" · ":"")+topic.member_count+" 家公司"+aliasText+(topic.eligible?"":" · 少於 "+D.topic_rrg.min_members+" 家，不入圖"),
+          topicId:topic.id,eligible:topic.eligible,priority:topic.eligible?0:2,sourcePriority:0,score:Math.min.apply(null,matched.map(function(name){return searchRank(name,q);})),
           relevance:topic.member_count,tv:topic.tv||0});
       });
-      found.sort(function(a,b){return a.priority-b.priority || a.score-b.score || b.relevance-a.relevance || b.tv-a.tv || a.label.localeCompare(b.label,"zh-Hant");});
+
+      // 公司名／股號命中時，直接列出該公司所屬的受控題材；同義題材仍合併到 canonical id。
+      var companyMatches=[];
+      (D.universe||[]).forEach(function(company){
+        var byName=normalizeSearch(company.name).indexOf(q)>=0,
+            byCode=normalizeSearch(company.code).indexOf(q)>=0,
+            byBoth=normalizeSearch(company.name+" "+company.code).indexOf(q)>=0;
+        if(!byName && !byCode && !byBoth) return;
+        companyMatches.push({company:company,score:Math.min(
+          byName?searchRank(company.name,q):9,
+          byCode?searchRank(company.code,q):9,
+          byBoth?searchRank(company.name+" "+company.code,q):9
+        )});
+      });
+      companyMatches.sort(function(a,b){
+        return a.score-b.score || (b.company.tv||0)-(a.company.tv||0) || String(a.company.code).localeCompare(String(b.company.code));
+      });
+      var companyTopicRows={};
+      companyMatches.slice(0,5).forEach(function(match){
+        var company=match.company, source=company.name+" "+company.code;
+        (company.topics||[]).forEach(function(topicName){
+          var topic=topicCatalogByName[normalizeSearch(topicName)];
+          if(!topic) return;
+          var row=companyTopicRows[topic.id];
+          if(!row){
+            var strength=topic.eligible?topicStrengthStatus(topic.id):"";
+            row=companyTopicRows[topic.id]={kind:"topic-rrg",kindLabel:topic.eligible?"公司題材":"樣本不足",label:topic.name,
+              topicId:topic.id,eligible:topic.eligible,priority:topic.eligible?0:2,sourcePriority:1,score:match.score,
+              relevance:topic.member_count,tv:company.tv||0,strength:strength,companySources:[]};
+          }
+          if(row.companySources.indexOf(source)<0) row.companySources.push(source);
+          row.score=Math.min(row.score,match.score); row.tv=Math.max(row.tv,company.tv||0);
+        });
+      });
+      Object.keys(companyTopicRows).forEach(function(id){
+        var row=companyTopicRows[id], more=row.companySources.length>2?" 等 "+row.companySources.length+" 家":"";
+        row.meta=row.companySources.slice(0,2).join("、")+more+" 所屬 · "+(row.strength?row.strength+" · ":"")+
+          row.relevance+" 家公司"+(row.eligible?"":" · 少於 "+D.topic_rrg.min_members+" 家，不入圖");
+        found.push(row);
+      });
+      found.sort(function(a,b){return a.priority-b.priority || (a.sourcePriority||0)-(b.sourcePriority||0) || a.score-b.score || b.relevance-a.relevance || b.tv-a.tv || a.label.localeCompare(b.label,"zh-Hant");});
       return found.slice(0,(D.topic_rrg&&D.topic_rrg.max_limit)||20);
     }
     cur().themes.forEach(function(theme){
@@ -903,8 +1059,12 @@
     searchOptionCache.forEach(function(entry,index){
       var option=document.createElement("button"); option.type="button"; option.className="search-option"; option.id="searchOption"+index;
       option.setAttribute("role","option"); option.setAttribute("aria-selected","false");
-      if(entry.kind==="topic-rrg") option.setAttribute("aria-pressed",state.topicSelected[entry.topicId]?"true":"false");
-      var kind=document.createElement("span"); kind.className="search-option-kind"; kind.textContent=entry.kindLabel;
+      var isSelected=entry.kind==="topic-rrg"&&!!state.topicSelected[entry.topicId];
+      if(entry.kind==="topic-rrg"){
+        option.setAttribute("aria-pressed",isSelected?"true":"false");
+        if(!entry.eligible){option.disabled=true;option.setAttribute("aria-disabled","true");}
+      }
+      var kind=document.createElement("span"); kind.className="search-option-kind"; kind.textContent=isSelected?"已選":entry.kindLabel;
       var main=document.createElement("span"); main.className="search-option-main";
       var label=document.createElement("strong"); label.textContent=entry.label;
       var meta=document.createElement("span"); meta.className="search-option-meta"; meta.textContent=entry.meta;
@@ -1058,27 +1218,34 @@
   function renderTopicPicker(){
     var box=document.getElementById("topicSelected"), count=document.getElementById("topicCount");
     if(!box || !D || !D.topic_rrg) return;
-    var ids=Object.keys(state.topicSelected), max=D.topic_rrg.max_limit||20;
+    var ids=Object.keys(state.topicSelected), max=D.topic_rrg.max_limit||20, starter=buildStrongStarter(),
+        spanLabel=(D.span_labels&&D.span_labels[state.span])||state.span;
     count.textContent=ids.length+"／"+max;
+    document.getElementById("strongStarterMeta").textContent="領先續強 "+starter.leadingCount+" · 改善轉強 "+starter.improvingCount+" · "+spanLabel;
+    document.getElementById("useStrongStarter").textContent=state.topicStarterSpan===state.span?"重新套用":"依"+spanLabel+"套用";
     box.innerHTML="";
     if(!ids.length){
       var empty=document.createElement("p"); empty.className="topic-empty";
-      empty.textContent=state.topicNotice||"搜尋關鍵字後按 Enter，可先加入最多 12 個命中標籤。"; box.appendChild(empty);
+      empty.textContent=state.topicNotice||"尚未選擇題材；可套用強勢起始組，或搜尋「封裝／散熱」逐一加入。"; box.appendChild(empty);
     }else{
       ids.forEach(function(id){
         var topic=topicCatalogById[id]; if(!topic) return;
         var button=document.createElement("button"); button.type="button"; button.className="chip";
-        button.textContent=topic.name+" ×"; button.setAttribute("aria-label","移除題材標籤 "+topic.name);
+        var status=topicStrengthStatus(id);
+        button.textContent=topic.name+(status==="領先續強"||status==="改善→領先"?" · "+status:"")+" ×";
+        button.setAttribute("aria-label","移除題材標籤 "+topic.name);
         button.addEventListener("click",function(){toggleTopicSelection(id);}); box.appendChild(button);
       });
       if(state.topicNotice){ var note=document.createElement("p"); note.className="topic-empty"; note.textContent=state.topicNotice; box.appendChild(note); }
     }
     document.getElementById("addTopicMatches").disabled=!document.getElementById("search").value.trim();
+    var compare=document.getElementById("compareTopics");
+    compare.disabled=!ids.length; compare.textContent="開始比較（"+ids.length+"）";
   }
 
   function toggleTopicSelection(id){
     if(!D || !D.topic_rrg || !topicCatalogById[id]) return;
-    state.topicNotice="";
+    state.topicNotice=""; state.topicStarterSpan=null; state.topicStarterSeen=true;
     if(state.topicSelected[id]) delete state.topicSelected[id];
     else if(Object.keys(state.topicSelected).length>=(D.topic_rrg.max_limit||20)) state.topicNotice="一次最多比較 "+D.topic_rrg.max_limit+" 個標籤";
     else state.topicSelected[id]=true;
@@ -1088,10 +1255,15 @@
 
   function selectTopicMatches(){
     var matches=collectSearchSuggestions(document.getElementById("search").value).filter(function(entry){return entry.kind==="topic-rrg"&&entry.eligible;});
-    var limit=(D.topic_rrg&&D.topic_rrg.default_limit)||12;
-    state.topicSelected={}; state.topicNotice="";
-    matches.slice(0,limit).forEach(function(entry){state.topicSelected[entry.topicId]=true;});
+    var limit=(D.topic_rrg&&D.topic_rrg.default_limit)||12, max=(D.topic_rrg&&D.topic_rrg.max_limit)||20, added=0;
+    state.topicNotice=""; state.topicStarterSpan=null; state.topicStarterSeen=true;
+    matches.some(function(entry){
+      if(state.topicSelected[entry.topicId]) return false;
+      if(Object.keys(state.topicSelected).length>=max || added>=limit) return true;
+      state.topicSelected[entry.topicId]=true; added+=1; return false;
+    });
     if(!matches.length) state.topicNotice="沒有達到 "+D.topic_rrg.min_members+" 家品質門檻的搜尋命中";
+    else if(!added && Object.keys(state.topicSelected).length>=max) state.topicNotice="一次最多比較 "+max+" 個標籤";
     state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null;
     setSpan(state.span); renderTopicPicker(); renderSearchSuggestions();
   }
@@ -1110,10 +1282,11 @@
       "回答「哪些細分產品或敘事正在轉強」；只畫搜尋命中或自選標籤，不是第四層產業分類。":
       "回答「全市場資金往哪個產業移動」，三層分類彼此互斥且完整覆蓋。";
     document.getElementById("search").placeholder=mode==="topic"?
-      "搜尋題材標籤，例如散熱；按 Enter 加入前 12 個命中":"搜尋分類、MoneyDJ 標籤、公司名或股號，例如散熱、台玻、2330";
+      "搜尋題材、公司名或股號，例如散熱、台積電、2330":"搜尋分類、MoneyDJ 標籤、公司名或股號，例如散熱、台玻、2330";
     syncFloorButtons(); syncLegend(); closeSearchSuggestions();
-    if(mode==="topic" && !Object.keys(state.topicSelected).length && document.getElementById("search").value.trim()){
-      selectTopicMatches(); return;
+    if(mode==="topic" && !Object.keys(state.topicSelected).length){
+      if(document.getElementById("search").value.trim()){ state.topicStarterSeen=true; selectTopicMatches(); return; }
+      if(!state.topicStarterSeen){ seedStrongStarter(); state.topicStarterSeen=true; }
     }
     setSpan(state.span); renderTopicPicker();
   }
@@ -1469,10 +1642,13 @@
     }
     state.level = D.default_level || "subindustry";
     state.span = D.default_span || "month";
-    ((D.topic_rrg&&D.topic_rrg.catalog)||[]).forEach(function(topic){topicCatalogById[topic.id]=topic;});
+    ((D.topic_rrg&&D.topic_rrg.catalog)||[]).forEach(function(topic){
+      topicCatalogById[topic.id]=topic;
+      [topic.name].concat(topic.aliases||[]).forEach(function(name){topicCatalogByName[normalizeSearch(name)]=topic;});
+    });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.0.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.1.1"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
@@ -1492,7 +1668,7 @@
     ["week","month","quarter","half","year"].forEach(function(sp){
       if(!D.spans[sp]) return;
       var b=document.createElement("button"); b.type="button"; b.dataset.span=sp; b.textContent=D.span_labels[sp]||sp; b.setAttribute("aria-pressed","false");
-      b.addEventListener("click",function(){ setSpan(sp); }); sb.appendChild(b);
+      b.addEventListener("click",function(){ setSpan(sp); if(state.mode==="topic") renderTopicPicker(); }); sb.appendChild(b);
     });
     // 成交值旋鈕（依 tv 億元篩題材）：全部/100/200/500 億，預設 100（開圖先看大題材）
     buildToggle("floorBtns", [["全部",0],["100億",100],["200億",200],["500億",500]], state.floor,
@@ -1507,8 +1683,18 @@
       button.addEventListener("click",function(){setMobileView(this.dataset.mobileTarget);});
     });
     document.getElementById("addTopicMatches").addEventListener("click",selectTopicMatches);
+    document.getElementById("useStrongStarter").addEventListener("click",function(){
+      seedStrongStarter(); state.topicStarterSeen=true; setSpan(state.span); renderTopicPicker(); closeSearchSuggestions();
+    });
     document.getElementById("clearTopics").addEventListener("click",function(){
-      state.topicSelected={}; state.topicNotice=""; state.sel={}; state.focus=null; setSpan(state.span); renderTopicPicker();
+      state.topicSelected={}; state.topicNotice=""; state.topicStarterSpan=null; state.topicStarterSeen=true;
+      state.sel={}; state.focus=null; setSpan(state.span); renderTopicPicker();
+    });
+    document.getElementById("compareTopics").addEventListener("click",function(){
+      if(!Object.keys(state.topicSelected).length) return;
+      setMobileView("chart");
+      var chart=document.querySelector(".chart-area");
+      if(chart && window.matchMedia("(max-width:980px)").matches) chart.scrollIntoView({behavior:"smooth",block:"start"});
     });
     // 即時搜尋＋可用方向鍵／Enter 操作的建議選單。
     var searchInput=document.getElementById("search"), searchWrap=document.getElementById("searchWrap");
