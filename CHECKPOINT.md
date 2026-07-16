@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T12:39:22+08:00
+Updated: 2026-07-16T12:43:28+08:00
 Task Lead: Echo
-Status: complete
+Status: in_progress
 Branch: master
-Last verified commit: 58132b6
+Last verified commit: 842d2eb
 
 ## PM requested
 
+- 題材下鑽後，點成分股清單中的任一家公司，也要在右側上方顯示與搜尋公司相同的完整公司圖卡。
 - 改善 MoneyDJ 多標籤搜尋：搜尋「散熱」時，不要讓只命中弱關聯標籤的同欣電排在奇鋐、健策、雙鴻等核心散熱股前面。
 - 建議先呈現命中的 MoneyDJ 標籤，再依標籤命中數與關聯強度排序個股；公司名／股號精確搜尋維持最高優先。
 - 推翻「59 個核心題材只涵蓋 914 檔也可以」的分層假設；新版每一個分類層級都必須涵蓋全部現行普通上市櫃公司。
