@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T12:43:28+08:00
+Updated: 2026-07-16T12:53:40+08:00
 Task Lead: Echo
-Status: in_progress
+Status: complete
 Branch: master
-Last verified commit: 842d2eb
+Last verified commit: 07c222e
 
 ## PM requested
 
@@ -19,6 +19,9 @@ Last verified commit: 842d2eb
 
 ## Completed
 
+- UI v3.0.2 將題材下鑽的每一列成分股改為可點擊的原生按鈕；點擊後沿用既有完整公司圖卡，並將該公司置頂高亮。
+- 公司圖卡出現後會取得焦點並自動捲到可見位置；手機從清單底部點擊也不會只在畫面外更新。
+- HoldingsRadar 本機 commit `f8d798a`；sector-rrg 功能 commit `07c222e`。本次改善尚未 push，等待 PM 公開發布授權。
 - UI v3.0.1 將搜尋結果拆成「分類／標籤／個股」：先顯示實際命中的 MoneyDJ 標籤，再依標籤命中數、字面關聯與成交額次要訊號排序個股；公司名／股號精確命中仍為最高優先。
 - 搜尋「散熱」實測先顯示 6 個 MoneyDJ 標籤；個股前段為奇鋐、力致、台達電、尼得科超眾、雙鴻，同欣電不再因單一 `LED散熱基板` 弱關聯擠入前段。
 - 點選 `散熱模組` 標籤會自動解除成交額門檻並顯示 7 個含相關公司的細產業；搜尋 `2308` 仍精確只列出台達電。
@@ -64,13 +67,15 @@ Last verified commit: 842d2eb
 
 ## Current state
 
-- 多標籤搜尋改善已完成本機實作、瀏覽器驗證與 commit；`sector-rrg/master` 目前含未推送的 v3.0.1 commits。
+- 題材下鑽公司圖卡已完成本機實作、瀏覽器驗證與 commit；`sector-rrg/master` 含尚未推送的 v3.0.1／v3.0.2 commits。
 - taxonomy v3、RRG 資料、UI 與週更／每日排程程式皆已完成並驗證。
-- `HoldingsRadar` 完成本機 commit `dd5ea88`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg/master` 已 push；GitHub Pages 公開檔案已確認 UI v3、PWA cache v3、schema v3 與 1,970 家資料生效。
+- `HoldingsRadar` 最新本機 commit `f8d798a`；此 repo 未設定 git remote，因此沒有可推送目的地。
+- GitHub Pages 公開頁目前仍是已發布的 UI v3.0.0；v3.0.1／v3.0.2 等待 PM 授權後一併發布。
 
 ## Verification
 
+- 桌機：選取 `玻璃陶瓷綜合` 後，5 檔成分股皆呈現具唯一 accessible name 的 button；點台玻、和成時圖卡正確切換完整分類與 MoneyDJ 標籤，命中列置頂高亮。
+- 390×844：從清單底部點 `凱撒衛 1817`，圖卡更新並自動捲至 viewport top 67px；頁面 scroll width 375px＝viewport width，browser console error／warning 0。
 - 本機 UI v3.0.1：「散熱」共 6 個標籤建議，前 14 筆不含只命中 `LED散熱基板` 的同欣電；390×844 下選單 14 筆可捲動、頁面無水平溢出，browser console error／warning 0。
 - 精確搜尋 `2308` 只顯示 `台達電 2308`；點 `散熱模組` 後輪動圖顯示 7 個含標籤成分公司的細產業。
 - 正常 TLS 下重爬 MoneyDJ 1,062／1,062、errors=0；公司 1,970 unique，9xxx 硬性樣本全在，`9103／9105／9110／9136` TDR 全不在。
