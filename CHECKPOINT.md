@@ -1,13 +1,15 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T10:44:34+08:00
+Updated: 2026-07-16T10:59:43+08:00
 Task Lead: Echo
-Status: ready_for_release
+Status: in_progress
 Branch: master
-Last verified commit: c57262c
+Last verified commit: d023d30
 
 ## PM requested
 
+- 推翻「59 個核心題材只涵蓋 914 檔也可以」的分層假設；新版每一個分類層級都必須涵蓋現行 1,927 檔公司。
+- 可直接重做分類，優先研究 XQ 的產業分類作為參考；Echo 全權主導修改、測試與 commit，不需再交接給 Batnini。
 - 將 RRG 個股覆蓋擴充為全部現役上市、上櫃公司；每家公司都必須有題材對應，不能再因 59 個人工挑選的 MoneyDJ 分類頁而靜默消失。
 - 先確認 MoneyDJ 是否真的缺少台玻、萬潤等分類；若 MoneyDJ 有資料，改正來源擷取方式，不無故更換參考來源。
 - 修正搜尋提示與實際功能不一致：搜尋需支援題材關鍵字、公司名與股號，`AI 伺服器` 等含空格輸入也要命中，並自動顯示可選建議。
@@ -47,7 +49,8 @@ Last verified commit: c57262c
 
 ## Current state
 
-- 本機 `sector-rrg/master` 已有 UI v2.1.2 與 1,927 檔全市場索引，尚未 push；公開 GitHub Pages 仍是上一個已驗證版本 UI v2.0.4。
+- Echo 正在研究 XQ 參考分類並重構完整階層；舊 59→57 核心題材只涵蓋 914 檔的架構已被 PM 否決，不再視為完成狀態。
+- 本機 `sector-rrg/master` 目前已有 UI v2.1.2 與 1,927 檔公司索引，尚未 push；公開 GitHub Pages 仍是上一個已驗證版本 UI v2.0.4。
 - 來源 repo 的已追蹤程式／UI 已 commit；原有且持續更新的 `HoldingsRadar/web/rrg_web.json`、`rrg_web_data.js` 產生檔仍保留為未 commit，不清除、不混入程式 commit。
 
 ## Verification
@@ -97,13 +100,12 @@ Last verified commit: c57262c
 
 ## Next actions
 
-- 等待 PM 明確授權 push／deploy；獲准後先確認遠端未分岔，再 push `sector-rrg/master`，最後實測公開 GitHub Pages UI v2.1.2、1,927 檔、台玻、萬潤、永冠-KY 與 console。
-- 共用架構帳本因 `agent-workspace` 既有 dirty handoff 變更未直接 append；已建立 `handoffs/2026-07-16-0957-echo-to-batnini-rrg-full-market-changelog.md`，待 Batnini 安全同步。
+- 建立每一層都覆蓋 1,927 檔的新版 taxonomy，重算 RRG 並完成資料與 UI 驗證。
+- 本回合不建立 Batnini action-required handoff；架構級變更由 Echo 依 PROTOCOL 直接 append `brain/CHANGELOG.md`。
 
 ## Risks / blockers
 
-- 唯一待辦是生產保護門檻：本機功能已完成，公開 push／deploy 尚未取得本輪明確授權。
-- 治理同步不影響產品功能；Batnini 需依上述 handoff 在乾淨／已確認所有權的狀態下 append `brain/CHANGELOG.md`。
+- 公開 push／deploy 仍屬生產對外動作；本回合先完成本機修改、commit 與驗證，發布前另依保護規則確認。
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
 - `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 已依新管線重新產出，但仍保留為未 commit 產生檔，不清除、不混入程式 commit。
 

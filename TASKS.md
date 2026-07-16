@@ -4,11 +4,11 @@
 
 ## In progress
 
-- [ ] 等待 PM 明確授權後，push `sector-rrg/master` 並驗證公開 GitHub Pages 的 UI v2.1.2、台玻、萬潤、永冠-KY 與全市場 1,927 檔。
+- [ ] 研究 XQ 參考分類並重做完整 taxonomy；每一分類層級都需涵蓋 1,927 檔，完成 RRG、資料與 UI 驗證後 commit。
 
 ## Todo（依優先順序）
 
-- 無。
+- [ ] 完成本機版本後，再依生產保護規則確認是否 push／deploy，並驗證公開頁。
 
 ## Done
 
