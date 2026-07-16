@@ -919,7 +919,9 @@
     var topics=(company.topics||[]).map(function(x){return '<span class="company-topic">'+escapeHtml(x)+'</span>';}).join("");
     var industries=(company.industries||[]).filter(function(x){return x!=="電子工業";});
     var market=company.market==="tse"?"上市":"上櫃";
-    var source=company.source==="moneydj"?"MoneyDJ 全產業目錄":"FinMind 官方產業補底";
+    var source=company.source==="moneydj"?
+      (company.source_detail==="company_page"?"MoneyDJ 個股相關產業":"MoneyDJ 全產業目錄"):
+      "FinMind 官方產業補底";
     var coverage=linkedToRrg?"已連到目前主圖核心題材，並將命中公司置頂。":"已納入全市場公司與題材索引；目前未落在主圖核心題材，但不再從搜尋與題材資料中消失。";
     return '<div class="company-card"><span class="section-kicker">全市場個股</span><h2>'+escapeHtml(company.name)+
       ' <span class="company-code">'+escapeHtml(company.code)+'</span></h2><div class="company-meta">'+market+
@@ -1213,7 +1215,7 @@
     state.span = D.default_span || "month";
     if(!D.spans[state.span]) state.span=Object.keys(D.spans)[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.1.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "圓點大小＝題材成交額", "UI v2.1.1"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
