@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T12:30:36+08:00
+Updated: 2026-07-16T12:39:22+08:00
 Task Lead: Echo
-Status: in_progress
+Status: complete
 Branch: master
-Last verified commit: 386c161
+Last verified commit: 58132b6
 
 ## PM requested
 
@@ -18,6 +18,10 @@ Last verified commit: 386c161
 
 ## Completed
 
+- UI v3.0.1 將搜尋結果拆成「分類／標籤／個股」：先顯示實際命中的 MoneyDJ 標籤，再依標籤命中數、字面關聯與成交額次要訊號排序個股；公司名／股號精確命中仍為最高優先。
+- 搜尋「散熱」實測先顯示 6 個 MoneyDJ 標籤；個股前段為奇鋐、力致、台達電、尼得科超眾、雙鴻，同欣電不再因單一 `LED散熱基板` 弱關聯擠入前段。
+- 點選 `散熱模組` 標籤會自動解除成交額門檻並顯示 7 個含相關公司的細產業；搜尋 `2308` 仍精確只列出台達電。
+- HoldingsRadar 本機 commit `db993e8`；sector-rrg 功能 commit `58132b6`。本次改善尚未 push，等待 PM 新一輪公開發布授權。
 - 官方母體最終校正為 1,970 家：四位數普通公司 1,974 家，排除官方產業碼 91／名稱 `-DR` 的 4 檔 TDR。先前 `[1-8]\d{3}` 誤漏 43 家 9xxx 普通公司。
 - 完成 XQ 式三層 taxonomy：12 大分類／34 官方產業／229 細產業；每層 assigned=1,970、member_union=1,970、coverage=100%、duplicate_primary=0。
 - MoneyDJ 全目錄 1,062／1,062 抓取成功、errors=0；1,969 家由目錄命中，`6741` 由個股頁命中，最終 MoneyDJ 1,970／1,970、官方補底 0。
@@ -59,12 +63,15 @@ Last verified commit: 386c161
 
 ## Current state
 
+- 多標籤搜尋改善已完成本機實作、瀏覽器驗證與 commit；`sector-rrg/master` 目前含未推送的 v3.0.1 commits。
 - taxonomy v3、RRG 資料、UI 與週更／每日排程程式皆已完成並驗證。
 - `HoldingsRadar` 完成本機 commit `dd5ea88`；此 repo 未設定 git remote，因此沒有可推送目的地。
 - `sector-rrg/master` 已 push；GitHub Pages 公開檔案已確認 UI v3、PWA cache v3、schema v3 與 1,970 家資料生效。
 
 ## Verification
 
+- 本機 UI v3.0.1：「散熱」共 6 個標籤建議，前 14 筆不含只命中 `LED散熱基板` 的同欣電；390×844 下選單 14 筆可捲動、頁面無水平溢出，browser console error／warning 0。
+- 精確搜尋 `2308` 只顯示 `台達電 2308`；點 `散熱模組` 後輪動圖顯示 7 個含標籤成分公司的細產業。
 - 正常 TLS 下重爬 MoneyDJ 1,062／1,062、errors=0；公司 1,970 unique，9xxx 硬性樣本全在，`9103／9105／9110／9136` TDR 全不在。
 - taxonomy：sector 12／industry 34／subindustry 229；三層皆 assigned=1,970、union=1,970、coverage=1.0、duplicate=0。
 - RRG schema v3：三層 month 類別 ID 分別 12／34／229 unique，全部 `status=ok`；其餘四 spans 亦全部可計算。
