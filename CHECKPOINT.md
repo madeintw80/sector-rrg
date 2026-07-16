@@ -94,10 +94,12 @@ Last verified commit: d77d972
 ## Next actions
 
 - 等待 PM 明確授權 push／deploy；獲准後先確認遠端未分岔，再 push `sector-rrg/master`，最後實測公開 GitHub Pages UI v2.1.0、1,913 檔、台玻、萬潤與 console。
+- 共用架構帳本因 `agent-workspace` 既有 dirty handoff 變更未直接 append；已建立 `handoffs/2026-07-16-0957-echo-to-batnini-rrg-full-market-changelog.md`，待 Batnini 安全同步。
 
 ## Risks / blockers
 
 - 唯一待辦是生產保護門檻：本機功能已完成，公開 push／deploy 尚未取得本輪明確授權。
+- 治理同步不影響產品功能；Batnini 需依上述 handoff 在乾淨／已確認所有權的狀態下 append `brain/CHANGELOG.md`。
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
 - `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 已依新管線重新產出，但仍保留為未 commit 產生檔，不清除、不混入程式 commit。
 
