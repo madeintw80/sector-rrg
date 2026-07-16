@@ -168,6 +168,23 @@
   .company-meta{color:var(--sub);font-size:13px;line-height:1.55;}.company-topics{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
   .company-topic{padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;}
   .company-coverage{margin:10px 0 0;color:var(--sub);font-size:12px;line-height:1.5;}
+  .company-price{margin:13px 0 4px;padding-top:12px;border-top:1px solid var(--line);}
+  .price-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+  .price-head strong{font-size:14px;}.price-head span{color:var(--sub);font-size:11px;}
+  .price-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:8px;}
+  .price-stat{min-width:0;padding:7px 8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;}
+  .price-stat span{display:block;color:var(--sub);font-size:10px;white-space:nowrap;}
+  .price-stat strong{display:block;margin-top:1px;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .price-chart{width:100%;max-width:100%;overflow:hidden;}
+  .price-chart svg{display:block;width:100%;height:auto;min-height:168px;}
+  .price-grid{stroke:var(--line);stroke-width:1;}.price-close{fill:none;stroke:var(--focus);stroke-width:2.4;}
+  .price-ma20{fill:none;stroke:var(--leading);stroke-width:1.6;}.price-ma60{fill:none;stroke:var(--weakening);stroke-width:1.6;}
+  .price-volume{fill:var(--bar-fill);opacity:.72;}.price-axis{fill:var(--sub);font-size:18px;}
+  .price-legend{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:4px;color:var(--sub);font-size:11px;}
+  .price-legend span::before{content:"";display:inline-block;width:12px;height:2px;margin:0 5px 3px 0;background:var(--focus);}
+  .price-legend .legend-ma20::before{background:var(--leading);}.price-legend .legend-ma60::before{background:var(--weakening);}
+  .price-legend .legend-volume::before{height:7px;background:var(--bar-fill);}
+  .price-missing{margin:8px 0 0;color:var(--sub);font-size:12px;}
   .advanced{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
   .advanced summary{min-height:42px;padding:10px 14px;cursor:pointer;color:var(--sub);}
   .advanced-grid{display:grid;grid-template-columns:1fr;gap:12px;padding:4px 14px 14px;}
@@ -294,6 +311,7 @@
   }
   @media(max-width:720px){
     .eyebrow{margin-bottom:3px}h1{font-size:22px}.tagline{font-size:13px}.meta{margin-bottom:12px;gap:4px 10px;font-size:12px}
+    .price-stats{grid-template-columns:repeat(2,minmax(0,1fr));}.price-chart svg{min-height:150px;}
     .decision-panel h2{font-size:18px}.signal-card{min-height:64px;padding:10px 12px}.level-tabs{width:100%}
     .span-tabs button{min-height:50px;padding:6px 2px;font-size:12px;line-height:1.25}
     .legend{grid-template-columns:repeat(2,1fr)}.legend-btn{font-size:12px}.search-suggestions{max-height:42vh}.search-option{grid-template-columns:40px minmax(0,1fr)}
@@ -1314,6 +1332,64 @@
     window.scrollTo({top:0,behavior:"smooth"});
   }
 
+  function priceNumber(value){
+    if(value===null || value===undefined || !isFinite(Number(value))) return "—";
+    value=Number(value); var digits=value>=1000?0:(value>=100?1:2);
+    return value.toFixed(digits).replace(/\.0+$/,"").replace(/(\.\d*?)0+$/,"$1");
+  }
+
+  function priceMovingAverage(values, windowSize){
+    var queue=[], sum=0;
+    return values.map(function(value){
+      if(value===null || value===undefined || !isFinite(Number(value))) return null;
+      value=Number(value); queue.push(value); sum+=value;
+      if(queue.length>windowSize) sum-=queue.shift();
+      return queue.length===windowSize?sum/windowSize:null;
+    });
+  }
+
+  function renderCompanyPrice(company){
+    var root=D&&D.company_prices, compact=root&&root.series&&root.series[String(company.code)];
+    if(!root || !compact || !compact.c || compact.c.length<2){
+      return '<section class="company-price" aria-label="近期價格趨勢"><div class="price-head"><strong>近期價格趨勢</strong><span>還原收盤價</span></div><p class="price-missing">目前沒有足夠的近半年價量資料。</p></section>';
+    }
+    var offset=Number(compact.o)||0, closes=compact.c.map(function(value){return value===null?null:Number(value);}),
+        volumes=(compact.v||[]).map(function(value){return value===null?null:Number(value);}),
+        dates=(root.dates||[]).slice(offset,offset+closes.length), ma20=priceMovingAverage(closes,20), ma60=priceMovingAverage(closes,60),
+        valid=closes.filter(function(value){return value!==null&&isFinite(value);});
+    if(valid.length<2) return '';
+    var current=valid[valid.length-1], previous=valid[valid.length-2], change=current-previous,
+        changePct=previous?change/previous*100:0, latest20=ma20.filter(function(value){return value!==null;}).slice(-1)[0],
+        latest60=ma60.filter(function(value){return value!==null;}).slice(-1)[0], tone=change>0?'confirm-pos':(change<0?'confirm-neg':'confirm-flat'),
+        signed=(change>0?'+':'')+priceNumber(change)+' ('+(changePct>0?'+':'')+changePct.toFixed(2)+'%)';
+    var allValues=valid.concat(ma20.filter(function(value){return value!==null;}),ma60.filter(function(value){return value!==null;})),
+        min=Math.min.apply(null,allValues), max=Math.max.apply(null,allValues), pad=Math.max((max-min)*.08,max*.01,0.1);
+    min-=pad; max+=pad;
+    var width=640,left=8,right=58,top=12,priceBottom=160,volumeTop=178,volumeBottom=224,plotWidth=width-left-right,
+        x=function(index){return left+(closes.length===1?0:index/(closes.length-1)*plotWidth);},
+        y=function(value){return top+(max-value)/(max-min)*(priceBottom-top);},
+        linePath=function(values){var path='',open=false;values.forEach(function(value,index){if(value===null||!isFinite(value)){open=false;return;}path+=(open?'L':'M')+x(index).toFixed(1)+' '+y(value).toFixed(1);open=true;});return path;},
+        volumeMax=Math.max.apply(null,volumes.filter(function(value){return value!==null&&isFinite(value);}).concat([1])),
+        barWidth=Math.max(1,plotWidth/Math.max(closes.length,1)*.68), volumeBars='';
+    volumes.forEach(function(value,index){if(value===null||!isFinite(value)||value<=0)return;var height=value/volumeMax*(volumeBottom-volumeTop);volumeBars+='<rect class="price-volume" x="'+(x(index)-barWidth/2).toFixed(1)+'" y="'+(volumeBottom-height).toFixed(1)+'" width="'+barWidth.toFixed(1)+'" height="'+height.toFixed(1)+'"/>';});
+    var mid=(min+max)/2, dateStart=dates[0]||'', dateEnd=dates[dates.length-1]||'',
+        title=escapeHtml(company.name+' '+company.code+' 近6個月價格趨勢'),
+        description=escapeHtml('現價 '+priceNumber(current)+'，當日漲跌 '+signed+'，MA20 '+priceNumber(latest20)+'，MA60 '+priceNumber(latest60)+'。');
+    return '<section class="company-price" aria-label="近期價格趨勢"><div class="price-head"><strong>近期價格趨勢</strong><span>'+escapeHtml(root.price||'還原收盤價')+' · 近6個月</span></div>'+
+      '<div class="price-stats"><div class="price-stat"><span>現價</span><strong>'+priceNumber(current)+'</strong></div>'+
+      '<div class="price-stat"><span>當日漲跌</span><strong class="'+tone+'">'+signed+'</strong></div>'+
+      '<div class="price-stat"><span>MA20</span><strong>'+priceNumber(latest20)+'</strong></div>'+
+      '<div class="price-stat"><span>MA60</span><strong>'+priceNumber(latest60)+'</strong></div></div>'+
+      '<div class="price-chart"><svg viewBox="0 0 640 252" role="img" aria-labelledby="price-title-'+escapeHtml(company.code)+' price-desc-'+escapeHtml(company.code)+'" preserveAspectRatio="xMidYMid meet">'+
+      '<title id="price-title-'+escapeHtml(company.code)+'">'+title+'</title><desc id="price-desc-'+escapeHtml(company.code)+'">'+description+'</desc>'+
+      '<line class="price-grid" x1="'+left+'" y1="'+top+'" x2="'+(width-right)+'" y2="'+top+'"/><line class="price-grid" x1="'+left+'" y1="'+y(mid).toFixed(1)+'" x2="'+(width-right)+'" y2="'+y(mid).toFixed(1)+'"/><line class="price-grid" x1="'+left+'" y1="'+priceBottom+'" x2="'+(width-right)+'" y2="'+priceBottom+'"/>'+
+      '<text class="price-axis" x="'+(width-right+7)+'" y="'+(top+6)+'">'+priceNumber(max)+'</text><text class="price-axis" x="'+(width-right+7)+'" y="'+(priceBottom+6)+'">'+priceNumber(min)+'</text>'+
+      '<g aria-hidden="true">'+volumeBars+'</g><line class="price-grid" x1="'+left+'" y1="'+volumeBottom+'" x2="'+(width-right)+'" y2="'+volumeBottom+'"/>'+
+      '<path class="price-ma60" d="'+linePath(ma60)+'"/><path class="price-ma20" d="'+linePath(ma20)+'"/><path class="price-close" d="'+linePath(closes)+'"/>'+
+      '<text class="price-axis" x="'+left+'" y="246">'+escapeHtml(dateStart)+'</text><text class="price-axis" x="'+(width-right)+'" y="246" text-anchor="end">'+escapeHtml(dateEnd)+'</text></svg></div>'+
+      '<div class="price-legend" aria-hidden="true"><span>還原收盤</span><span class="legend-ma20">MA20</span><span class="legend-ma60">MA60</span><span class="legend-volume">成交量（'+escapeHtml(root.volume_unit||'張')+'）</span></div></section>';
+  }
+
   function renderCompanyCard(company, linkedToRrg){
     var topics=(company.topics||[]).map(function(x){return '<span class="company-topic">'+escapeHtml(x)+'</span>';}).join("");
     var industries=(company.industries||[]).filter(function(x){return x!=="電子工業";});
@@ -1323,10 +1399,10 @@
       (company.source_detail==="company_page"?"MoneyDJ 個股相關產業":"MoneyDJ 全產業目錄"):
       "FinMind 官方產業補底";
     var coverage=linkedToRrg?(state.mode==="topic"?"已連到目前比較的題材標籤。":"已連到目前分類層級；每一層都計入全市場覆蓋。"):
-      "已納入完整分類；目前分類暫無可計算價格序列。";
+      "已納入完整分類；搜尋與成分股下鑽共用同一張公司圖卡。";
     return '<div class="company-card" tabindex="-1"><span class="section-kicker">全市場個股</span><h2>'+escapeHtml(company.name)+
       ' <span class="company-code">'+escapeHtml(company.code)+'</span></h2><div class="company-meta">'+market+
-      (industries.length?'　·　官方產業 '+escapeHtml(industries.join("、")):'')+'　·　成交額 '+escapeHtml(company.tv||0)+' 億</div>'+
+      (industries.length?'　·　官方產業 '+escapeHtml(industries.join("、")):'')+'　·　成交額 '+escapeHtml(company.tv||0)+' 億</div>'+renderCompanyPrice(company)+
       (pathText?'<p class="company-coverage"><b>完整分類：</b>'+escapeHtml(pathText)+'</p>':'')+
       '<div class="company-topics">'+topics+'</div><p class="company-coverage">MoneyDJ 多標籤來源：'+source+'。'+coverage+'</p></div>';
   }
@@ -1370,7 +1446,8 @@
 
   function activateCompanyRows(side){
     side.querySelectorAll("[data-company-code]").forEach(function(row){
-      row.addEventListener("click",function(){
+      row.addEventListener("click",function(event){
+        event.stopPropagation();
         var code=String(this.dataset.companyCode||""), company=companyByCode(code);
         if(!company) return;
         state.stockFocus=code; state.companyFocus=company; renderSide();
@@ -1695,7 +1772,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.2.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.3.1"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
