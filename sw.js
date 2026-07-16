@@ -3,13 +3,16 @@
    ⚠️ 改版規則：每次更新前端檔案，把 CACHE 版本號 +1（例 v1.0.0 → v1.0.1）
       使用者的瀏覽器才會抓到新版（對應 App Versioning Rule）
    ===================================================================== */
-const CACHE = 'rrg-v4.3.1';
+const CACHE = 'rrg-v4.4.0';
 
 // App shell：前端本體，預先快取（相對路徑，配合 GitHub Pages 子目錄）
 // ⚠️ 注意 rrg_web.json（資料檔）不放這裡 → 它每天更新，改走 network-first（見下方 fetch）
 const ASSETS = [
   './',
   './index.html',
+  './validation.html',
+  './validation.css',
+  './validation.js',
   './rrg_web_data.js',       // 離線 fallback 資料（fetch json 失敗時前端會改吃這份）
   './manifest.json',
   './icons/icon-192.png',
@@ -45,8 +48,8 @@ self.addEventListener('message', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
-  // 資料檔 rrg_web.json：network-first（每天更新，要抓最新落點；離線才退回快取）
-  if (url.pathname.endsWith('rrg_web.json')) {
+  // 每日 RRG 與每月回測 JSON 都採 network-first；離線時才退回上次成功快取。
+  if (url.pathname.endsWith('rrg_web.json') || url.pathname.endsWith('rrg_validation.json')) {
     e.respondWith(
       fetch(e.request)
         .then((res) => {

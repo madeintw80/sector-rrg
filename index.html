@@ -78,8 +78,9 @@
   .eyebrow,.section-kicker{display:block;margin-bottom:5px;color:var(--sub);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
   h1{margin:0;font-size:23px;line-height:1.25;letter-spacing:-.02em;}
   .tagline{margin:5px 0 0;color:var(--sub);}
-  .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px;}
-  .tools button{min-width:0;padding-inline:6px;white-space:nowrap;background:transparent;font-size:12px;}
+  .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:12px;}
+  .tools button,.tools a{min-width:0;padding:9px 6px;white-space:nowrap;background:transparent;font-size:12px;text-align:center;text-decoration:none;border:1px solid var(--border);border-radius:8px;color:var(--text);}
+  .tools a:hover,.tools a:focus-visible{border-color:var(--accent);color:var(--accent);}
   .meta{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums;}
   .meta span{white-space:nowrap;}
   .meta span:not(:last-child)::after{content:"";}
@@ -344,6 +345,7 @@
         <h1>台股全市場產業輪動</h1>
         <p class="tagline">產業分類看全市場資金；題材標籤看細分產品與敘事</p>
         <div class="tools" aria-label="工具">
+          <a href="validation.html" title="查看 RRG 有效性與權重方法回測">回測驗證</a>
           <button id="downloadBtn" title="匯出目前這張靜態圖">匯出圖</button>
           <button id="themeBtn" title="切換深色或淺色">切換主題</button>
           <button id="checkUpdate" title="檢查網站程式是否有新版">檢查更新</button>
@@ -1772,7 +1774,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.3.1"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.4.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07110f">
+  <meta name="description" content="RRG 產業輪動有效性驗證：比較權重方法、象限表現、熱門確認與跨年穩定性">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="validation.css">
+  <title>RRG 有效性驗證｜台股產業輪動</title>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="validation.html" aria-label="RRG 驗證首頁">
+      <span class="brand-mark">R</span>
+      <span><b>Rotation Research</b><small>RRG VALIDATION LAB</small></span>
+    </a>
+    <div class="header-meta">
+      <span class="local-pill"><i></i>每月自動更新</span>
+      <span class="asof" id="headerAsOf">資料讀取中</span>
+      <a class="back-link" href="index.html">← 回輪動圖</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="loading-state page-shell" id="loadingState" role="status" aria-live="polite">
+      <div><b>正在讀取回測結果</b><p>載入 walk-forward 驗證資料與跨年穩定性。</p></div>
+    </section>
+
+    <div class="page-shell" id="validationApp" hidden>
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="hero-label">RRG 有效性驗證 <span>／ schema v1</span></p>
+          <h1 id="heroTitle">目前不建議<br><em>更換正式權重</em></h1>
+          <p>目標是建立一套可驗證的產業篩選邏輯：先用 RRG 縮小研究範圍，再確認是否真的熱門，最後才決定要不要進入個股選擇。</p>
+        </div>
+        <div class="hero-summary">
+          <div class="summary-top"><span class="pulse"></span><b>研究結論</b><small>非交易訊號</small></div>
+          <div class="summary-score"><strong id="decisionScore">保留 A</strong><span id="decisionSummary">現行單日成交額＋50% cap</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-details">
+            <div><span>交易日</span><b id="tradingDays">—</b></div>
+            <div><span>正式分類</span><b id="categoryCount">—</b></div>
+            <div><span>比較方法</span><b id="methodCount">—</b></div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="tab-nav" aria-label="研究報告分頁" role="tablist">
+        <button type="button" class="active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">研究摘要</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="panel-quadrants" id="tab-quadrants" data-tab="quadrants">象限表現</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="panel-stability" id="tab-stability" data-tab="stability">權重穩定</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="panel-monitor" id="tab-monitor" data-tab="monitor">定期驗證</button>
+      </nav>
+
+      <div class="tab-content">
+        <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview">
+          <section class="test-guide" aria-labelledby="testGuideTitle">
+            <div class="test-guide-head">
+              <div><p class="eyebrow">先理解目的，再看數字</p><h2 id="testGuideTitle">這頁到底在測什麼？</h2></div>
+              <p>不是回測「照 RRG 買進會賺多少」，而是檢查它能不能把真正值得研究的產業，穩定地排到前面。</p>
+            </div>
+            <div class="question-grid" id="questionGrid"></div>
+            <div class="reading-rule">
+              <div><span>判讀方式</span><b>勝率不是報酬率</b></div>
+              <p>「20 日超額勝率 36%」代表 100 次訊號約 36 次跑贏大盤，不是平均賺 36%。真正通過還要同時看平均、中位數、最差結果與跨年一致性。</p>
+            </div>
+          </section>
+
+          <section class="metric-grid" aria-label="三項主要結論">
+            <article class="metric-card mint-card">
+              <div class="metric-kicker"><span class="metric-index">01</span> 權重上限</div>
+              <div class="metric-value"><span id="legacyWorst">—</span><b>→</b><strong id="cappedWorst">—</strong></div>
+              <p>50% cap 是否縮小最差結果，同時避免把風險護欄誤認成預測力。</p>
+              <div class="metric-tag">保留：風險護欄</div>
+            </article>
+            <article class="metric-card blue-card">
+              <div class="metric-kicker"><span class="metric-index">02</span> 權重穩定</div>
+              <div class="metric-value"><span id="aChurn">—</span><b>→</b><strong id="bChurn">—</strong></div>
+              <p id="stabilityCardText">20 日均額是否讓成分更穩，並同步提高前瞻表現。</p>
+              <div class="metric-tag">觀察：穩定 ≠ 更準</div>
+            </article>
+            <article class="metric-card amber-card">
+              <div class="metric-kicker"><span class="metric-index">03</span> 熱門確認</div>
+              <div class="metric-value"><span id="hotOffWin">—</span><b>→</b><strong id="hotOnWin">—</strong></div>
+              <p id="hotCardText">成交額升溫、廣度與既有超額能否降低單股帶動的假熱門。</p>
+              <div class="metric-tag">探索性：不可單獨交易</div>
+            </article>
+          </section>
+
+          <section class="split-grid">
+            <article class="panel comparison-panel">
+              <div class="panel-heading"><div><p class="eyebrow">20 日後 · 相對加權指數</p><h2>四種權重方法比較</h2></div><span class="small-chip">Leading + Improving</span></div>
+              <div class="method-list" id="methodList"></div>
+              <div class="chart-note"><span></span>超額勝率若低於 50%，不能只看方法之間的相對名次就宣稱具有穩定預測力。</div>
+            </article>
+            <article class="panel hot-panel">
+              <div class="panel-heading"><div><p class="eyebrow">輔助條件</p><h2>熱門確認有沒有幫助？</h2></div><span class="status-dot">部分支持</span></div>
+              <div class="hot-compare">
+                <div class="hot-side muted"><span>未確認</span><strong id="hotOffWinDetail">—</strong><small id="hotOffSample">n = —</small></div>
+                <div class="hot-arrow"><span id="hotGain">—</span><b>→</b></div>
+                <div class="hot-side active"><span>量能＋廣度確認</span><strong id="hotOnWinDetail">—</strong><small id="hotOnSample">n = —</small></div>
+              </div>
+              <div class="distribution">
+                <div><span>平均超額</span><strong class="delta negative" id="hotMean">—</strong></div>
+                <div><span>中位超額</span><strong class="delta negative" id="hotMedian">—</strong></div>
+                <div><span>最差結果</span><strong class="delta negative" id="hotWorst">—</strong></div>
+              </div>
+              <p class="panel-footnote">定義：5 日均額／20 日均額升溫、成分股廣度、超額報酬共同確認。仍需跨年一致才可升級。</p>
+            </article>
+          </section>
+        </section>
+
+        <section id="panel-quadrants" role="tabpanel" aria-labelledby="tab-quadrants" data-panel="quadrants" hidden>
+          <section class="split-grid quadrant-layout">
+            <article class="panel rrg-panel">
+              <div class="panel-heading"><div><p class="eyebrow">現行方法 A · 20 日後</p><h2>RRG 象限有效性</h2></div><span class="small-chip">超額勝率</span></div>
+              <div class="rrg-map" id="quadrantMap" role="img" aria-label="四象限超額勝率示意圖"><div class="axis x-axis"></div><div class="axis y-axis"></div><span class="axis-label top">RS-Momentum +</span><span class="axis-label right">RS-Ratio +</span></div>
+            </article>
+            <article class="panel state-panel">
+              <div class="panel-heading"><div><p class="eyebrow">不只看勝率</p><h2>各狀態的報酬分布</h2></div></div>
+              <div class="state-table"><div class="state-head"><span>狀態</span><span>勝率</span><span>平均</span><span>中位</span></div><div id="stateRows"></div></div>
+              <div class="insight-box"><b>這不是教科書式排序。</b><p id="quadrantInsight">正在比較四象限的實際分布。</p></div>
+            </article>
+          </section>
+        </section>
+
+        <section id="panel-stability" role="tabpanel" aria-labelledby="tab-stability" data-panel="stability" hidden>
+          <section class="split-grid stability-layout">
+            <article class="panel stability-panel">
+              <div class="panel-heading"><div><p class="eyebrow">每日成分變動率</p><h2>20 日均額確實更穩</h2></div><span class="status-dot blue-dot" id="churnReduction">—</span></div>
+              <div class="stability-bars">
+                <div class="stability-item"><div><span>A · 單日成交額</span><strong id="aChurnDetail">—</strong></div><div class="thick-track"><span id="aChurnBar"></span></div></div>
+                <div class="stability-item blue-item"><div><span>B · 20 日平均成交額</span><strong id="bChurnDetail">—</strong></div><div class="thick-track"><span id="bChurnBar"></span></div></div>
+              </div>
+              <div class="stability-stats"><div><span>平均權重週轉</span><b id="aTurnover">—</b><small>A</small></div><div class="arrow-cell">→</div><div><span>平均權重週轉</span><b id="bTurnover">—</b><small>B</small></div></div>
+            </article>
+            <article class="panel decision-panel">
+              <p class="eyebrow">研究決策</p><h2>穩定性改善，預測性沒有</h2>
+              <ul class="decision-list">
+                <li class="yes"><span>✓</span><div><b>50% 上限值得保留</b><p>它降低單股集中與最差尾端，不需要改核心公式。</p></div></li>
+                <li class="hold"><span>–</span><div><b>20 日均額先不要取代正式方法</b><p id="bDecisionText">雖然成分更穩，前瞻超額勝率沒有改善。</p></div></li>
+                <li class="no"><span>×</span><div><b>暫不往個股選擇延伸</b><p>群組層訊號尚未穩定，另開選股 task 的證據不足。</p></div></li>
+              </ul>
+            </article>
+          </section>
+        </section>
+
+        <section id="panel-monitor" role="tabpanel" aria-labelledby="tab-monitor" data-panel="monitor" hidden>
+          <section class="monitor-grid">
+            <article class="panel cadence-panel">
+              <div class="panel-heading"><div><p class="eyebrow">定期驗證 · 已啟用</p><h2>之後會怎麼更新？</h2></div><span class="preview-badge">每月 1 日 07:10</span></div>
+              <div class="timeline">
+                <div class="timeline-row done"><span></span><div><b id="baselineDate">—</b><p id="baselineText">基準版完成</p></div><strong>完成</strong></div>
+                <div class="timeline-row next"><span></span><div><b>每月 1 日</b><p>刷新資料、重跑回測並發布驗證 JSON</p></div><strong>自動</strong></div>
+                <div class="timeline-row"><span></span><div><b>每次完成</b><p>公開資料確認後由 Batnini Telegram bot 通知</p></div><strong>通知</strong></div>
+              </div>
+              <div class="cadence-note">回測只更新研究報告與驗證頁，不會自動改寫正式 RRG 權重、RS-Ratio／RS-Momentum 或選股規則。</div>
+            </article>
+            <article class="panel year-panel">
+              <div class="panel-heading"><div><p class="eyebrow">熱門確認 · 20 日超額勝率</p><h2>跨年穩定性</h2></div></div>
+              <div class="year-table"><div class="year-head"><span>年份</span><span>A 確認</span><span>A 未確認</span><span>B 確認</span><span>B 未確認</span></div><div id="yearRows"></div></div>
+              <div class="year-callout"><span>!</span><p><b>只要有年份沒有穩定增益，就不能包裝成交易保證。</b> 這頁會持續追蹤跨年結果，而不是只挑最佳區間。</p></div>
+            </article>
+          </section>
+        </section>
+      </div>
+
+      <section class="data-warning">
+        <span class="warning-icon">!</span>
+        <div><b>資料品質限制</b><ul class="limitations-list" id="limitationsList"></ul></div>
+        <span class="warning-label">EXPLORATORY</span>
+      </section>
+
+      <footer><span>RRG Validation Lab</span><p>Walk-forward · Lagged inputs · No look-ahead</p><span id="generatedAt">僅供研究驗證</span></footer>
+    </div>
+  </main>
+  <script src="validation.js" defer></script>
+</body>
+</html>

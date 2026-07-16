@@ -1,7 +1,7 @@
 {
   "name": "台股題材輪動工作台",
   "short_name": "題材輪動",
-  "description": "先看資金主軸與改善題材，再用 RRG 四象限下鑽成分股訊號",
+  "description": "先看產業輪動與熱門題材，再用回測驗證和成分股訊號確認",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
