@@ -1,13 +1,15 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T11:54:17+08:00
+Updated: 2026-07-16T12:30:36+08:00
 Task Lead: Echo
-Status: complete
+Status: in_progress
 Branch: master
 Last verified commit: 386c161
 
 ## PM requested
 
+- 改善 MoneyDJ 多標籤搜尋：搜尋「散熱」時，不要讓只命中弱關聯標籤的同欣電排在奇鋐、健策、雙鴻等核心散熱股前面。
+- 建議先呈現命中的 MoneyDJ 標籤，再依標籤命中數與關聯強度排序個股；公司名／股號精確搜尋維持最高優先。
 - 推翻「59 個核心題材只涵蓋 914 檔也可以」的分層假設；新版每一個分類層級都必須涵蓋全部現行普通上市櫃公司。
 - 可直接重做分類，優先研究 XQ 的產業分類作為參考；Echo 全權主導修改、測試與 commit，不需再交接給 Batnini。
 - 將 RRG 個股覆蓋擴充為全部現役上市、上櫃公司；每家公司都必須有題材對應，不能再因 59 個人工挑選的 MoneyDJ 分類頁而靜默消失。
