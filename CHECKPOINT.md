@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T14:02:09+08:00
+Updated: 2026-07-16T14:11:47+08:00
 Task Lead: Echo
-Status: in_progress
+Status: complete
 Branch: master
-Last verified commit: 5177ca3
+Last verified commit: 9529a30
 
 ## PM requested
 
@@ -25,6 +25,8 @@ Last verified commit: 5177ca3
 
 ## Completed
 
+- PM 追加授權後，已將 `82ddc38..9529a30` fast-forward push 至 `origin/master`；累積未發布的搜尋／公司圖卡改善、UI v4.0.0、schema v4、受控題材標籤 RRG 與 release SSOT 均已公開。
+- GitHub Pages 公開頁、`rrg_web.json` 與 `sw.js` 已完成 cache-busting 驗證；首頁 UI v4.0.0、schema v4、PWA cache `rrg-v4.0.0` 均生效。
 - UI v4.0.0 完成投資工作台重構：1440px 以上為左 320–380px／中央彈性 RRG／右 360–440px；1280px 筆電改兩欄並把下鑽放到圖下，避免壓縮主圖。
 - 980px 以下 PWA 改為固定底部「輪動圖／設定／下鑽」三分頁；預設開圖、控制與下鑽各自使用完整手機寬度，含 safe-area 與至少 46px 的分頁觸控高度。
 - 新增獨立題材標籤模式，文案與 12／34／229 三層互斥產業分類清楚分開；只畫搜尋命中／自選，預設最多 12 個、硬上限 20 個。
@@ -79,13 +81,16 @@ Last verified commit: 5177ca3
 
 ## Current state
 
-- UI v4.0.0、schema v4 與受控題材標籤 RRG 已完成本機實作、資料重建、瀏覽器驗證與功能 commits。
+- UI v4.0.0、schema v4 與受控題材標籤 RRG 已完成實作、資料重建、瀏覽器驗證、commits 與公開發布。
 - `HoldingsRadar` 功能 commit 為 `cb6a159`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg` 功能 commit 為 `3c24fe1`、SSOT commit 為 `5177ca3`；目前相對 `origin/master` ahead 8／behind 0。
-- PM 已於 2026-07-16 追加授權直接 commit＋push；正進行 release SSOT commit、fast-forward push 與公開頁驗證。
+- `sector-rrg` 功能 commit 為 `3c24fe1`、驗證 SSOT commit 為 `5177ca3`、release 授權 commit 為 `9529a30`；第一輪 push 後與 `origin/master` 同步。
+- GitHub Pages 公開站目前為 UI v4.0.0／schema v4／PWA cache `rrg-v4.0.0`，公開資料日期 2026-07-15。
 
 ## Verification
 
+- 公開首頁與 `sw.js`：HTTP 200；`UI v4.0.0=True`、手機三分頁=True、題材模式=True、`rrg-v4.0.0=True`。
+- 公開 `rrg_web.json`：HTTP 200、16,724,540 bytes、schema=4、來源標籤 836、合併後 809、可比較 371、別名 27、min/default/max=5／12／20、weight cap=0.3、warning=0.6，五 spans 皆 371。
+- 公開 390×844 PWA：三分頁各 116×46px；搜尋「散熱」加入 6／20，圖上六個標籤完整；`散熱模組` 顯示 18 檔與單股主導／30% 封頂警告，台達電公司圖卡寬 325px，scroll width=client width，console error／warning=0。
 - 資料品質：schema=4、JSON 16,724,540 bytes、來源標籤 836、合併後 809、可比較 371、別名 27；173 組揭露單股主導，所有實際權重最大值 0.300。
 - 五個時間視角 week／month／quarter／half／year 均為 371／371 可計算；`散熱模組` 18 家、`伺服器用散熱模組` 6 家、`散熱風扇馬達` 9 家、`其他散熱零件` 5 家。
 - Python 單元測試 3／3：成交額主導權重封頂與重分配、零成交等權、完全相同成分別名合併／五家門檻全部通過；前端 3 段 inline script 語法通過。
