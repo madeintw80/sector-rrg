@@ -14,7 +14,7 @@
 - `rrg_web.json`：每日最新線上資料；除 57 個核心 RRG 題材外，`universe` 另含全部現役上市／上櫃公司、MoneyDJ 題材、官方產業與覆蓋率；前端採 network-first。
 - `rrg_web_data.js`：離線 fallback 快照。
 - `manifest.json`、`sw.js`、`icons/`：PWA 與離線快取。
-- 題材完整性：`HoldingsRadar/build_rrg_universe.py` 每週爬 MoneyDJ 全目錄，與 TWSE／TPEX 當日公司清單交集；未命中者以 FinMind 官方產業補底。
+- 題材完整性：`HoldingsRadar/build_rrg_universe.py` 每週爬 MoneyDJ 全目錄，與 TWSE／TPEX 當日公司清單交集；目錄未命中者再查 MoneyDJ 個股相關產業頁，兩層皆未命中才以 FinMind 官方產業補底。
 - 資料流：`HoldingsRadar/build_rrg_universe.py` → `HoldingsRadar/rrg_web_export.py` → `HoldingsRadar/web/` → `deploy_web.py` 白名單同步 → 本 repo → GitHub Pages。
 
 ## 執行方式
