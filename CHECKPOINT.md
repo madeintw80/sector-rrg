@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T22:33:30+08:00
+Updated: 2026-07-16T23:05:00+08:00
 Task Lead: Echo
-Status: complete
+Status: in_progress
 Branch: master
 Last verified commit: 34a785f
 
 ## PM requested
 
+- 2026-07-16：獨立驗證 RRG 有效性。以 walk-forward／lagged inputs 比較現行單日成交額 50% 封頂、落後一期 20 日均成交額 50% 封頂、等權，以及舊版單日成交額無封頂；先做正式分類，檢驗四象限、關鍵轉換與 5／20／60 日絕對／超額報酬，另評估成交額升溫、廣度與既有超額報酬的熱門確認增益。不得修改正式每日 pipeline、push、deploy、排程或公開發布。
 - 2026-07-16：第三項 RRG 改良調整群組指數成交額權重；正式分類保留成交額前 8 家、單股最高 50%，題材維持全部有效成分與 30% 上限。只調整指數建構權重，不改 RS-Ratio／RS-Momentum、回測、父層基準、均線、排程或公開發布；本輪只做本機重建、測試與 commits。
 - 2026-07-16：第二項 RRG 改良在既有公司圖卡加入近 6 個月個股價格小圖，至少含現價、當日漲跌、MA20、MA60 與成交量；分類／題材成分股都能開啟，保留基本資料、題材標籤、燈號與既有下鑽。本輪只做本機修改、重建、測試與 commits，不 push／deploy、不改排程或 RS-Ratio／RS-Momentum。
 - 2026-07-16：RRG 後續改善一次只做一項；第一項先加入分類／題材的 5／20／60 日絕對報酬、大盤報酬、超額報酬與成分股廣度確認層。本輪只做本機修改、重建、測試與 commit，不 push／deploy、不改排程。
@@ -104,10 +105,10 @@ Last verified commit: 34a785f
 
 ## Current state
 
-- UI／PWA v4.3.1、schema v6 個股價格小圖已完成本機資料重建、瀏覽器驗證與 feature commits，等待 PM 決定是否公開發布。
-- `HoldingsRadar` 最新來源功能 commit 為 `8f9ff71`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg` 本機最新功能 commit 為 `04dd15b`；完成本次文件 commit 後相對 `origin/master` ahead 4，尚未 push。公開站仍是 UI v4.1.1／schema v4／PWA cache `rrg-v4.1.1`。
-- 今日 schema v6 本機快照日期為 2026-07-16，19,328,322 bytes（18.43 MiB）；公開站不受本輪本機工作影響。
+- RRG 有效性驗證進行中；preflight 確認兩 repo 乾淨，HoldingsRadar `a27618e`、sector-rrg `12cb88f`（相對 `origin/master` ahead 6）。
+- 本機快取含 2023-07-17～2026-07-16 共 729 個交易日的 1,970 家現行公司價量與加權指數，可做落後輸入 walk-forward。
+- `rrg_universe.json` 的 taxonomy／MoneyDJ 題材為 2026-07-16 現行快照，且價量母體以現行掛牌公司為主；本輪必須揭露 survivorship 與分類歷史偏差。正式分類列為探索性驗證，題材不納入核心結論。
+- 回測工具、測試與報告尚未完成；正式每日 pipeline、產生檔、UI、排程與公開站均未修改。
 
 ## Verification
 
