@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-15T23:09:16+08:00
+Updated: 2026-07-16T09:01:22+08:00
 Task Lead: Echo
-Status: ready_for_review
+Status: complete
 Branch: master
-Last verified commit: 2d7e7f0
+Last verified commit: c91d53f
 
 ## PM requested
 
@@ -12,6 +12,8 @@ Last verified commit: 2d7e7f0
 
 ## Completed
 
+- PM 於 2026-07-16 明確回覆 `push`；已將 `d349298..c91d53f` 以 fast-forward 推送至 `origin/master`，無遠端分岔或強制推送。
+- 公開 GitHub Pages 已實測為 `UI v2.0.4`；智慧搜尋、桌機寬版、字級與對比修正均已上線，PWA cache 為 `rrg-v2.0.4`。
 - 搜尋索引擴充為題材名稱、公司名、股號；比對會忽略空格、連字號與常見分隔符，`AI 伺服器` 可正確命中 `AI伺服器`。
 - 新增即時搜尋建議，清楚標示「題材」或「個股」及所屬題材；支援滑鼠、方向鍵、Enter 與 Esc。
 - 選取公司後會直接開啟所屬題材，將命中公司置頂高亮；若成交值或象限篩選擋住該結果，會自動解除衝突條件。
@@ -33,11 +35,15 @@ Last verified commit: 2d7e7f0
 
 ## Current state
 
-- 智慧搜尋、桌機寬版與對比修正均已同步兩個 repo 並完成本機 commits；尚未 push，公開 GitHub Pages 仍是 `UI v2.0.1`。
-- `HoldingsRadar/web/index.html`、`web/sw.js` 與 `sector-rrg/index.html`、`sw.js` 的 SHA-256 完全一致。
+- 智慧搜尋、桌機寬版與對比修正均已同步來源 repo 與公開 repo；`sector-rrg/master` 及公開 GitHub Pages 現在都是 `UI v2.0.4`。
+- 發布完成後本機 `master` 與 `origin/master` 同步於 `c91d53f`；工作樹乾淨。
 
 ## Verification
 
+- 發布前 `git fetch origin --prune` 後確認 `HEAD...origin/master` 為 `8 0`，只有本機領先；`git push origin master` 成功：`d349298..c91d53f`。
+- 公開頁 `https://madeintw80.github.io/sector-rrg/?verify=20260716-v204` 顯示 `UI v2.0.4`，資料日期 2026-07-15，主圖與題材下鑽正常。
+- 公開頁輸入 `AI 伺服器` 顯示「題材｜AI伺服器｜13 檔成分股」；輸入 `2330` 顯示「個股｜台積電 2330｜所屬題材：晶圓代工」。
+- 點選公開站的 `2330` 建議後成功進入晶圓代工，台積電列置頂；公開 `sw.js` 顯示 `const CACHE = 'rrg-v2.0.4'`，Browser console error／warning：0。
 - `AI 伺服器`：忽略空格後顯示唯一「題材｜AI伺服器」建議，圖表與題材清單均正確過濾。
 - `2330`／`台積電`：均顯示「個股｜台積電 2330｜所屬題材：晶圓代工」；點選後開啟晶圓代工並將台積電置頂高亮。
 - 低成交題材測試 `2634`：預設 100 億門檻下原本為空；點選「漢翔 2634」後自動切至「全部」、開啟軍工國防並高亮漢翔。
@@ -67,15 +73,15 @@ Last verified commit: 2d7e7f0
 - 超寬桌機保留適度邊界，不把內容無上限拉滿；1760px 在資訊密度與閱讀視線跨度間折衷。
 - 桌機用 1280px／1600px 兩段式放大，避免同一套大字套到手機造成擁擠。
 - 沿用既有主題變數，不寫死單一顏色；確保深色與淺色模式都使用與選取底色配對的前景色。
-- 本回合 PM 要求修正，但未再次授權 push；依生產保護規則停在本機 commit。
+- PM 於 2026-07-16 明確授權 push；依生產保護規則完成公開發布與線上驗證。
 
 ## Next actions
 
-1. PM 若確認要發布，明確回覆 `push` 後再推送 `sector-rrg/master`，並驗證公開頁 `UI v2.0.4` 與 `rrg-v2.0.4`。
+- 無。
 
 ## Risks / blockers
 
-- 無程式 blocker；公開站尚未發布 `UI v2.0.2`–`v2.0.4` 的對比、桌機寬版與智慧搜尋。
+- 無發布 blocker；既有 PWA 使用者若仍看到舊版，可按「檢查更新」或重新開啟一次讓新版 service worker 接管。
 - `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 產生檔變更仍保留，未納入本次 commit、未修改或清除。
 
 ## Previous eval_records (pending Batnini transcription)
@@ -97,5 +103,5 @@ Last verified commit: 2d7e7f0
 ## eval_record
 
 ```json
-{"task_id":"CE-008","completed_at":"2026-07-15T23:09:16+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":25,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit c3b07ee","projects/sector-rrg commit 2d7e7f0","projects/sector-rrg/CHECKPOINT.md","browser tests for AI space query, 2330, 台積電, 2634, keyboard and 390px mobile"],"notes":"搜尋擴充至題材、公司名與股號，加入可存取的即時建議、直接題材下鑽與公司高亮；低成交篩選衝突可自動解除，多尺寸與 UI 狀態驗證通過，依保護規則尚未 push"}
+{"task_id":"CE-008","completed_at":"2026-07-15T23:09:16+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":25,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit c3b07ee","projects/sector-rrg commit 2d7e7f0","projects/sector-rrg/CHECKPOINT.md","browser tests for AI space query, 2330, 台積電, 2634, keyboard and 390px mobile","public GitHub Pages UI v2.0.4"],"notes":"搜尋擴充至題材、公司名與股號，加入可存取的即時建議、直接題材下鑽與公司高亮；低成交篩選衝突可自動解除，多尺寸與 UI 狀態驗證通過；PM 於 2026-07-16 授權後已公開發布並再次實測"}
 ```
