@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T21:40:25+08:00
+Updated: 2026-07-16T22:33:30+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: 04dd15b
+Last verified commit: 34a785f
 
 ## PM requested
 
+- 2026-07-16：第三項 RRG 改良調整群組指數成交額權重；正式分類保留成交額前 8 家、單股最高 50%，題材維持全部有效成分與 30% 上限。只調整指數建構權重，不改 RS-Ratio／RS-Momentum、回測、父層基準、均線、排程或公開發布；本輪只做本機重建、測試與 commits。
 - 2026-07-16：第二項 RRG 改良在既有公司圖卡加入近 6 個月個股價格小圖，至少含現價、當日漲跌、MA20、MA60 與成交量；分類／題材成分股都能開啟，保留基本資料、題材標籤、燈號與既有下鑽。本輪只做本機修改、重建、測試與 commits，不 push／deploy、不改排程或 RS-Ratio／RS-Momentum。
 - 2026-07-16：RRG 後續改善一次只做一項；第一項先加入分類／題材的 5／20／60 日絕對報酬、大盤報酬、超額報酬與成分股廣度確認層。本輪只做本機修改、重建、測試與 commit，不 push／deploy、不改排程。
 - 2026-07-16：新增題材分類的「強勢起始組」本機預覽；預設只選領先續強與改善接近領先的題材，並改善手機搜尋選取／取消、樣本不足與已選狀態對比。先啟動本機頁面給 PM 驗收，不 push／deploy。
@@ -31,6 +32,12 @@ Last verified commit: 04dd15b
 
 ## Completed
 
+- 第三項 RRG 改良已完成：正式分類從具 >120 日價格的成分取成交額前 8 家，成交額加權後單股最高 50%；題材維持全部有效成分與 30% 上限。
+- schema v7 新增 `index_weighting`，明確記錄分類／題材的權重方法、上限、最小有效樣本與成交額缺值 fallback；RS-Ratio／RS-Momentum、分類歸屬、確認層、個股價格與 UI 均未修改。
+- 正式分類最小有效樣本為 3 家；目前 12 大分類＋34 產業＋229 細產業共 275／275 類均可計算，沒有因新股短歷史而掉點。題材五視角仍為 371／371。
+- 今日比較：50% 上限影響 5／12 大分類、13／34 產業、158／229 細產業的原始權重；月視角訊號變動 28／275。台積電在資訊科技 26.6%、半導體業 29.6% 不變，只有晶圓代工 56.5%→50%。
+- 相同輸入下題材 month 序列與 1,970 家 `company_prices` 逐值不變；只調整正式分類群組指數建構權重。
+- `HoldingsRadar` 來源 commit `a27618e`；`sector-rrg` feature commit `34a785f`。依保護規則只建立本機 commits，未 push／deploy、未改排程。
 - 第二項 RRG 改良已完成：schema v6 新增 `company_prices`，用 126 日共用交易軸＋compact offset 輸出 1,970／1,970 家的還原收盤價與成交量；短歷史新股保留上市以來資料。
 - UI／PWA v4.3.1 在既有公司圖卡加入現價、當日漲跌、MA20、MA60、收盤／雙均線 SVG 與成交量柱；分類與題材成分股沿用相同圖卡、完整分類、MoneyDJ 標籤、燈號與下鑽流程。
 - RRG 計算仍只使用 >120 日的既有價序列；短歷史資料只供公司圖卡，RS-Ratio／RS-Momentum 公式、象限、代表股與題材權重均未修改。
@@ -104,6 +111,12 @@ Last verified commit: 04dd15b
 
 ## Verification
 
+- 正式匯出：schema v7、資料日期 2026-07-16、1,970 家公司與 1,970 家 `company_prices`；12／34／229 正式分類及 371 題材的 week／month／quarter／half／year 全數可計算。
+- 權重品質：正式分類最大實際權重 0.500、題材最大實際權重 0.300；正式分類樣本不足 0，`index_weighting` 正確記錄 top_n=8、分類 min=3／cap=0.5、題材 min=5／cap=0.3。
+- 前後比較：月視角大分類 1／12、產業 3／34、細產業 24／229，共 28／275 訊號狀態改變；五視角變動依序 week 24、month 28、quarter 17、half 14、year 36。
+- 未混入項目：題材 month 座標序列與公司價量逐值相同，`radar/rrg.py` 未修改；沒有回測、父層基準、更多均線、UI、排程、push 或 deploy。
+- Python 單元測試 8／8 通過，涵蓋分類 50% 封頂、龍頭排序、價格有效成分選取、成交額缺值／全缺等權、題材 30% 封頂、別名與五家門檻。
+- `HoldingsRadar/web/rrg_web.json`／`rrg_web_data.js` 與 `sector-rrg/` 對應產生檔逐位元一致；兩 repo `git diff --check` 通過。
 - 正式匯出：1,970／1,970 家皆有個股價量，126 個共用交易日、compact alignment 錯誤 0；新股 `6907／7803／7823` 分別保留 109／41／104 點。
 - RRG 回歸：12／34／229 類與 371 題材的五個時間視角全數可計算，`confirmation.groups=646`，1,627／1,627 檔主角技術訊號成功；短歷史新股未進入 RRG >120 日輸入集合。
 - Python 6／6、inline JavaScript 語法、`git diff --check` 通過；兩端 `index.html`、`sw.js`、`rrg_web.json`、`rrg_web_data.js` SHA-256 全數一致。
@@ -172,6 +185,10 @@ Last verified commit: 04dd15b
 
 ## Decisions and assumptions
 
+- 正式分類 50% 與題材 30% 是刻意不同的產品口徑：分類保留台股真實龍頭集中，題材避免小型敘事被單股扭曲；兩者共用同一套封頂後持續重分配算法。
+- 正式分類 50% 代表單一龍頭最多和其餘代表股合計一樣重要；未達 50% 時完全保留原成交額比例，不做人為稀釋。
+- 正式分類至少 3 家有效價格才出座標；目前 275 類均達門檻。缺成交額先視為 0，只有整組成交額皆不可用才等權，不把缺值誤當高流動性。
+- schema v7 只增加可稽核的權重契約與正式分類座標新結果；UI／PWA 仍為 v4.3.1，不需為 additive metadata 改前端。
 - 個股價格資料與 RRG 計算分流：RRG 延續 >120 日門檻與原公式；公司圖卡只要有至少 2 日資料就顯示，避免新掛牌公司被錯誤標成無價格。
 - 價量 schema 採共用日期＋每股 offset／close／volume 陣列；MA20／MA60 由前端用同一還原收盤序列計算，避免為每股重複存日期與均線。
 - PM 本回合明確授權直接 commit＋push，已解除本次 UI v4／schema v4 的公開發布閘門；授權不擴及其他排程、機密或未來變更。
@@ -187,14 +204,14 @@ Last verified commit: 04dd15b
 
 ## Next actions
 
-- 等 PM 驗收本機結果；若明確授權公開，再 fast-forward push `sector-rrg` 並驗證 GitHub Pages 的 UI／PWA v4.3.1、schema v6、1,970 家 `company_prices` 與公開公司圖卡。
-- 下一項改善尚未開工；依 PM「一個一個來」原則，不把成交額權重、回測或父層基準混入本回合。
+- 等 PM 驗收本機結果；若明確授權公開，再 fast-forward push `sector-rrg` 並驗證 GitHub Pages 的 UI／PWA v4.3.1、schema v7、分類 50%／題材 30% 契約與公開資料。
+- 下一項改善尚未開工；依 PM「一個一個來」原則，不把回測、父層基準或其他改善混入本回合。
 - 無 Batnini action-required；本回合不建立 handoff。
 
 ## Risks / blockers
 
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
-- schema v6 JSON 約 18.43 MiB（19,328,322 bytes）；390px 本機 PWA 可正常載入。若公開後實機網路變慢，優先評估個股價量或題材資料按需拆檔。
+- schema v7 JSON 約 18.44 MiB（19,333,917 bytes）；本輪只新增少量權重契約，前端結構不變。若公開後實機網路變慢，優先評估個股價量或題材資料按需拆檔。
 
 ## Previous eval_records (pending Batnini transcription)
 

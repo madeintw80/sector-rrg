@@ -12,6 +12,7 @@
 
 ## Done
 
+- [x] 2026-07-16：完成第三項 RRG 改良：正式分類維持成交額前 8 家、單股封頂 50%，題材維持全部有效成分與 30%；schema v7 記錄權重契約，275／275 分類與 371／371 題材五視角可計算。來源 commit `a27618e`、本 repo feature commit `34a785f`；本輪未 push／deploy。
 - [x] 2026-07-16：完成第二項 RRG 改良：schema v6 以共用 126 日交易軸輸出 1,970／1,970 家價量；UI／PWA v4.3.1 在公司圖卡加入現價、漲跌、MA20、MA60、近半年價量圖。來源 commit `8f9ff71`、本 repo feature commit `04dd15b`；本輪未 push／deploy。
 - [x] 2026-07-16：完成第一項 RRG 改良：schema v5 為 12／34／229 類與 371 個題材加入 5／20／60 日絕對／超額報酬及 MA20／MA60／20日上漲廣度；UI v4.2.0 在下鑽區呈現價格確認卡。來源 commit `cee60fa`、本 repo feature commit `2d27a99`；本輪未 push／deploy。
 - [x] 2026-07-16：發布 UI／PWA v4.1.1；題材分類新增強勢起始組、高對比搜尋狀態與公司名／股號→受控題材搜尋。來源 commit `b790e59`、公開功能 commit `aad2585`，GitHub Pages 首頁、PWA cache 與公開 schema v4 資料均驗證通過。
