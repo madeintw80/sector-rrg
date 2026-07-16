@@ -124,6 +124,7 @@
   .search-option-meta{display:block;color:var(--sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .search-no-result{padding:13px 12px;color:var(--sub);font-size:13px;}
   .company-card{margin-bottom:14px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);}
+  .company-card:focus{outline:3px solid color-mix(in srgb,var(--focus) 45%,transparent);outline-offset:2px;}
   .company-card h2{margin:3px 0 7px;font-size:20px;}.company-code{color:var(--sub);font-size:13px;font-weight:500;}
   .company-meta{color:var(--sub);font-size:13px;line-height:1.55;}.company-topics{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
   .company-topic{padding:4px 7px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;}
@@ -179,6 +180,9 @@
   .guide-badge.normal{background:var(--line);color:var(--sub);}.guide-badge.star{color:var(--weakening);background:transparent;font-size:15px;}
   .stock-guide-note{margin:1px 0 0;padding-top:8px;border-top:1px solid var(--line);color:var(--sub);font-size:11px;line-height:1.5;}
   .stk{display:grid;grid-template-columns:38px minmax(85px,1fr) auto 52px;align-items:center;gap:7px;font-size:13px;padding:7px 0;border-top:1px solid var(--line);}
+  .stk-button{width:100%;min-height:44px;border:0;border-top:1px solid var(--line);border-radius:0;background:transparent;color:inherit;text-align:left;}
+  .stk-button:hover{border-color:var(--line);background:color-mix(in srgb,var(--focus) 9%,transparent);}
+  .stk-button:active{transform:none;}
   .stk.search-hit{margin-inline:-8px;padding-inline:8px;border-radius:8px;background:color-mix(in srgb,var(--focus) 13%,transparent);}
   .stk .lt{display:inline-flex;align-items:center;justify-content:center;width:38px;min-height:22px;border-radius:999px;color:#fff;font-size:10px;font-weight:700;}
   .stk .nm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -971,16 +975,35 @@
     var topics=(company.topics||[]).map(function(x){return '<span class="company-topic">'+escapeHtml(x)+'</span>';}).join("");
     var industries=(company.industries||[]).filter(function(x){return x!=="電子工業";});
     var path=company.classification||{}, pathText=[path.sector&&path.sector.name,path.industry&&path.industry.name,path.subindustry&&path.subindustry.name].filter(Boolean).join(" → ");
-    var market=company.market==="tse"?"上市":"上櫃";
+    var market=company.market==="tse"?"上市":(company.market==="otc"?"上櫃":"全市場成分股");
     var source=company.source==="moneydj"?
       (company.source_detail==="company_page"?"MoneyDJ 個股相關產業":"MoneyDJ 全產業目錄"):
       "FinMind 官方產業補底";
     var coverage=linkedToRrg?"已連到目前分類層級；每一層都計入全市場覆蓋。":"已納入完整分類；目前分類暫無可計算價格序列。";
-    return '<div class="company-card"><span class="section-kicker">全市場個股</span><h2>'+escapeHtml(company.name)+
+    return '<div class="company-card" tabindex="-1"><span class="section-kicker">全市場個股</span><h2>'+escapeHtml(company.name)+
       ' <span class="company-code">'+escapeHtml(company.code)+'</span></h2><div class="company-meta">'+market+
       (industries.length?'　·　官方產業 '+escapeHtml(industries.join("、")):'')+'　·　成交額 '+escapeHtml(company.tv||0)+' 億</div>'+
       (pathText?'<p class="company-coverage"><b>完整分類：</b>'+escapeHtml(pathText)+'</p>':'')+
       '<div class="company-topics">'+topics+'</div><p class="company-coverage">MoneyDJ 多標籤來源：'+source+'。'+coverage+'</p></div>';
+  }
+
+  function companyByCode(code){
+    var universe=(D&&D.universe)||[], target=String(code), i;
+    for(i=0;i<universe.length;i++) if(String(universe[i].code)===target) return universe[i];
+    return null;
+  }
+
+  function activateCompanyRows(side){
+    side.querySelectorAll("[data-company-code]").forEach(function(row){
+      row.addEventListener("click",function(){
+        var code=String(this.dataset.companyCode||""), company=companyByCode(code);
+        if(!company) return;
+        state.stockFocus=code; state.companyFocus=company; renderSide();
+        // 圖卡在清單上方；聚焦可讓滑鼠、觸控與鍵盤使用者立即看到更新結果。
+        var card=side.querySelector(".company-card");
+        if(card){ card.focus(); card.scrollIntoView({behavior:"smooth",block:"start"}); }
+      });
+    });
   }
 
   function renderSide(){
@@ -1035,27 +1058,28 @@
           var lightName={R:"紅燈",Y:"黃燈",G:"綠燈"}[x.lt]||"訊號";
           var lightInk=x.lt==="Y"?"#1b1608":"#ffffff";
           var arrColor = x.arr==="多"?th.lights.G:(x.arr==="空"?th.lights.R:"var(--sub)");
-          html+='<div class="stk'+hitClass+'">'+
+          html+='<button type="button" class="stk stk-button'+hitClass+'" data-company-code="'+escapeHtml(x.code)+'" aria-label="查看 '+escapeHtml(x.name)+' '+escapeHtml(x.code)+' 基本資料">'+
                 '<span class="lt" style="background:'+lc+';color:'+lightInk+'">'+lightName+'</span>'+
                 '<span class="nm">'+(x.star?'<span class="star">★</span>':'')+x.name+
                 ' <span class="code">'+x.code+'</span></span>'+
                 '<span class="met">位階'+x.pos+' RSI'+x.rsi+' <b style="color:'+arrColor+';font-weight:600">'+x.arr+'</b></span>'+
-                '<span class="tv">'+x.tv+'億</span></div>';
+                '<span class="tv">'+x.tv+'億</span></button>';
           if(x.sig) html+='<div class="sig" style="color:'+lc+'">'+x.sig+'</div>';
         } else {
           // 非主角：只有成交額 bar（沒算訊號）
           var mx=Math.max.apply(null, item.stocks.map(function(z){return z.tv;}))||1;
           var w=Math.round(x.tv/mx*100);
-          html+='<div class="stk'+hitClass+'">'+
+          html+='<button type="button" class="stk stk-button'+hitClass+'" data-company-code="'+escapeHtml(x.code)+'" aria-label="查看 '+escapeHtml(x.name)+' '+escapeHtml(x.code)+' 基本資料">'+
                 '<span class="lt" style="background:var(--line);color:var(--sub)">一般</span>'+
                 '<span class="nm">'+x.name+' <span class="code">'+x.code+'</span></span>'+
                 '<span class="tvbar"><i style="width:'+w+'%"></i></span>'+
-                '<span class="tv">'+x.tv+'億</span></div>';
+                '<span class="tv">'+x.tv+'億</span></button>';
         }
       });
       if(item.stocks.length>16) html+='<div class="hint" style="margin-top:6px;">…其餘 '+(item.stocks.length-16)+' 檔略</div>';
     }
     side.innerHTML=html;
+    activateCompanyRows(side);
   }
 
   function updateDay(){
@@ -1282,7 +1306,7 @@
     state.span = D.default_span || "month";
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "圓點大小＝分類總成交額", "UI v3.0.1"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "圓點大小＝分類總成交額", "UI v3.0.2"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(dataSource==="fallback") metaItems.push("離線快照");
     var metaEl = document.getElementById("meta"); metaEl.innerHTML="";
