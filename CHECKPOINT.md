@@ -1,6 +1,6 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T10:59:43+08:00
+Updated: 2026-07-16T12:00:00+08:00
 Task Lead: Echo
 Status: in_progress
 Branch: master
@@ -8,7 +8,7 @@ Last verified commit: d023d30
 
 ## PM requested
 
-- 推翻「59 個核心題材只涵蓋 914 檔也可以」的分層假設；新版每一個分類層級都必須涵蓋現行 1,927 檔公司。
+- 推翻「59 個核心題材只涵蓋 914 檔也可以」的分層假設；新版每一個分類層級都必須涵蓋全部現行普通上市櫃公司。
 - 可直接重做分類，優先研究 XQ 的產業分類作為參考；Echo 全權主導修改、測試與 commit，不需再交接給 Batnini。
 - 將 RRG 個股覆蓋擴充為全部現役上市、上櫃公司；每家公司都必須有題材對應，不能再因 59 個人工挑選的 MoneyDJ 分類頁而靜默消失。
 - 先確認 MoneyDJ 是否真的缺少台玻、萬潤等分類；若 MoneyDJ 有資料，改正來源擷取方式，不無故更換參考來源。
@@ -16,6 +16,13 @@ Last verified commit: d023d30
 
 ## Completed
 
+- 官方母體最終校正為 1,970 家：四位數普通公司 1,974 家，排除官方產業碼 91／名稱 `-DR` 的 4 檔 TDR。先前 `[1-8]\d{3}` 誤漏 43 家 9xxx 普通公司。
+- 完成 XQ 式三層 taxonomy：12 大分類／34 官方產業／229 細產業；每層 assigned=1,970、member_union=1,970、coverage=100%、duplicate_primary=0。
+- MoneyDJ 全目錄 1,062／1,062 抓取成功、errors=0；1,969 家由目錄命中，`6741` 由個股頁命中，最終 MoneyDJ 1,970／1,970、官方補底 0。
+- 細產業以官方產業為父層，優先選相關 MoneyDJ 主題；少於 4 家的小類合併至同產業綜合類。MoneyDJ 原始 1,062 類仍全數作為多標籤保留。
+- `rrg_web.json` 升級 schema v3：12／34／229 類 × week／month／quarter／half／year 全數可計算，1,360／1,360 主角訊號成功，JSON 10.95 MB。
+- 前端 UI v3.0.0 新增大分類／產業／細產業切換與穩定分類 ID；同名細產業不再互撞，選「全部」可顯示 12／34／229 個分類。
+- 週更正式管線取消人工 59 類與舊 36 類步驟，只重建 `rrg_universe.json` taxonomy SSOT；Telegram RRG 與題材深查同步改讀完整 taxonomy／MoneyDJ 多標籤。
 - MoneyDJ 全目錄共 1,062 類，全部分類頁抓取成功、errors=0；TWSE／TPEX 公司基本資料 API 的現行普通股掛牌母體共有 1,927 檔公司。
 - 全目錄直接命中 1,926 檔；唯一目錄未命中的 `6741 91APP*-KY` 經 MoneyDJ 個股相關產業頁二次查核，取得 Internet技術與基礎設施、應用軟體、軟體業、電商服務 4 題材。最終 MoneyDJ 覆蓋 1,927／1,927（100%），官方補底 0 檔。
 - 修正先前以每日成交行情代替掛牌名冊的口徑錯誤；補回 14 檔仍掛牌但當日零成交／無行情公司，包含 `1589 永冠-KY`，其成交額保留為 0 而不再從索引消失。
@@ -49,12 +56,17 @@ Last verified commit: d023d30
 
 ## Current state
 
-- Echo 正在研究 XQ 參考分類並重構完整階層；舊 59→57 核心題材只涵蓋 914 檔的架構已被 PM 否決，不再視為完成狀態。
-- 本機 `sector-rrg/master` 目前已有 UI v2.1.2 與 1,927 檔公司索引，尚未 push；公開 GitHub Pages 仍是上一個已驗證版本 UI v2.0.4。
-- 來源 repo 的已追蹤程式／UI 已 commit；原有且持續更新的 `HoldingsRadar/web/rrg_web.json`、`rrg_web_data.js` 產生檔仍保留為未 commit，不清除、不混入程式 commit。
+- taxonomy v3、RRG 資料、UI 與週更／每日排程程式皆已完成本機驗證；PM 已明確回覆「push吧」。
+- `HoldingsRadar` 將建立本機 commit；此 repo 無 git remote，不會假裝已推送。
+- `sector-rrg/master` 待 commit／push；推送後需再驗證 GitHub Pages 公開頁。
 
 ## Verification
 
+- 正常 TLS 下重爬 MoneyDJ 1,062／1,062、errors=0；公司 1,970 unique，9xxx 硬性樣本全在，`9103／9105／9110／9136` TDR 全不在。
+- taxonomy：sector 12／industry 34／subindustry 229；三層皆 assigned=1,970、union=1,970、coverage=1.0、duplicate=0。
+- RRG schema v3：三層 month 類別 ID 分別 12／34／229 unique，全部 `status=ok`；其餘四 spans 亦全部可計算。
+- 本機瀏覽器：選「全部」實測依序畫出 12／34／229 點；台玻顯示「原物料 → 玻璃陶瓷 → 玻璃陶瓷綜合」，萬潤連到「封測用設備」，寶成 `9904` 連到「運動用品」。
+- 390×844：document body 寬 375px、三個層級按鈕各 105px、無水平溢出；Browser console error／warning 0。
 - 正常 TLS 憑證驗證下重爬 MoneyDJ 1,062／1,062 類成功，零分類頁錯誤；再複核 1 個目錄未命中公司的 MoneyDJ 個股頁，輸出 1,927 unique codes、0 topicless、1,927 MoneyDJ、0 official fallback。
 - `rrg_web_export.py` 完成 57 題材 × 5 spans、359／359 檔訊號與 1,927 檔全市場輸出；JSON 約 2.30 MB。
 - AST 2／2、1,927 unique、0 topicless、14 檔零成交公司全部存在且 `tv=0`；兩個 repo 的 UI／資料四檔 SHA-256 一致，`git diff --check` 通過。
