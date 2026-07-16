@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T20:13:15+08:00
+Updated: 2026-07-16T21:40:25+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: 2d27a99
+Last verified commit: 04dd15b
 
 ## PM requested
 
+- 2026-07-16：第二項 RRG 改良在既有公司圖卡加入近 6 個月個股價格小圖，至少含現價、當日漲跌、MA20、MA60 與成交量；分類／題材成分股都能開啟，保留基本資料、題材標籤、燈號與既有下鑽。本輪只做本機修改、重建、測試與 commits，不 push／deploy、不改排程或 RS-Ratio／RS-Momentum。
 - 2026-07-16：RRG 後續改善一次只做一項；第一項先加入分類／題材的 5／20／60 日絕對報酬、大盤報酬、超額報酬與成分股廣度確認層。本輪只做本機修改、重建、測試與 commit，不 push／deploy、不改排程。
 - 2026-07-16：新增題材分類的「強勢起始組」本機預覽；預設只選領先續強與改善接近領先的題材，並改善手機搜尋選取／取消、樣本不足與已選狀態對比。先啟動本機頁面給 PM 驗收，不 push／deploy。
 - 2026-07-16：題材分類搜尋需支援公司名與股號；命中公司後直接列出其所屬受控題材，供逐一或批次加入目前比較。本輪仍只更新本機預覽，不 push／deploy。
@@ -30,6 +31,10 @@ Last verified commit: 2d27a99
 
 ## Completed
 
+- 第二項 RRG 改良已完成：schema v6 新增 `company_prices`，用 126 日共用交易軸＋compact offset 輸出 1,970／1,970 家的還原收盤價與成交量；短歷史新股保留上市以來資料。
+- UI／PWA v4.3.1 在既有公司圖卡加入現價、當日漲跌、MA20、MA60、收盤／雙均線 SVG 與成交量柱；分類與題材成分股沿用相同圖卡、完整分類、MoneyDJ 標籤、燈號與下鑽流程。
+- RRG 計算仍只使用 >120 日的既有價序列；短歷史資料只供公司圖卡，RS-Ratio／RS-Momentum 公式、象限、代表股與題材權重均未修改。
+- `HoldingsRadar` 來源 commit `8f9ff71`；`sector-rrg` feature commit `04dd15b`。依保護規則均只在本機 commit，未 push／deploy、未改排程。
 - 第一項 RRG 改良已完成：schema v5 新增獨立 `confirmation` map，涵蓋 12 大分類＋34 產業＋229 細產業＋371 可比較題材，共 646 組。
 - 每組提供 5／20／60 日還原收盤價報酬、相對加權指數的幾何超額報酬，以及全體有效成分股站上 MA20、站上 MA60、20日上漲比例與樣本數；RRG 的 RS-Ratio／RS-Momentum 公式、象限與既有序列未修改。
 - UI v4.2.0／PWA cache `rrg-v4.2.0` 在分類與題材下鑽區加入價格確認卡，先顯示絕對／超額報酬，再以「多數同步／少數帶動／廣度分歧」提示成分股一致性。
@@ -92,13 +97,18 @@ Last verified commit: 2d27a99
 
 ## Current state
 
-- UI v4.2.0／schema v5 價格與廣度確認層已完成本機資料重建、瀏覽器驗證與 feature commits，等待 PM 決定是否公開發布。
-- `HoldingsRadar` 最新來源功能 commit 為 `cee60fa`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg` 本機最新功能 commit 為 `2d27a99`，尚未 push；公開站仍是 UI v4.1.1／schema v4／PWA cache `rrg-v4.1.1`。
-- 今日 schema v5 本機快照日期為 2026-07-16，16,843,069 bytes；公開站不受本輪本機工作影響。
+- UI／PWA v4.3.1、schema v6 個股價格小圖已完成本機資料重建、瀏覽器驗證與 feature commits，等待 PM 決定是否公開發布。
+- `HoldingsRadar` 最新來源功能 commit 為 `8f9ff71`；此 repo 未設定 git remote，因此沒有可推送目的地。
+- `sector-rrg` 本機最新功能 commit 為 `04dd15b`；完成本次文件 commit 後相對 `origin/master` ahead 4，尚未 push。公開站仍是 UI v4.1.1／schema v4／PWA cache `rrg-v4.1.1`。
+- 今日 schema v6 本機快照日期為 2026-07-16，19,328,322 bytes（18.43 MiB）；公開站不受本輪本機工作影響。
 
 ## Verification
 
+- 正式匯出：1,970／1,970 家皆有個股價量，126 個共用交易日、compact alignment 錯誤 0；新股 `6907／7803／7823` 分別保留 109／41／104 點。
+- RRG 回歸：12／34／229 類與 371 題材的五個時間視角全數可計算，`confirmation.groups=646`，1,627／1,627 檔主角技術訊號成功；短歷史新股未進入 RRG >120 日輸入集合。
+- Python 6／6、inline JavaScript 語法、`git diff --check` 通過；兩端 `index.html`、`sw.js`、`rrg_web.json`、`rrg_web_data.js` SHA-256 全數一致。
+- 本機瀏覽器：分類「晶圓代工 → 台積電」與題材「晶圓代工 → 采鈺」皆由成分股開啟價量圖；現價／漲跌／MA20／MA60／成交量、完整分類、標籤與燈號同時保留。
+- 390×844：指標 2×2、公司卡 325px、圖 296px、主要觸控 46px；1280×720、1440×900 皆無水平溢出，深／淺色正常，console error=0。
 - 正式匯出：1,970家公司、12／34／229類、371個題材的五個時間視角全部可計算；1627／1627檔主角技術訊號成功。
 - schema v5：`confirmation.groups=646`（12+34+229+371）、periods=5／20／60、缺欄位 0、廣度越界 0、所有 MA20 樣本皆大於 0；資料日期 2026-07-16。
 - Python 回歸 5／5 通過：新增固定交易日報酬、幾何超額報酬與廣度測試，既有題材權重／別名測試保持全綠；3段 inline script 語法通過。
@@ -162,6 +172,8 @@ Last verified commit: 2d27a99
 
 ## Decisions and assumptions
 
+- 個股價格資料與 RRG 計算分流：RRG 延續 >120 日門檻與原公式；公司圖卡只要有至少 2 日資料就顯示，避免新掛牌公司被錯誤標成無價格。
+- 價量 schema 採共用日期＋每股 offset／close／volume 陣列；MA20／MA60 由前端用同一還原收盤序列計算，避免為每股重複存日期與均線。
 - PM 本回合明確授權直接 commit＋push，已解除本次 UI v4／schema v4 的公開發布閘門；授權不擴及其他排程、機密或未來變更。
 - 「全市場覆蓋」定義為 TWSE／TPEX 公司基本資料 API 中四位數現行掛牌普通股，排除 ETF、ETN、權證、TDR 與興櫃，並保留零成交／暫停交易公司；目前為 1,970 家。
 - 三層 taxonomy 是互斥且完整的全市場產業 RRG；MoneyDJ 題材標籤是搜尋／自選後才比較的非互斥 RRG，不能當成第四層，也不會把全部 836 個標籤同時畫出。
@@ -175,14 +187,14 @@ Last verified commit: 2d27a99
 
 ## Next actions
 
-- 等 PM 驗收本機結果；若明確授權公開，再 fast-forward push `sector-rrg` 並驗證 GitHub Pages 的 UI v4.2.0、schema v5、PWA cache 與公開 confirmation 資料。
-- 下一項改善尚未開工；依 PM「一個一個來」原則，不把個股價格圖、成交額權重或回測混入本回合。
+- 等 PM 驗收本機結果；若明確授權公開，再 fast-forward push `sector-rrg` 並驗證 GitHub Pages 的 UI／PWA v4.3.1、schema v6、1,970 家 `company_prices` 與公開公司圖卡。
+- 下一項改善尚未開工；依 PM「一個一個來」原則，不把成交額權重、回測或父層基準混入本回合。
 - 無 Batnini action-required；本回合不建立 handoff。
 
 ## Risks / blockers
 
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
-- schema v5 JSON 約 16.06 MiB（16,843,069 bytes）；confirmation map 相較 schema v4 增量有限，390px 本機 PWA 可正常載入。若未來實機網路變慢，優先評估題材資料拆檔或按需載入。
+- schema v6 JSON 約 18.43 MiB（19,328,322 bytes）；390px 本機 PWA 可正常載入。若公開後實機網路變慢，優先評估個股價量或題材資料按需拆檔。
 
 ## Previous eval_records (pending Batnini transcription)
 
