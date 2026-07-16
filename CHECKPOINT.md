@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T12:00:00+08:00
+Updated: 2026-07-16T11:54:17+08:00
 Task Lead: Echo
-Status: in_progress
+Status: complete
 Branch: master
-Last verified commit: d023d30
+Last verified commit: 386c161
 
 ## PM requested
 
@@ -23,6 +23,7 @@ Last verified commit: d023d30
 - `rrg_web.json` 升級 schema v3：12／34／229 類 × week／month／quarter／half／year 全數可計算，1,360／1,360 主角訊號成功，JSON 10.95 MB。
 - 前端 UI v3.0.0 新增大分類／產業／細產業切換與穩定分類 ID；同名細產業不再互撞，選「全部」可顯示 12／34／229 個分類。
 - 週更正式管線取消人工 59 類與舊 36 類步驟，只重建 `rrg_universe.json` taxonomy SSOT；Telegram RRG 與題材深查同步改讀完整 taxonomy／MoneyDJ 多標籤。
+- HoldingsRadar 本機 commit `dd5ea88`；sector-rrg 功能／資料 commit `386c161` 已由 PM 授權後 fast-forward push 至 `origin/master`。
 - MoneyDJ 全目錄共 1,062 類，全部分類頁抓取成功、errors=0；TWSE／TPEX 公司基本資料 API 的現行普通股掛牌母體共有 1,927 檔公司。
 - 全目錄直接命中 1,926 檔；唯一目錄未命中的 `6741 91APP*-KY` 經 MoneyDJ 個股相關產業頁二次查核，取得 Internet技術與基礎設施、應用軟體、軟體業、電商服務 4 題材。最終 MoneyDJ 覆蓋 1,927／1,927（100%），官方補底 0 檔。
 - 修正先前以每日成交行情代替掛牌名冊的口徑錯誤；補回 14 檔仍掛牌但當日零成交／無行情公司，包含 `1589 永冠-KY`，其成交額保留為 0 而不再從索引消失。
@@ -56,9 +57,9 @@ Last verified commit: d023d30
 
 ## Current state
 
-- taxonomy v3、RRG 資料、UI 與週更／每日排程程式皆已完成本機驗證；PM 已明確回覆「push吧」。
-- `HoldingsRadar` 將建立本機 commit；此 repo 無 git remote，不會假裝已推送。
-- `sector-rrg/master` 待 commit／push；推送後需再驗證 GitHub Pages 公開頁。
+- taxonomy v3、RRG 資料、UI 與週更／每日排程程式皆已完成並驗證。
+- `HoldingsRadar` 完成本機 commit `dd5ea88`；此 repo 未設定 git remote，因此沒有可推送目的地。
+- `sector-rrg/master` 已 push；GitHub Pages 公開檔案已確認 UI v3、PWA cache v3、schema v3 與 1,970 家資料生效。
 
 ## Verification
 
@@ -67,6 +68,7 @@ Last verified commit: d023d30
 - RRG schema v3：三層 month 類別 ID 分別 12／34／229 unique，全部 `status=ok`；其餘四 spans 亦全部可計算。
 - 本機瀏覽器：選「全部」實測依序畫出 12／34／229 點；台玻顯示「原物料 → 玻璃陶瓷 → 玻璃陶瓷綜合」，萬潤連到「封測用設備」，寶成 `9904` 連到「運動用品」。
 - 390×844：document body 寬 375px、三個層級按鈕各 105px、無水平溢出；Browser console error／warning 0。
+- 公開檔案驗證：`UI v3.0.0=True`、`level_control=True`、`rrg-v3.0.0=True`、`schema_version=3`、`companies=1970`、JSON 11,486,083 bytes。
 - 正常 TLS 憑證驗證下重爬 MoneyDJ 1,062／1,062 類成功，零分類頁錯誤；再複核 1 個目錄未命中公司的 MoneyDJ 個股頁，輸出 1,927 unique codes、0 topicless、1,927 MoneyDJ、0 official fallback。
 - `rrg_web_export.py` 完成 57 題材 × 5 spans、359／359 檔訊號與 1,927 檔全市場輸出；JSON 約 2.30 MB。
 - AST 2／2、1,927 unique、0 topicless、14 檔零成交公司全部存在且 `tv=0`；兩個 repo 的 UI／資料四檔 SHA-256 一致，`git diff --check` 通過。
@@ -112,14 +114,12 @@ Last verified commit: d023d30
 
 ## Next actions
 
-- 建立每一層都覆蓋 1,927 檔的新版 taxonomy，重算 RRG 並完成資料與 UI 驗證。
-- 本回合不建立 Batnini action-required handoff；架構級變更由 Echo 依 PROTOCOL 直接 append `brain/CHANGELOG.md`。
+- 無 action-required；本回合不建立 Batnini handoff。
 
 ## Risks / blockers
 
-- 公開 push／deploy 仍屬生產對外動作；本回合先完成本機修改、commit 與驗證，發布前另依保護規則確認。
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
-- `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 已依新管線重新產出，但仍保留為未 commit 產生檔，不清除、不混入程式 commit。
+- GitHub Pages 的 schema v3 JSON 約 10.95 MB，比舊版 2.30 MB 大；目前本機與公開抓取正常，後續若手機載入變慢可再做跨 span 成分股去重壓縮。
 
 ## Previous eval_records (pending Batnini transcription)
 
@@ -141,4 +141,10 @@ Last verified commit: d023d30
 
 ```json
 {"task_id":"CE-008","completed_at":"2026-07-15T23:09:16+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"standard","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","elapsed_minutes":25,"requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit c3b07ee","projects/sector-rrg commit 2d7e7f0","projects/sector-rrg/CHECKPOINT.md","browser tests for AI space query, 2330, 台積電, 2634, keyboard and 390px mobile","public GitHub Pages UI v2.0.4"],"notes":"搜尋擴充至題材、公司名與股號，加入可存取的即時建議、直接題材下鑽與公司高亮；低成交篩選衝突可自動解除，多尺寸與 UI 狀態驗證通過；PM 於 2026-07-16 授權後已公開發布並再次實測"}
+```
+
+## eval_record (CE-009)
+
+```json
+{"task_id":"CE-009","completed_at":"2026-07-16T11:54:17+08:00","task_type":"implementation","lead":"echo","mode":"solo","effort":"deep","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":false,"handoff_success":"not_applicable","safety_gate":"pass","requested_model":"not_applicable","actual_model":"not_applicable","evidence":["projects/HoldingsRadar commit dd5ea88","projects/sector-rrg commit 386c161","12/34/229 levels each cover 1970/1970","public GitHub Pages UI v3.0.0 and schema v3"],"notes":"推翻 59 類部分覆蓋架構，建立 XQ 式三層完整 taxonomy，修正 9xxx 母體遺漏，更新 RRG、UI、Telegram 與週更管線，經 PM 授權後公開發布"}
 ```
