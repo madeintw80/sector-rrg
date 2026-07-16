@@ -36,7 +36,7 @@ Last verified commit: c91d53f
 ## Current state
 
 - 智慧搜尋、桌機寬版與對比修正均已同步來源 repo 與公開 repo；`sector-rrg/master` 及公開 GitHub Pages 現在都是 `UI v2.0.4`。
-- 發布完成後本機 `master` 與 `origin/master` 同步於 `c91d53f`；工作樹乾淨。
+- 功能發布點為 `c91d53f`；本機 `master` 與 `origin/master` 保持同步，發布收據另以後續 docs commit 記錄。
 
 ## Verification
 
