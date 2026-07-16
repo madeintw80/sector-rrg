@@ -208,6 +208,21 @@
   .side-empty{padding:4px 0;}
   .side-empty p,.hint{margin:0;color:var(--sub);font-size:13px;}
   .sub-tally{color:var(--sub);font-size:12px;margin-bottom:10px;}
+  .confirm-panel{margin:0 0 12px;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);}
+  .confirm-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px;}
+  .confirm-head strong{font-size:13px;}.confirm-head span{color:var(--sub);font-size:11px;}
+  .confirm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  .confirm-period{min-width:0;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);}
+  .confirm-period b{display:block;color:var(--sub);font-size:10px;letter-spacing:.06em;}
+  .confirm-return{display:block;margin:2px 0 1px;font-size:16px;font-weight:750;font-variant-numeric:tabular-nums;}
+  .confirm-detail{display:block;color:var(--sub);font-size:10px;line-height:1.45;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .confirm-pos{color:var(--leading);}.confirm-neg{color:var(--lt-r);}.confirm-flat{color:var(--sub);}
+  .breadth-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 6px;padding-top:9px;border-top:1px solid var(--line);font-size:11px;}
+  .breadth-head span{color:var(--sub);}
+  .breadth-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  .breadth-item{min-width:0;padding:6px 7px;border-radius:8px;background:color-mix(in srgb,var(--surface) 72%,transparent);}
+  .breadth-item span{display:block;color:var(--sub);font-size:10px;white-space:nowrap;}
+  .breadth-item strong{display:block;margin-top:1px;font-size:14px;font-variant-numeric:tabular-nums;}
   .stock-guide-flow{margin:-3px 0 9px;color:var(--ink);font-size:12px;font-weight:600;}
   .stock-guide{margin:0 0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
   .stock-guide summary{display:flex;align-items:center;min-height:40px;padding:8px 10px;cursor:pointer;color:var(--sub);font-size:12px;font-weight:700;}
@@ -1322,6 +1337,37 @@
     return null;
   }
 
+  function percentText(value){
+    if(value===null || value===undefined || !isFinite(Number(value))) return "—";
+    value=Number(value); return (value>0?"+":"")+value.toFixed(1)+"%";
+  }
+
+  function percentTone(value){
+    value=Number(value); return !isFinite(value)?"confirm-flat":(value>0?"confirm-pos":(value<0?"confirm-neg":"confirm-flat"));
+  }
+
+  function renderConfirmation(item){
+    var root=D&&D.confirmation, metrics=root&&root.groups&&root.groups[themeKey(item)];
+    if(!metrics) return "";
+    var periods=root.periods||[5,20,60], benchmark=root.benchmark_returns||{}, breadth=metrics.breadth||{}, cards="";
+    periods.forEach(function(period){
+      var key=String(period), value=metrics.returns&&metrics.returns[key], excess=metrics.excess&&metrics.excess[key];
+      cards+='<div class="confirm-period"><b>'+period+'日</b><span class="confirm-return '+percentTone(value)+'">'+percentText(value)+'</span>'+ 
+        '<span class="confirm-detail">超額 <span class="'+percentTone(excess)+'">'+percentText(excess)+'</span></span>'+ 
+        '<span class="confirm-detail">大盤 '+percentText(benchmark[key])+'</span></div>';
+    });
+    var shortBreadth=[breadth.above_ma20,breadth.up_20], breadthLabel="資料不足";
+    if(shortBreadth.every(function(value){return value!==null&&value!==undefined;})){
+      breadthLabel=shortBreadth.every(function(value){return Number(value)>=60;})?"多數成分股同步":
+        (shortBreadth.every(function(value){return Number(value)<40;})?"少數個股帶動":"廣度分歧");
+    }
+    return '<section class="confirm-panel" aria-label="價格與廣度確認"><div class="confirm-head"><strong>價格確認</strong><span>還原收盤價 · 相對加權指數</span></div>'+ 
+      '<div class="confirm-grid">'+cards+'</div><div class="breadth-head"><strong>成分股廣度</strong><span>'+breadthLabel+' · MA20樣本 '+(breadth.sample20||0)+'／MA60樣本 '+(breadth.sample60||0)+'</span></div>'+ 
+      '<div class="breadth-grid"><div class="breadth-item"><span>站上 MA20</span><strong>'+((breadth.above_ma20===null||breadth.above_ma20===undefined)?"—":breadth.above_ma20+"%")+'</strong></div>'+ 
+      '<div class="breadth-item"><span>站上 MA60</span><strong>'+((breadth.above_ma60===null||breadth.above_ma60===undefined)?"—":breadth.above_ma60+"%")+'</strong></div>'+ 
+      '<div class="breadth-item"><span>20日上漲</span><strong>'+((breadth.up_20===null||breadth.up_20===undefined)?"—":breadth.up_20+"%")+'</strong></div></div></section>';
+  }
+
   function activateCompanyRows(side){
     side.querySelectorAll("[data-company-code]").forEach(function(row){
       row.addEventListener("click",function(){
@@ -1370,8 +1416,9 @@
           gg=stars.filter(function(x){return x.lt==="G";}).length;
       var tally='總成交額 '+item.tv+' 億　·　成分股 '+(item.member_count||item.stocks.length)+' 檔';
       if(stars.length) tally+='　·　主角燈 紅 '+rr+'／黃 '+yy+'／綠 '+gg;
-      html+='<div class="sub-tally">'+tally+'</div>'+
-            '<div class="stock-guide-flow">建議順序：先看 ★ 主角 → 燈號 → RSI 與原因</div>'+
+      html+='<div class="sub-tally">'+tally+'</div>';
+      html+=renderConfirmation(item);
+      html+='<div class="stock-guide-flow">建議順序：先看價格／廣度確認 → ★ 主角 → 燈號 → RSI 與原因</div>'+ 
             '<details class="stock-guide"><summary>燈號、★、RSI 怎麼看？</summary><div class="stock-guide-body">'+
               '<div class="stock-guide-row"><span class="guide-badge red">紅燈</span><span><b>優先處理。</b>至少有一項高風險訊號，例如深度回撤、跌破年線、爆量或逼近 52 週低點。</span></div>'+
               '<div class="stock-guide-row"><span class="guide-badge yellow">黃燈</span><span><b>提高警覺。</b>出現短中期轉弱或過熱，例如回撤、跌破 MA20／MA60，或 RSI 過熱。</span></div>'+
@@ -1648,7 +1695,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.1.1"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.2.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
