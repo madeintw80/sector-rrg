@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-17T04:35:00+08:00
+Updated: 2026-07-17T05:35:00+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: HoldingsRadar 6fd953a; sector-rrg 4a15b70（前一功能 commit；本檔為最新交接）
+Last verified commit: HoldingsRadar cfee3bb; sector-rrg 5e53c63（公開功能 commit；本檔為最新發布收據）
 
 ## PM requested
 
+- 2026-07-17：PM 驗收本機回測頁後，明確授權將今天的回測頁、排程與 Telegram 通知 commit、push 並發布至 GitHub Pages；完成後需驗證公開頁面與資料。
 - 2026-07-17：啟用自動回測排程，並在回測測試頁補充白話說明，讓使用者理解目前是在驗證象限、權重方法、熱門確認與是否足以進入選股，而不是展示買賣保證。
 - 2026-07-17：回測更新成功與每日 RRG 公開頁更新本日數據後，皆需透過 Batnini 使用的共用 Telegram bot 通知；不得在公開頁日期尚未確認時誤報成功。
 - 2026-07-16：獨立驗證 RRG 有效性。以 walk-forward／lagged inputs 比較現行單日成交額 50% 封頂、落後一期 20 日均成交額 50% 封頂、等權，以及舊版單日成交額無封頂；先做正式分類，檢驗四象限、關鍵轉換與 5／20／60 日絕對／超額報酬，另評估成交額升溫、廣度與既有超額報酬的熱門確認增益。不得修改正式每日 pipeline、push、deploy、排程或公開發布。
@@ -35,6 +36,11 @@ Last verified commit: HoldingsRadar 6fd953a; sector-rrg 4a15b70（前一功能 c
 
 ## Completed
 
+- PM 明確授權後已發布 UI／PWA v4.4.0：RRG 首頁新增「回測驗證」入口，`validation.html` 以四個分頁動態讀取 schema v1 `rrg_validation.json`，不硬寫回測數字。
+- PWA cache 升 `rrg-v4.4.0`；回測 HTML／CSS／JS 納 app shell，`rrg_validation.json` 與每日 `rrg_web.json` 同採 network-first。`deploy_web.py` 白名單由 5 檔擴為 9 個 web 檔，仍只逐檔 add。
+- 每月回測流程改為 refresh → backtest → deploy → 公開 `as_of` 核對 → Batnini Telegram 成功通知；本次公開頁核對後已實際送出 `version=2026-07-16` 通知。
+- HoldingsRadar 完整 RRG 回歸 27／27 通過，JavaScript syntax check 通過；本機 1440×900、1280×720、390×844 與公開桌機／手機驗證均無水平溢出、4 問題／4 方法載入正確、console 0 error／warning。
+- HoldingsRadar 來源 commit `cfee3bb`；sector-rrg 公開功能 commit `5e53c63` 已 fast-forward push。公開首頁、`validation.html`、`rrg_validation.json`、`sw.js` 均 HTTP 200，UI v4.4.0、cache v4.4.0、schema v1、as_of 2026-07-16 已核對。
 - 已建立並啟用 `HoldingsRadar RRG Backtest` Windows task：每月 1 日 07:10 直接呼叫 Python orchestrator；2026-07-17 實際試跑 Last Result=0，下一次為 2026-08-01 07:10。
 - 月度流程會刷新本機資料、執行 walk-forward 回測、更新 `web/rrg_validation.json`，再透過 Batnini 共用 Telegram bot 通知；本輪成功通知已實際送出一次，同日期重跑會去重。
 - 每日 18:00 `HoldingsRadar RRG` 在 exporter 與既有 deploy 成功後，會輪詢公開 `rrg_web.json` 並核對 `generated` 日期；核對成功才通知「RRG 頁面已更新本日數據」，未同步完成則只發警告，不誤報成功。

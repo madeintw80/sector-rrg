@@ -11,6 +11,8 @@
 ## 架構
 
 - `index.html`：無框架單頁前端，含 CSS、RRG SVG 與互動邏輯。桌機寬版採左控制／中 RRG／右下鑽；一般筆電採左控制＋中 RRG、下鑽置於圖下；980px 以下的 PWA 改用「輪動圖／設定／下鑽」固定底部分頁。
+- `validation.html`／`validation.css`／`validation.js`：UI／PWA v4.4.0 新增的獨立回測驗證頁；首頁「回測驗證」進入，動態讀取 `rrg_validation.json`，分為研究摘要、象限表現、權重穩定、定期驗證四頁，不把探索性結果包裝成交易訊號。
+- `rrg_validation.json`：schema v1 月度回測精簡契約，提供資料窗、四方法、象限、熱門確認、跨年穩定性、研究問題與限制；前端採 network-first，不硬寫回測數字。
 - `rrg_web.json`：schema v7 每日資料；保留 12／34／229 個三層互斥產業分類，另含受控 `topic_rrg`、1,970 家全市場公司索引、MoneyDJ 多標籤、逐層覆蓋率、5／20／60 日群組確認資料、近 126 個交易日個股價量，以及分類 50%／題材 30% 的 `index_weighting` 契約；前端採 network-first。
 - `rrg_web_data.js`：離線 fallback 快照。
 - `manifest.json`、`sw.js`、`icons/`：PWA 與離線快取。
@@ -22,6 +24,7 @@
 
 - 純靜態網站，可在 repo 根目錄執行：`python -m http.server 8765`。
 - 開啟 `http://127.0.0.1:8765/`；不需安裝前端相依套件。
+- 公開回測頁：`https://madeintw80.github.io/sector-rrg/validation.html`。
 
 ## 測試
 
@@ -39,9 +42,9 @@
 
 - `C:/Users/User/projects/HoldingsRadar/research/rrg_backtest.py` 是獨立研究工具，只讀 `data/.rrg_market_v2_*.pkl` 與 `data/rrg_universe.json`；正式每日 RRG 權重與公式不會因回測結果自動改寫。
 - 手動執行：在 HoldingsRadar 根目錄用專案 Python 跑 `python research/rrg_backtest.py --web-json web/rrg_validation.json`；目前 275 個正式分類 × 4 種 walk-forward 指數約 2 分鐘，輸出聚合 CSV、Markdown 報告與回測頁精簡 JSON。
-- 自動執行：Windows task `HoldingsRadar RRG Backtest` 每月 1 日 07:10 直接呼叫 `research/rrg_scheduled_run.py`，依序刷新本機 RRG 資料、完成回測、更新 `web/rrg_validation.json`，成功後再由共用 Batnini Telegram bot 通知；任一步失敗即停止並送失敗通知。
+- 自動執行：Windows task `HoldingsRadar RRG Backtest` 每月 1 日 07:10 直接呼叫 `research/rrg_scheduled_run.py`，依序刷新本機資料、完成回測、更新 `web/rrg_validation.json`、執行白名單部署，公開 `as_of` 核對成功後才由共用 Batnini Telegram bot 通知；任一步失敗即停止並送失敗通知。
 - 每日 RRG task 仍於 18:00 執行；只有 exporter、既有部署與公開 `rrg_web.json` 日期核對都成功，才由 Batnini Telegram bot 發送「RRG 頁面已更新本日數據」。相同資料日期會去重，不重複通知。
-- 回測測試版頁面目前只在本機 `http://127.0.0.1:4173/` 預覽；尚未併入公開 RRG 頁或部署白名單，公開發布仍需 PM 另行明確授權。
+- 回測頁已於 PM 2026-07-17 明確授權後正式發布；每日白名單部署同步 `validation.html`／CSS／JS／`rrg_validation.json`，PWA v4.4.0 對回測 JSON 採 network-first。
 - 無前視口徑：t 日權重只使用 t-1 單日成交額，或截至 t-1 的 20 日均成交額；當時價格歷史需至少 121 日。訊號在 t 收盤形成，5／20／60 日結果從 t 收盤後計算。
 - 研究限制：3 年快取與 taxonomy 都以 2026-07-16 現行掛牌／分類快照為主，存在 survivorship bias 與分類歷史偏差；歷史成交額是還原收盤價 × 成交量代理值。結果只能作探索性產品決策，不能視為交易保證。
 - 回測與通知測試固定 t-1 對齊、20 日窗口、50% 封頂、全缺成交額等權 fallback、缺價重正規化、前瞻報酬日期、輸出統計、公開日期核對、同日通知去重與排程步驟失敗即停；目前 RRG 相關全套 22／22 通過。
@@ -50,6 +53,7 @@
 
 - 公開站：`https://madeintw80.github.io/sector-rrg/`。
 - 本 repo 為 GitHub Pages 發布 repo；每日排程由 `HoldingsRadar/deploy_web.py` 同步白名單檔並 push。
+- 白名單含 RRG 首頁、回測頁、兩份動態 JSON、離線 fallback、manifest、service worker 與 icons；不得改用 `git add -A`。
 - 手動 push 或任何部署變更都需 PM 明確授權。
 
 ## 已知風險 / 注意事項

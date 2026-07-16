@@ -12,6 +12,7 @@
 
 ## Done
 
+- [x] 2026-07-17：PM 明確授權後發布 RRG Validation Lab 與 UI／PWA v4.4.0；首頁加入回測入口，公開頁動態讀取 schema v1 JSON，月度流程發布並核對公開日期後才由 Batnini Telegram bot 通知。27 tests、多尺寸與公開站驗證通過；來源 `cfee3bb`、公開功能 `5e53c63`。
 - [x] 2026-07-17：啟用每月 1 日 07:10 的 RRG walk-forward 自動回測；新增精簡驗證 JSON、Batnini Telegram 成功／失敗通知、每日公開資料日期核對與同日去重。回測頁補上四個驗證問題與限制說明；22 tests、實際排程試跑與本機頁建置通過。來源 commit `6fd953a`；未 push／deploy 回測頁。
 - [x] 2026-07-16：完成 RRG 有效性探索性 walk-forward 回測；275 類 × 4 方法、637,616 狀態事件與 800,800 權重診斷。20 日均額大幅降低名單／權重換手但未提升前瞻超額表現；50% 封頂主要降低舊版集中尾部風險；熱門確認整體有增益但跨年不穩。工具／15 tests／完整報告 commit `f2f519e`；未改正式 pipeline、未 push／deploy／改排程。
 - [x] 2026-07-16：完成第三項 RRG 改良：正式分類維持成交額前 8 家、單股封頂 50%，題材維持全部有效成分與 30%；schema v7 記錄權重契約，275／275 分類與 371／371 題材五視角可計算。來源 commit `a27618e`、本 repo feature commit `34a785f`；本輪未 push／deploy。
