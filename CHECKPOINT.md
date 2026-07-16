@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T10:09:42+08:00
+Updated: 2026-07-16T10:44:34+08:00
 Task Lead: Echo
 Status: ready_for_release
 Branch: master
-Last verified commit: 32bd5d3
+Last verified commit: c57262c
 
 ## PM requested
 
@@ -14,13 +14,16 @@ Last verified commit: 32bd5d3
 
 ## Completed
 
-- MoneyDJ 全目錄共 1,062 類，全部分類頁抓取成功、errors=0；與 TWSE／TPEX 2026-07-15 現役清單交集後共有 1,913 檔公司。
-- 全目錄直接命中 1,912 檔；唯一目錄未命中的 `6741 91APP*-KY` 經 MoneyDJ 個股相關產業頁二次查核，取得 Internet技術與基礎設施、應用軟體、軟體業、電商服務 4 題材。最終 MoneyDJ 覆蓋 1,913／1,913（100%），官方補底 0 檔。
+- MoneyDJ 全目錄共 1,062 類，全部分類頁抓取成功、errors=0；TWSE／TPEX 公司基本資料 API 的現行普通股掛牌母體共有 1,927 檔公司。
+- 全目錄直接命中 1,926 檔；唯一目錄未命中的 `6741 91APP*-KY` 經 MoneyDJ 個股相關產業頁二次查核，取得 Internet技術與基礎設施、應用軟體、軟體業、電商服務 4 題材。最終 MoneyDJ 覆蓋 1,927／1,927（100%），官方補底 0 檔。
+- 修正先前以每日成交行情代替掛牌名冊的口徑錯誤；補回 14 檔仍掛牌但當日零成交／無行情公司，包含 `1589 永冠-KY`，其成交額保留為 0 而不再從索引消失。
+- 對帳舊官方題材檔的「2,032 檔」：它是 36 個非「其他」產業籃子內的唯一歷史代碼，不是現行掛牌名冊；扣除 169 個非現行掛牌代碼、補回 64 個現行但官方產業為「其他」的公司後，`2,032 - 169 + 64 = 1,927`。
 - `1802 台玻` 命中 6 題材：傳產其他、印刷電路板相關、建材、玻璃、玻纖布、複合材料。
 - `6187 萬潤` 命中 2 題材：封測用設備、設備儀器商。
-- 新增 `HoldingsRadar/build_rrg_universe.py`，週更流程擴為三步；擷取失敗、目錄少於 1,000 類、現役公司少於 1,800 檔或 MoneyDJ 覆蓋低於 80% 時不覆蓋舊檔。
-- `rrg_web.json`／離線快照新增 `coverage` 與 `universe`；前端 UI v2.1.1 可搜尋所有公司、股號及 MoneyDJ 題材，並區分「MoneyDJ 全產業目錄／個股相關產業」來源。
+- 新增 `HoldingsRadar/build_rrg_universe.py`，週更流程擴為三步；擷取失敗、目錄少於 1,000 類、現役公司少於 1,900 檔或 MoneyDJ 覆蓋低於 80% 時不覆蓋舊檔。
+- `rrg_web.json`／離線快照新增 `coverage` 與 `universe`；前端 UI v2.1.2 可搜尋所有公司、股號及 MoneyDJ 題材，並區分「MoneyDJ 全產業目錄／個股相關產業」來源。
 - HoldingsRadar 本機實作 commits：`8b43010`、`7fc0c77`；sector-rrg 本機功能 commits：`d77d972`、`32bd5d3`。皆未 push。
+- 現行掛牌母體修正 commits：HoldingsRadar `33e6784`；sector-rrg `c57262c`。皆未 push。
 - PM 於 2026-07-16 明確回覆 `push`；已將 `d349298..c91d53f` 以 fast-forward 推送至 `origin/master`，無遠端分岔或強制推送。
 - 公開 GitHub Pages 已實測為 `UI v2.0.4`；智慧搜尋、桌機寬版、字級與對比修正均已上線，PWA cache 為 `rrg-v2.0.4`。
 - 搜尋索引擴充為題材名稱、公司名、股號；比對會忽略空格、連字號與常見分隔符，`AI 伺服器` 可正確命中 `AI伺服器`。
@@ -44,14 +47,15 @@ Last verified commit: 32bd5d3
 
 ## Current state
 
-- 本機 `sector-rrg/master` 已有 UI v2.1.1 與 1,913 檔全市場索引，尚未 push；公開 GitHub Pages 仍是上一個已驗證版本 UI v2.0.4。
+- 本機 `sector-rrg/master` 已有 UI v2.1.2 與 1,927 檔全市場索引，尚未 push；公開 GitHub Pages 仍是上一個已驗證版本 UI v2.0.4。
 - 來源 repo 的已追蹤程式／UI 已 commit；原有且持續更新的 `HoldingsRadar/web/rrg_web.json`、`rrg_web_data.js` 產生檔仍保留為未 commit，不清除、不混入程式 commit。
 
 ## Verification
 
-- 正常 TLS 憑證驗證下重爬 MoneyDJ 1,062／1,062 類成功，零分類頁錯誤；再複核 1 個目錄未命中公司的 MoneyDJ 個股頁，輸出 1,913 unique codes、0 topicless、1,913 MoneyDJ、0 official fallback。
-- `rrg_web_export.py` 完成 57 題材 × 5 spans、359／359 檔訊號與 1,913 檔全市場輸出；JSON 約 2.25 MB。
-- 本機瀏覽器實測 `1802`、`6187`、`6741`、`2330` 及題材關鍵字 `玻璃`：公司卡、MoneyDJ 題材、個股頁二次查核來源與既有 RRG 題材連動皆正確；UI v2.1.1 console error／warning 為 0。
+- 正常 TLS 憑證驗證下重爬 MoneyDJ 1,062／1,062 類成功，零分類頁錯誤；再複核 1 個目錄未命中公司的 MoneyDJ 個股頁，輸出 1,927 unique codes、0 topicless、1,927 MoneyDJ、0 official fallback。
+- `rrg_web_export.py` 完成 57 題材 × 5 spans、359／359 檔訊號與 1,927 檔全市場輸出；JSON 約 2.30 MB。
+- AST 2／2、1,927 unique、0 topicless、14 檔零成交公司全部存在且 `tv=0`；兩個 repo 的 UI／資料四檔 SHA-256 一致，`git diff --check` 通過。
+- 本機瀏覽器實測 `1802`、`6187`、`6741`、`2330`、`1589` 及題材關鍵字 `玻璃`：公司卡、MoneyDJ 題材、個股頁二次查核來源與既有 RRG 題材連動皆正確；`1589 永冠-KY` 顯示成交額 0 億與「機械零組件」，UI v2.1.2 正確顯示全市場 1,927 檔。
 - 390×844 實測台玻卡片左右界線 30–345px，document/body scroll width 375px，無水平溢出；Browser console error／warning：0。
 - AST 3／3、PowerShell launcher 語法、JSON 完整性斷言與 `git diff --check` 通過；兩個 repo 的 `index.html`、`sw.js`、`rrg_web.json`、`rrg_web_data.js` SHA-256 全數一致。
 - 發布前 `git fetch origin --prune` 後確認 `HEAD...origin/master` 為 `8 0`，只有本機領先；`git push origin master` 成功：`d349298..c91d53f`。
@@ -82,7 +86,7 @@ Last verified commit: 32bd5d3
 
 ## Decisions and assumptions
 
-- 「全市場覆蓋」定義為 TWSE／TPEX 當日清單中代碼符合 `[1-8]\d{3}` 的現役公司普通股；排除 ETF、ETN、權證、DR 與興櫃。
+- 「全市場覆蓋」定義為 TWSE／TPEX 公司基本資料 API 中代碼符合 `[1-8]\d{3}` 的現行掛牌公司普通股；排除 ETF、ETN、權證、DR 與興櫃，並保留零成交／暫停交易公司。
 - MoneyDJ 完整題材是公司資料／搜尋層；現有 57 個合併題材是 RRG 計算與主圖層。未落入 57 個核心題材的公司仍會顯示所有 MoneyDJ 題材，但不捏造 RRG 座標。
 - 搜尋建議以 10 筆為上限；題材完全／前綴匹配優先，再依所屬題材成交額排序個股結果。
 - 使用者明確選取建議時，結果可自動解除會擋住目標的成交值或象限篩選；直接輸入但未選取時仍保留既有篩選條件。
@@ -93,7 +97,7 @@ Last verified commit: 32bd5d3
 
 ## Next actions
 
-- 等待 PM 明確授權 push／deploy；獲准後先確認遠端未分岔，再 push `sector-rrg/master`，最後實測公開 GitHub Pages UI v2.1.1、1,913 檔、台玻、萬潤與 console。
+- 等待 PM 明確授權 push／deploy；獲准後先確認遠端未分岔，再 push `sector-rrg/master`，最後實測公開 GitHub Pages UI v2.1.2、1,927 檔、台玻、萬潤、永冠-KY 與 console。
 - 共用架構帳本因 `agent-workspace` 既有 dirty handoff 變更未直接 append；已建立 `handoffs/2026-07-16-0957-echo-to-batnini-rrg-full-market-changelog.md`，待 Batnini 安全同步。
 
 ## Risks / blockers
