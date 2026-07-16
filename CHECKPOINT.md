@@ -1,13 +1,15 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T23:56:00+08:00
+Updated: 2026-07-17T04:35:00+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: HoldingsRadar f2f519e; sector-rrg 84f1592
+Last verified commit: HoldingsRadar 6fd953a; sector-rrg 4a15b70（前一功能 commit；本檔為最新交接）
 
 ## PM requested
 
+- 2026-07-17：啟用自動回測排程，並在回測測試頁補充白話說明，讓使用者理解目前是在驗證象限、權重方法、熱門確認與是否足以進入選股，而不是展示買賣保證。
+- 2026-07-17：回測更新成功與每日 RRG 公開頁更新本日數據後，皆需透過 Batnini 使用的共用 Telegram bot 通知；不得在公開頁日期尚未確認時誤報成功。
 - 2026-07-16：獨立驗證 RRG 有效性。以 walk-forward／lagged inputs 比較現行單日成交額 50% 封頂、落後一期 20 日均成交額 50% 封頂、等權，以及舊版單日成交額無封頂；先做正式分類，檢驗四象限、關鍵轉換與 5／20／60 日絕對／超額報酬，另評估成交額升溫、廣度與既有超額報酬的熱門確認增益。不得修改正式每日 pipeline、push、deploy、排程或公開發布。
 - 2026-07-16：第三項 RRG 改良調整群組指數成交額權重；正式分類保留成交額前 8 家、單股最高 50%，題材維持全部有效成分與 30% 上限。只調整指數建構權重，不改 RS-Ratio／RS-Momentum、回測、父層基準、均線、排程或公開發布；本輪只做本機重建、測試與 commits。
 - 2026-07-16：第二項 RRG 改良在既有公司圖卡加入近 6 個月個股價格小圖，至少含現價、當日漲跌、MA20、MA60 與成交量；分類／題材成分股都能開啟，保留基本資料、題材標籤、燈號與既有下鑽。本輪只做本機修改、重建、測試與 commits，不 push／deploy、不改排程或 RS-Ratio／RS-Momentum。
@@ -33,6 +35,11 @@ Last verified commit: HoldingsRadar f2f519e; sector-rrg 84f1592
 
 ## Completed
 
+- 已建立並啟用 `HoldingsRadar RRG Backtest` Windows task：每月 1 日 07:10 直接呼叫 Python orchestrator；2026-07-17 實際試跑 Last Result=0，下一次為 2026-08-01 07:10。
+- 月度流程會刷新本機資料、執行 walk-forward 回測、更新 `web/rrg_validation.json`，再透過 Batnini 共用 Telegram bot 通知；本輪成功通知已實際送出一次，同日期重跑會去重。
+- 每日 18:00 `HoldingsRadar RRG` 在 exporter 與既有 deploy 成功後，會輪詢公開 `rrg_web.json` 並核對 `generated` 日期；核對成功才通知「RRG 頁面已更新本日數據」，未同步完成則只發警告，不誤報成功。
+- 回測測試頁新增「這頁到底在測什麼？」四問、勝率與報酬率差異、使用順序與資料限制；lint、production build 與 `127.0.0.1:4173` HTTP 200 驗證通過。測試頁仍為本機版本，未 push／deploy。
+- RRG 回測、通知與排程相關 22 項測試全數通過；PowerShell wrapper 語法檢查通過。HoldingsRadar commit `6fd953a`。
 - 完成獨立 walk-forward 回測工具、15 項測試、聚合 CSV 與完整報告；HoldingsRadar commit `f2f519e`。正式每日 pipeline、UI、schema 產生檔、排程與公開站均未修改。
 - 價量範圍為 2023-07-17～2026-07-16 共 729 個交易日；正式 taxonomy 12＋34＋229＝275 類全部納入。四方法共產生 637,616 筆 RRG 狀態事件與 800,800 筆權重診斷。
 - A 現行：t-1 單日成交額、前 8 家、50% 封頂；B 候選：截至 t-1 的 20 日均成交額、前 8 家、50% 封頂；C：當時 121 日價格有效成分等權；D：t-1 單日成交額、前 8 家、舊版無封頂。

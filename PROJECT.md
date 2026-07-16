@@ -37,11 +37,14 @@
 
 ## 回測與研究工具
 
-- `C:/Users/User/projects/HoldingsRadar/research/rrg_backtest.py` 是獨立研究工具，只讀 `data/.rrg_market_v2_*.pkl` 與 `data/rrg_universe.json`，不由每日 pipeline、排程或部署程式呼叫。
-- 執行：在 HoldingsRadar 根目錄用專案 Python 跑 `python research/rrg_backtest.py`；目前 275 個正式分類 × 4 種 walk-forward 指數約 118 秒，輸出聚合 CSV 與 Markdown 報告到 `research/rrg_backtest_results/`。
+- `C:/Users/User/projects/HoldingsRadar/research/rrg_backtest.py` 是獨立研究工具，只讀 `data/.rrg_market_v2_*.pkl` 與 `data/rrg_universe.json`；正式每日 RRG 權重與公式不會因回測結果自動改寫。
+- 手動執行：在 HoldingsRadar 根目錄用專案 Python 跑 `python research/rrg_backtest.py --web-json web/rrg_validation.json`；目前 275 個正式分類 × 4 種 walk-forward 指數約 2 分鐘，輸出聚合 CSV、Markdown 報告與回測頁精簡 JSON。
+- 自動執行：Windows task `HoldingsRadar RRG Backtest` 每月 1 日 07:10 直接呼叫 `research/rrg_scheduled_run.py`，依序刷新本機 RRG 資料、完成回測、更新 `web/rrg_validation.json`，成功後再由共用 Batnini Telegram bot 通知；任一步失敗即停止並送失敗通知。
+- 每日 RRG task 仍於 18:00 執行；只有 exporter、既有部署與公開 `rrg_web.json` 日期核對都成功，才由 Batnini Telegram bot 發送「RRG 頁面已更新本日數據」。相同資料日期會去重，不重複通知。
+- 回測測試版頁面目前只在本機 `http://127.0.0.1:4173/` 預覽；尚未併入公開 RRG 頁或部署白名單，公開發布仍需 PM 另行明確授權。
 - 無前視口徑：t 日權重只使用 t-1 單日成交額，或截至 t-1 的 20 日均成交額；當時價格歷史需至少 121 日。訊號在 t 收盤形成，5／20／60 日結果從 t 收盤後計算。
 - 研究限制：3 年快取與 taxonomy 都以 2026-07-16 現行掛牌／分類快照為主，存在 survivorship bias 與分類歷史偏差；歷史成交額是還原收盤價 × 成交量代理值。結果只能作探索性產品決策，不能視為交易保證。
-- 回測測試固定 t-1 對齊、20 日窗口、50% 封頂、全缺成交額等權 fallback、缺價重正規化、前瞻報酬日期與輸出樣本／勝率／分位數／最大不利統計；目前全套 15／15 通過。
+- 回測與通知測試固定 t-1 對齊、20 日窗口、50% 封頂、全缺成交額等權 fallback、缺價重正規化、前瞻報酬日期、輸出統計、公開日期核對、同日通知去重與排程步驟失敗即停；目前 RRG 相關全套 22／22 通過。
 
 ## 部署
 
