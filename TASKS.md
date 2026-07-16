@@ -12,6 +12,7 @@
 
 ## Done
 
+- [x] 2026-07-16：完成第一項 RRG 改良：schema v5 為 12／34／229 類與 371 個題材加入 5／20／60 日絕對／超額報酬及 MA20／MA60／20日上漲廣度；UI v4.2.0 在下鑽區呈現價格確認卡。來源 commit `cee60fa`、本 repo feature commit `2d27a99`；本輪未 push／deploy。
 - [x] 2026-07-16：發布 UI／PWA v4.1.1；題材分類新增強勢起始組、高對比搜尋狀態與公司名／股號→受控題材搜尋。來源 commit `b790e59`、公開功能 commit `aad2585`，GitHub Pages 首頁、PWA cache 與公開 schema v4 資料均驗證通過。
 - [x] 2026-07-16：PM 追加授權後完成 `82ddc38..9529a30` fast-forward push；公開 GitHub Pages 已驗證 UI v4.0.0、schema v4、`rrg-v4.0.0`、散熱題材流程、手機三分頁與公司圖卡。
 - [x] 2026-07-16：UI v4.0.0 首屏重構為左控制／中 RRG／右下鑽工作台；1280px 筆電保留大圖的兩欄配置，390px PWA 改為「輪動圖／設定／下鑽」三分頁。

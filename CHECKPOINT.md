@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T17:46:03+08:00
+Updated: 2026-07-16T20:13:15+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: aad2585
+Last verified commit: 2d27a99
 
 ## PM requested
 
+- 2026-07-16：RRG 後續改善一次只做一項；第一項先加入分類／題材的 5／20／60 日絕對報酬、大盤報酬、超額報酬與成分股廣度確認層。本輪只做本機修改、重建、測試與 commit，不 push／deploy、不改排程。
 - 2026-07-16：新增題材分類的「強勢起始組」本機預覽；預設只選領先續強與改善接近領先的題材，並改善手機搜尋選取／取消、樣本不足與已選狀態對比。先啟動本機頁面給 PM 驗收，不 push／deploy。
 - 2026-07-16：題材分類搜尋需支援公司名與股號；命中公司後直接列出其所屬受控題材，供逐一或批次加入目前比較。本輪仍只更新本機預覽，不 push／deploy。
 - 2026-07-16：PM 驗收桌機與手機本機預覽後，明確授權將強勢起始組、搜尋對比與公司→題材搜尋正式 commit、push、deploy；發布版號為 UI／PWA v4.1.1。
@@ -29,6 +30,10 @@ Last verified commit: aad2585
 
 ## Completed
 
+- 第一項 RRG 改良已完成：schema v5 新增獨立 `confirmation` map，涵蓋 12 大分類＋34 產業＋229 細產業＋371 可比較題材，共 646 組。
+- 每組提供 5／20／60 日還原收盤價報酬、相對加權指數的幾何超額報酬，以及全體有效成分股站上 MA20、站上 MA60、20日上漲比例與樣本數；RRG 的 RS-Ratio／RS-Momentum 公式、象限與既有序列未修改。
+- UI v4.2.0／PWA cache `rrg-v4.2.0` 在分類與題材下鑽區加入價格確認卡，先顯示絕對／超額報酬，再以「多數同步／少數帶動／廣度分歧」提示成分股一致性。
+- `HoldingsRadar` 來源 commit `cee60fa`；`sector-rrg` feature commit `2d27a99`。依保護規則均只在本機 commit，未 push／deploy、未改排程。
 - UI／PWA v4.1.1 已完成正式發布：題材模式預設套用 5 個領先續強＋3 個改善接近領先的強勢起始組；搜尋卡片具高對比未選／已選／樣本不足狀態；題材模式可用公司名或股號直接列出所屬受控題材，批次加入會保留既有比較清單。
 - 來源端 `HoldingsRadar` commit `b790e59`；公開站 `sector-rrg` feature commit `aad2585` 已 fast-forward push 至 `origin/master`，GitHub Pages 首頁、PWA cache 與公開資料均完成驗證。
 - PM 追加授權後，已將 `82ddc38..9529a30` fast-forward push 至 `origin/master`；累積未發布的搜尋／公司圖卡改善、UI v4.0.0、schema v4、受控題材標籤 RRG 與 release SSOT 均已公開。
@@ -87,13 +92,18 @@ Last verified commit: aad2585
 
 ## Current state
 
-- UI v4.1.1、schema v4 與受控題材標籤 RRG 已完成實作、PM 桌機／手機預覽驗收、commits 與公開發布。
-- `HoldingsRadar` 最新來源功能 commit 為 `b790e59`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg` 最新公開功能 commit 為 `aad2585`，已 fast-forward push 至 `origin/master`。
-- GitHub Pages 公開站目前為 UI v4.1.1／schema v4／PWA cache `rrg-v4.1.1`，公開資料日期 2026-07-15。
+- UI v4.2.0／schema v5 價格與廣度確認層已完成本機資料重建、瀏覽器驗證與 feature commits，等待 PM 決定是否公開發布。
+- `HoldingsRadar` 最新來源功能 commit 為 `cee60fa`；此 repo 未設定 git remote，因此沒有可推送目的地。
+- `sector-rrg` 本機最新功能 commit 為 `2d27a99`，尚未 push；公開站仍是 UI v4.1.1／schema v4／PWA cache `rrg-v4.1.1`。
+- 今日 schema v5 本機快照日期為 2026-07-16，16,843,069 bytes；公開站不受本輪本機工作影響。
 
 ## Verification
 
+- 正式匯出：1,970家公司、12／34／229類、371個題材的五個時間視角全部可計算；1627／1627檔主角技術訊號成功。
+- schema v5：`confirmation.groups=646`（12+34+229+371）、periods=5／20／60、缺欄位 0、廣度越界 0、所有 MA20 樣本皆大於 0；資料日期 2026-07-16。
+- Python 回歸 5／5 通過：新增固定交易日報酬、幾何超額報酬與廣度測試，既有題材權重／別名測試保持全綠；3段 inline script 語法通過。
+- 本機瀏覽器：1280×720、1440×900、390×844 均無水平溢出；分類「晶圓代工」與題材「不鏽鋼」皆顯示確認卡，卡片數字／廣度無截斷，手機下鑽與淺色模式正常，console error=0。
+- `HoldingsRadar/web/` 與 `sector-rrg/` 的 `index.html`、`sw.js`、`rrg_web.json`、`rrg_web_data.js` hash 分別一致。
 - 公開 UI／PWA v4.1.1：首頁與 `sw.js` 皆 HTTP 200；`UI v4.1.1=True`、強勢起始組=True、公司→題材搜尋=True、`rrg-v4.1.1=True`。
 - 公開 `rrg_web.json`：HTTP 200、16,724,540 bytes、schema=4、公司 1,970、canonical 題材 809、可比較 371、min/default/max=5／12／20；`台積電 2330` 題材為 `IC製造、晶圓代工`。
 - UI v4.1.1 公司搜尋：`台積電`／`2330` 可映射到 `IC製造`（35 家）與 `晶圓代工`（7 家），兩者皆符合門檻；全市場 universe 題材名稱／別名對 canonical catalog 的未映射數為 0。兩份前端來源 hash 相同、3 段 inline script 均通過語法解析，本機 `http://127.0.0.1:8774/` 回應 HTTP 200。
@@ -165,12 +175,14 @@ Last verified commit: aad2585
 
 ## Next actions
 
-- 無 action-required；本回合不建立 Batnini handoff。
+- 等 PM 驗收本機結果；若明確授權公開，再 fast-forward push `sector-rrg` 並驗證 GitHub Pages 的 UI v4.2.0、schema v5、PWA cache 與公開 confirmation 資料。
+- 下一項改善尚未開工；依 PM「一個一個來」原則，不把個股價格圖、成交額權重或回測混入本回合。
+- 無 Batnini action-required；本回合不建立 handoff。
 
 ## Risks / blockers
 
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
-- schema v4 JSON 約 15.95 MiB（16,724,540 bytes），比 schema v3 大；已用共用時間軸與緊湊座標陣列壓縮，390px 本機 PWA 可正常載入。公開後若實機網路仍慢，優先評估題材資料拆檔或按需載入。
+- schema v5 JSON 約 16.06 MiB（16,843,069 bytes）；confirmation map 相較 schema v4 增量有限，390px 本機 PWA 可正常載入。若未來實機網路變慢，優先評估題材資料拆檔或按需載入。
 
 ## Previous eval_records (pending Batnini transcription)
 
