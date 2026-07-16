@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T13:51:00+08:00
+Updated: 2026-07-16T14:02:09+08:00
 Task Lead: Echo
-Status: complete
+Status: in_progress
 Branch: master
-Last verified commit: 3c24fe1
+Last verified commit: 5177ca3
 
 ## PM requested
 
+- PM 追加明確授權：本輪完成後直接 commit＋push，將 UI v3.0.1／v3.0.2／v4.0.0 與 schema v4 發布至公開 GitHub Pages；發布後需驗證公開頁、資料與 PWA cache。
 - 將桌面首屏改成投資工作台：左側集中品牌、資料摘要、輪動結論、訊號與控制；中央以 RRG 為首屏主視覺；右側保留題材下鑽與公司圖卡。
 - 一般筆電不可因硬塞三欄讓 RRG 過小；手機改用「輪動圖／設定／下鑽」分頁，不硬塞三欄。
 - 新增獨立「題材標籤 RRG」模式，與 12／34／229 三層互斥產業分類清楚分開；只畫搜尋命中／使用者自選標籤，預設最多 12、上限 20。
@@ -80,8 +81,8 @@ Last verified commit: 3c24fe1
 
 - UI v4.0.0、schema v4 與受控題材標籤 RRG 已完成本機實作、資料重建、瀏覽器驗證與功能 commits。
 - `HoldingsRadar` 功能 commit 為 `cb6a159`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg` 功能 commit 為 `3c24fe1`；待本檔與其餘 SSOT commit 後，原 repo 將維持只在本機領先。
-- GitHub Pages 公開頁仍是已發布的 UI v3.0.0；v3.0.1／v3.0.2／v4.0.0 尚未公開，push／deploy 必須由 PM 另行授權。
+- `sector-rrg` 功能 commit 為 `3c24fe1`、SSOT commit 為 `5177ca3`；目前相對 `origin/master` ahead 8／behind 0。
+- PM 已於 2026-07-16 追加授權直接 commit＋push；正進行 release SSOT commit、fast-forward push 與公開頁驗證。
 
 ## Verification
 
@@ -137,6 +138,7 @@ Last verified commit: 3c24fe1
 
 ## Decisions and assumptions
 
+- PM 本回合明確授權直接 commit＋push，已解除本次 UI v4／schema v4 的公開發布閘門；授權不擴及其他排程、機密或未來變更。
 - 「全市場覆蓋」定義為 TWSE／TPEX 公司基本資料 API 中四位數現行掛牌普通股，排除 ETF、ETN、權證、TDR 與興櫃，並保留零成交／暫停交易公司；目前為 1,970 家。
 - 三層 taxonomy 是互斥且完整的全市場產業 RRG；MoneyDJ 題材標籤是搜尋／自選後才比較的非互斥 RRG，不能當成第四層，也不會把全部 836 個標籤同時畫出。
 - 題材「至少 5 家」以標籤完整成分為資格門檻；若行情暫缺導致有效成分不足，保留標籤資料但標記樣本不足，不產生座標。

@@ -4,7 +4,7 @@
 
 ## In progress
 
-- 無。
+- [ ] 2026-07-16：依 PM 追加授權發布 UI v4.0.0／schema v4，完成 fast-forward push、公開 GitHub Pages 與 PWA cache 驗證。
 
 ## Todo（依優先順序）
 
