@@ -35,6 +35,14 @@
 - UI 狀態測試：`?ui=loading`、`?ui=empty`、`?ui=error`。
 - 確認無水平溢出、主要控制至少約 44px、console error 為 0。
 
+## 回測與研究工具
+
+- `C:/Users/User/projects/HoldingsRadar/research/rrg_backtest.py` 是獨立研究工具，只讀 `data/.rrg_market_v2_*.pkl` 與 `data/rrg_universe.json`，不由每日 pipeline、排程或部署程式呼叫。
+- 執行：在 HoldingsRadar 根目錄用專案 Python 跑 `python research/rrg_backtest.py`；目前 275 個正式分類 × 4 種 walk-forward 指數約 118 秒，輸出聚合 CSV 與 Markdown 報告到 `research/rrg_backtest_results/`。
+- 無前視口徑：t 日權重只使用 t-1 單日成交額，或截至 t-1 的 20 日均成交額；當時價格歷史需至少 121 日。訊號在 t 收盤形成，5／20／60 日結果從 t 收盤後計算。
+- 研究限制：3 年快取與 taxonomy 都以 2026-07-16 現行掛牌／分類快照為主，存在 survivorship bias 與分類歷史偏差；歷史成交額是還原收盤價 × 成交量代理值。結果只能作探索性產品決策，不能視為交易保證。
+- 回測測試固定 t-1 對齊、20 日窗口、50% 封頂、全缺成交額等權 fallback、缺價重正規化、前瞻報酬日期與輸出樣本／勝率／分位數／最大不利統計；目前全套 15／15 通過。
+
 ## 部署
 
 - 公開站：`https://madeintw80.github.io/sector-rrg/`。

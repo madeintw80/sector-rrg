@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T23:05:00+08:00
+Updated: 2026-07-16T23:56:00+08:00
 Task Lead: Echo
-Status: in_progress
+Status: complete
 Branch: master
-Last verified commit: 34a785f
+Last verified commit: HoldingsRadar f2f519e; sector-rrg 84f1592
 
 ## PM requested
 
@@ -33,6 +33,14 @@ Last verified commit: 34a785f
 
 ## Completed
 
+- 完成獨立 walk-forward 回測工具、15 項測試、聚合 CSV 與完整報告；HoldingsRadar commit `f2f519e`。正式每日 pipeline、UI、schema 產生檔、排程與公開站均未修改。
+- 價量範圍為 2023-07-17～2026-07-16 共 729 個交易日；正式 taxonomy 12＋34＋229＝275 類全部納入。四方法共產生 637,616 筆 RRG 狀態事件與 800,800 筆權重診斷。
+- A 現行：t-1 單日成交額、前 8 家、50% 封頂；B 候選：截至 t-1 的 20 日均成交額、前 8 家、50% 封頂；C：當時 121 日價格有效成分等權；D：t-1 單日成交額、前 8 家、舊版無封頂。
+- 50% 封頂相對舊版的 Leading／Improving 後 20 日超額勝率只高 0.23 個百分點，平均超額略差；但最大不利超額由 -72.01% 收斂至 -52.00%，中位數亦較好，主要價值是降低單股集中尾部風險。
+- B 的名單 churn 1.09%（A 7.80%）、平均權重換手 1.59%（A 14.26%），穩定性明顯較高；但 20 日超額勝率 34.78%（A 36.23%），不支持只因穩定就替換正式權重。
+- 固定熱門確認使 A 的 20 日超額勝率由 35.72% 升至 41.19%，B 由 34.12% 升至 41.34%；但確認後平均／中位超額仍負，且 2024 的 A 未改善，只能列為探索性可信度排序。
+- A 的 Weakening 後 20 日超額勝率 40.77%，反而高於 Improving 的 34.30%；Improving→Leading 的平均／中位超額仍負。現行象限／轉換在固定現行分類快照下，沒有呈現可直接交易的順時針預測力。
+- 題材因非互斥、成分重疊與只有現行 MoneyDJ 快照，本輪未納入正式結論；30% 上限仍是產品風險控制，不宣稱已回測證明有效。
 - 第三項 RRG 改良已完成：正式分類從具 >120 日價格的成分取成交額前 8 家，成交額加權後單股最高 50%；題材維持全部有效成分與 30% 上限。
 - schema v7 新增 `index_weighting`，明確記錄分類／題材的權重方法、上限、最小有效樣本與成交額缺值 fallback；RS-Ratio／RS-Momentum、分類歸屬、確認層、個股價格與 UI 均未修改。
 - 正式分類最小有效樣本為 3 家；目前 12 大分類＋34 產業＋229 細產業共 275／275 類均可計算，沒有因新股短歷史而掉點。題材五視角仍為 371／371。
@@ -105,13 +113,17 @@ Last verified commit: 34a785f
 
 ## Current state
 
-- RRG 有效性驗證進行中；preflight 確認兩 repo 乾淨，HoldingsRadar `a27618e`、sector-rrg `12cb88f`（相對 `origin/master` ahead 6）。
-- 本機快取含 2023-07-17～2026-07-16 共 729 個交易日的 1,970 家現行公司價量與加權指數，可做落後輸入 walk-forward。
-- `rrg_universe.json` 的 taxonomy／MoneyDJ 題材為 2026-07-16 現行快照，且價量母體以現行掛牌公司為主；本輪必須揭露 survivorship 與分類歷史偏差。正式分類列為探索性驗證，題材不納入核心結論。
-- 回測工具、測試與報告尚未完成；正式每日 pipeline、產生檔、UI、排程與公開站均未修改。
+- 回測完成，報告位於 `C:/Users/User/projects/HoldingsRadar/research/rrg_backtest_results/RRG_BACKTEST_VALIDATION_2026-07-16.md`，同目錄保留四象限、轉換、跨年、熱門確認與權重穩定性完整 CSV。
+- 正式 pipeline 維持現行分類單日成交額前 8 家／50% 封頂、題材全部有效成分／30% 封頂；本 task 沒有偷偷改成 20 日均額。
+- `sector-rrg` 公開站仍是 origin/master `41d0955` 的 UI v4.1.1／schema v4；本機累積的 UI v4.3.1／schema v7 與本次 SSOT 都未 push／deploy。
 
 ## Verification
 
+- 完整回測成功：275／275 類，events=637,616、diagnostics=800,800；最終執行約 118 秒。
+- Python pytest 15／15 通過，涵蓋 t-1 單日／20 日均額對齊、權重封頂、成交額全缺等權、當日缺價 fallback、前瞻日期、四象限與輸出樣本／勝率／分位數／最大不利統計。
+- 權重 sanity check：A／B 最高 0.500、C 最高 0.333、舊版最高 1.000；四方法正式分類平均有效成分與事件樣本數在合理範圍。
+- 報告包含 Leading／Improving／Weakening／Lagging 的 5／20／60 日絕對與超額統計、Improving→Leading 等轉換、跨年、熱門確認、樣本、勝率、平均／中位／分位數與最大不利結果。
+- HoldingsRadar `git diff --cached --check` 通過後建立 `f2f519e`；未納入 63 萬筆事件原始表，只 commit 聚合統計，避免 repo 膨脹。
 - 正式匯出：schema v7、資料日期 2026-07-16、1,970 家公司與 1,970 家 `company_prices`；12／34／229 正式分類及 371 題材的 week／month／quarter／half／year 全數可計算。
 - 權重品質：正式分類最大實際權重 0.500、題材最大實際權重 0.300；正式分類樣本不足 0，`index_weighting` 正確記錄 top_n=8、分類 min=3／cap=0.5、題材 min=5／cap=0.3。
 - 前後比較：月視角大分類 1／12、產業 3／34、細產業 24／229，共 28／275 訊號狀態改變；五視角變動依序 week 24、month 28、quarter 17、half 14、year 36。
@@ -186,6 +198,10 @@ Last verified commit: 34a785f
 
 ## Decisions and assumptions
 
+- 本輪所有結果均標為探索性：taxonomy 與公司母體是 2026-07-16 現行快照，存在 survivorship bias 與分類歷史偏差；歷史成交額是還原收盤價 × 成交量代理值，前瞻事件亦有重疊。
+- 不建議目前把正式權重從 A 改為 B：B 穩定性顯著較佳，但沒有提升前瞻超額表現。若 PM 未來重視畫面穩定勝過反應速度，可另案評估混合權重。
+- 50% 封頂保留的理由是集中風險控制，不是已證明能提高平均報酬；題材 30% 未在本輪正式驗證。
+- 現階段暫緩個股選股回測；先保存歷史 taxonomy／題材快照並建立真正 out-of-sample，避免在尚未站穩的群組訊號上疊加選股偏誤。
 - 正式分類 50% 與題材 30% 是刻意不同的產品口徑：分類保留台股真實龍頭集中，題材避免小型敘事被單股扭曲；兩者共用同一套封頂後持續重分配算法。
 - 正式分類 50% 代表單一龍頭最多和其餘代表股合計一樣重要；未達 50% 時完全保留原成交額比例，不做人為稀釋。
 - 正式分類至少 3 家有效價格才出座標；目前 275 類均達門檻。缺成交額先視為 0，只有整組成交額皆不可用才等權，不把缺值誤當高流動性。
@@ -205,14 +221,23 @@ Last verified commit: 34a785f
 
 ## Next actions
 
-- 等 PM 驗收本機結果；若明確授權公開，再 fast-forward push `sector-rrg` 並驗證 GitHub Pages 的 UI／PWA v4.3.1、schema v7、分類 50%／題材 30% 契約與公開資料。
-- 下一項改善尚未開工；依 PM「一個一個來」原則，不把回測、父層基準或其他改善混入本回合。
+- PM 驗收本機回測結論；在 PM 明確決定前，不修改正式權重、UI、排程或公開站。
+- 若要提高未來驗證品質，另開 task 設計每日／每週 taxonomy 與題材 constituent 快照；此事會碰正式資料保存與排程，需新的明確授權。
+- 個股選股回測暫緩，待群組訊號有較可靠 out-of-sample 證據後再獨立開案。
 - 無 Batnini action-required；本回合不建立 handoff。
 
 ## Risks / blockers
 
+- 目前無法消除 survivorship／分類歷史偏差；不能把固定 2026-07-16 成分的探索性數字當成完整歷史真相。
+- 5／20／60 日前瞻事件高度重疊，637,616 是觀測事件數，不等於 637,616 筆互相獨立交易。
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
 - schema v7 JSON 約 18.44 MiB（19,333,917 bytes）；本輪只新增少量權重契約，前端結構不變。若公開後實機網路變慢，優先評估個股價量或題材資料按需拆檔。
+
+## eval_record (CE-010, pending Batnini transcription)
+
+```json
+{"task_id":"CE-010","completed_at":"2026-07-16T23:56:00+08:00","task_type":"research","lead":"echo","mode":"handoff","effort":"deep","outcome":"success","one_pass":true,"pm_restatement_count":0,"rework_required":false,"reviewer":"none","review_value":"not_applicable","handoff_applicable":true,"handoff_success":"yes","safety_gate":"pass","elapsed_minutes":55,"requested_model":"not_applicable","actual_model":"unknown","evidence":["projects/HoldingsRadar commit f2f519e","projects/sector-rrg/CHECKPOINT.md","HoldingsRadar pytest 15/15","research/rrg_backtest_results/RRG_BACKTEST_VALIDATION_2026-07-16.md"],"notes":"Echo 依完整委派 prompt 只讀 preflight 後，以 lagged inputs 完成 275 類四方法 walk-forward 回測；揭露 survivorship 與分類歷史偏差，未修改正式 pipeline、未 push 或 deploy。"}
+```
 
 ## Previous eval_records (pending Batnini transcription)
 
