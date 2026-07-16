@@ -1,13 +1,18 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T12:53:40+08:00
+Updated: 2026-07-16T13:51:00+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: 07c222e
+Last verified commit: 3c24fe1
 
 ## PM requested
 
+- 將桌面首屏改成投資工作台：左側集中品牌、資料摘要、輪動結論、訊號與控制；中央以 RRG 為首屏主視覺；右側保留題材下鑽與公司圖卡。
+- 一般筆電不可因硬塞三欄讓 RRG 過小；手機改用「輪動圖／設定／下鑽」分頁，不硬塞三欄。
+- 新增獨立「題材標籤 RRG」模式，與 12／34／229 三層互斥產業分類清楚分開；只畫搜尋命中／使用者自選標籤，預設最多 12、上限 20。
+- 題材標籤至少 5 家公司；成分完全相同者合併為別名；單股權重上限 30%，成交額占比逾 60% 或有效樣本不足時顯示警告。
+- 本輪可修改、測試與 commit；不得 push／deploy，公開發布需另行確認。
 - 題材下鑽後，點成分股清單中的任一家公司，也要在右側上方顯示與搜尋公司相同的完整公司圖卡。
 - 改善 MoneyDJ 多標籤搜尋：搜尋「散熱」時，不要讓只命中弱關聯標籤的同欣電排在奇鋐、健策、雙鴻等核心散熱股前面。
 - 建議先呈現命中的 MoneyDJ 標籤，再依標籤命中數與關聯強度排序個股；公司名／股號精確搜尋維持最高優先。
@@ -19,6 +24,12 @@ Last verified commit: 07c222e
 
 ## Completed
 
+- UI v4.0.0 完成投資工作台重構：1440px 以上為左 320–380px／中央彈性 RRG／右 360–440px；1280px 筆電改兩欄並把下鑽放到圖下，避免壓縮主圖。
+- 980px 以下 PWA 改為固定底部「輪動圖／設定／下鑽」三分頁；預設開圖、控制與下鑽各自使用完整手機寬度，含 safe-area 與至少 46px 的分頁觸控高度。
+- 新增獨立題材標籤模式，文案與 12／34／229 三層互斥產業分類清楚分開；只畫搜尋命中／自選，預設最多 12 個、硬上限 20 個。
+- schema v4 輸出 836 個來源標籤，完全相同成分合併後 809 組，其中 371 組達 5 家門檻；27 個名稱列為別名，五個時間視角各 371／371 可計算。
+- 題材指數使用所有有效成分股、每股權重上限 30%；原始單股成交額占比逾 60% 或有效樣本不足時，在下鑽區顯示品質警告。
+- `HoldingsRadar` 本機功能 commit `cb6a159`；`sector-rrg` 本機功能 commit `3c24fe1`。依本輪授權只 commit，未 push／deploy。
 - UI v3.0.2 將題材下鑽的每一列成分股改為可點擊的原生按鈕；點擊後沿用既有完整公司圖卡，並將該公司置頂高亮。
 - 公司圖卡出現後會取得焦點並自動捲到可見位置；手機從清單底部點擊也不會只在畫面外更新。
 - HoldingsRadar 本機 commit `f8d798a`；sector-rrg 功能 commit `07c222e`。本次改善尚未 push，等待 PM 公開發布授權。
@@ -67,13 +78,21 @@ Last verified commit: 07c222e
 
 ## Current state
 
-- 題材下鑽公司圖卡已完成本機實作、瀏覽器驗證與 commit；`sector-rrg/master` 含尚未推送的 v3.0.1／v3.0.2 commits。
-- taxonomy v3、RRG 資料、UI 與週更／每日排程程式皆已完成並驗證。
-- `HoldingsRadar` 最新本機 commit `f8d798a`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- GitHub Pages 公開頁目前仍是已發布的 UI v3.0.0；v3.0.1／v3.0.2 等待 PM 授權後一併發布。
+- UI v4.0.0、schema v4 與受控題材標籤 RRG 已完成本機實作、資料重建、瀏覽器驗證與功能 commits。
+- `HoldingsRadar` 功能 commit 為 `cb6a159`；此 repo 未設定 git remote，因此沒有可推送目的地。
+- `sector-rrg` 功能 commit 為 `3c24fe1`；待本檔與其餘 SSOT commit 後，原 repo 將維持只在本機領先。
+- GitHub Pages 公開頁仍是已發布的 UI v3.0.0；v3.0.1／v3.0.2／v4.0.0 尚未公開，push／deploy 必須由 PM 另行授權。
 
 ## Verification
 
+- 資料品質：schema=4、JSON 16,724,540 bytes、來源標籤 836、合併後 809、可比較 371、別名 27；173 組揭露單股主導，所有實際權重最大值 0.300。
+- 五個時間視角 week／month／quarter／half／year 均為 371／371 可計算；`散熱模組` 18 家、`伺服器用散熱模組` 6 家、`散熱風扇馬達` 9 家、`其他散熱零件` 5 家。
+- Python 單元測試 3／3：成交額主導權重封頂與重分配、零成交等權、完全相同成分別名合併／五家門檻全部通過；前端 3 段 inline script 語法通過。
+- 1440×900：左欄 320px、RRG 區 681px、右欄 360px，無水平溢出；RRG 位於首屏主要視覺。
+- 1280×720：左欄 330px、RRG 區 891px、下鑽置於圖下，無水平溢出；沒有硬塞三欄縮小圖表。
+- 390×844 PWA：預設只顯示 RRG；底部三分頁各 116×46px，document scroll width=client width，設定／圖表／下鑽切換均無水平溢出。
+- 390×844 題材流程：搜尋「散熱」後加入 6／20，圖上只出現六個命中標籤；點 `散熱模組` 可見 18 家成分與單股主導／30% 封頂警告，點台達電後完整公司圖卡寬 325px、位於 375px client width 內。
+- 手機 loading／error 狀態、兩端四檔 SHA-256 同步、`git diff --check` 與瀏覽器 console error／warning=0 均通過。
 - 桌機：選取 `玻璃陶瓷綜合` 後，5 檔成分股皆呈現具唯一 accessible name 的 button；點台玻、和成時圖卡正確切換完整分類與 MoneyDJ 標籤，命中列置頂高亮。
 - 390×844：從清單底部點 `凱撒衛 1817`，圖卡更新並自動捲至 viewport top 67px；頁面 scroll width 375px＝viewport width，browser console error／warning 0。
 - 本機 UI v3.0.1：「散熱」共 6 個標籤建議，前 14 筆不含只命中 `LED散熱基板` 的同欣電；390×844 下選單 14 筆可捲動、頁面無水平溢出，browser console error／warning 0。
@@ -118,8 +137,9 @@ Last verified commit: 07c222e
 
 ## Decisions and assumptions
 
-- 「全市場覆蓋」定義為 TWSE／TPEX 公司基本資料 API 中代碼符合 `[1-8]\d{3}` 的現行掛牌公司普通股；排除 ETF、ETN、權證、DR 與興櫃，並保留零成交／暫停交易公司。
-- MoneyDJ 完整題材是公司資料／搜尋層；現有 57 個合併題材是 RRG 計算與主圖層。未落入 57 個核心題材的公司仍會顯示所有 MoneyDJ 題材，但不捏造 RRG 座標。
+- 「全市場覆蓋」定義為 TWSE／TPEX 公司基本資料 API 中四位數現行掛牌普通股，排除 ETF、ETN、權證、TDR 與興櫃，並保留零成交／暫停交易公司；目前為 1,970 家。
+- 三層 taxonomy 是互斥且完整的全市場產業 RRG；MoneyDJ 題材標籤是搜尋／自選後才比較的非互斥 RRG，不能當成第四層，也不會把全部 836 個標籤同時畫出。
+- 題材「至少 5 家」以標籤完整成分為資格門檻；若行情暫缺導致有效成分不足，保留標籤資料但標記樣本不足，不產生座標。
 - 搜尋建議以 10 筆為上限；題材完全／前綴匹配優先，再依所屬題材成交額排序個股結果。
 - 使用者明確選取建議時，結果可自動解除會擋住目標的成交值或象限篩選；直接輸入但未選取時仍保留既有篩選條件。
 - 超寬桌機保留適度邊界，不把內容無上限拉滿；1760px 在資訊密度與閱讀視線跨度間折衷。
@@ -134,7 +154,7 @@ Last verified commit: 07c222e
 ## Risks / blockers
 
 - MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
-- GitHub Pages 的 schema v3 JSON 約 10.95 MB，比舊版 2.30 MB 大；目前本機與公開抓取正常，後續若手機載入變慢可再做跨 span 成分股去重壓縮。
+- schema v4 JSON 約 15.95 MiB（16,724,540 bytes），比 schema v3 大；已用共用時間軸與緊湊座標陣列壓縮，390px 本機 PWA 可正常載入。公開後若實機網路仍慢，優先評估題材資料拆檔或按需載入。
 
 ## Previous eval_records (pending Batnini transcription)
 

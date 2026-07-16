@@ -10,12 +10,13 @@
 
 ## 架構
 
-- `index.html`：無框架單頁前端，含 CSS、RRG SVG 與互動邏輯。
-- `rrg_web.json`：schema v3 每日資料；含 12／34／229 個三層 RRG 分類、1,970 家全市場公司索引、MoneyDJ 多標籤與逐層覆蓋率；前端採 network-first。
+- `index.html`：無框架單頁前端，含 CSS、RRG SVG 與互動邏輯。桌機寬版採左控制／中 RRG／右下鑽；一般筆電採左控制＋中 RRG、下鑽置於圖下；980px 以下的 PWA 改用「輪動圖／設定／下鑽」固定底部分頁。
+- `rrg_web.json`：schema v4 每日資料；保留 12／34／229 個三層互斥產業分類，另含受控 `topic_rrg`、1,970 家全市場公司索引、MoneyDJ 多標籤與逐層覆蓋率；前端採 network-first。
 - `rrg_web_data.js`：離線 fallback 快照。
 - `manifest.json`、`sw.js`、`icons/`：PWA 與離線快取。
+- 題材標籤 RRG：只從搜尋命中或使用者自選進入，預設最多 12 個、硬上限 20 個；成分至少 5 家才可比較，完全相同成分合併為別名，每股合成權重上限 30%，原始單股成交額占比超過 60% 時揭露品質警告。
 - 分類完整性：`HoldingsRadar/build_rrg_universe.py` 以 TWSE／TPEX 公司基本資料 API 的現行掛牌名冊為母體，每週爬 MoneyDJ 全目錄；目錄未命中者再查 MoneyDJ 個股相關產業頁。不能以當日成交行情代替掛牌名冊，否則零成交／暫停交易公司會被漏掉。
-- 資料流：`HoldingsRadar/build_rrg_universe.py` → `HoldingsRadar/rrg_web_export.py` → `HoldingsRadar/web/` → `deploy_web.py` 白名單同步 → 本 repo → GitHub Pages。
+- 資料流：`HoldingsRadar/build_rrg_universe.py` → `HoldingsRadar/rrg_web_export.py`／`radar/rrg_web_pipeline.py` → `HoldingsRadar/web/` → `deploy_web.py` 白名單同步 → 本 repo → GitHub Pages。
 
 ## 執行方式
 
@@ -24,8 +25,9 @@
 
 ## 測試
 
-- 實際視窗：390×844、1280×720。
-- smoke test：資料載入、時間視角、搜尋、象限篩選、題材選取、時間軸、主題切換。
+- 實際視窗：390×844、1280×720、1440×900。
+- smoke test：資料載入、產業／題材模式切換、時間視角、搜尋與題材多選、象限篩選、時間軸、下鑽公司圖卡、主題切換。
+- 題材資料品質 test：別名成分一致、可比較標籤至少 5 家、各股實際權重不超過 30%、單股原始成交額占比警告正確，且五個時間視角都有相同可比較標籤集合。
 - 完整性 test：現役公司代碼唯一、每家公司在三層各有且只有一個分類、MoneyDJ 分類頁零抓取錯誤，並固定檢查台玻 `1802`、萬潤 `6187` 與 9xxx 公司。
 - UI 狀態測試：`?ui=loading`、`?ui=empty`、`?ui=error`。
 - 確認無水平溢出、主要控制至少約 44px、console error 為 0。
@@ -40,7 +42,8 @@
 
 - UI 真正來源在 `C:/Users/User/projects/HoldingsRadar/web/`；只改公開 repo 會在下一次排程被覆蓋。
 - 產生資料可能在來源 repo 保持未 commit 狀態；UI commit 必須只納入明確 UI 檔案。
-- 1,062 個 MoneyDJ 類別保留為可搜尋的多標籤，不直接當成互斥 RRG 分類；三層 taxonomy 才是正式分類 SSOT。
+- 目前公司實際命中 836 個 MoneyDJ 標籤，經完全相同成分合併後為 809 組，其中 371 組達到 5 家門檻；不會把全部標籤同時畫上主圖，三層 taxonomy 仍是正式互斥分類 SSOT。
+- schema v4 JSON 約 16 MB；已用共用時間軸與緊湊座標陣列降低體積，前端只展開使用者選取的最多 20 個標籤。後續若手機實測載入變慢，再評估拆檔或按需載入。
 
 ## 產業分類層級
 
@@ -50,4 +53,5 @@
 - 細產業（subindustry）：229 類，在官方產業父層內選 MoneyDJ 主題；少於 4 家的小類合併至同產業綜合類，避免一股成類；1,970／1,970。
 - MoneyDJ 多標籤：全目錄 1,062 類，現行實際命中 827 類；1,969 家由目錄命中，`6741` 由個股相關產業頁命中，合計 1,970／1,970。多標籤不受互斥分類合併影響。
 - RRG 代表股：每分類以當日成交額前 8 家合成指數；這只影響座標計算，不改變成員歸屬與覆蓋率。前端可切換三層，成交額門檻只是顯示篩選。
+- 題材標籤 RRG 使用所有有效成分股合成，不沿用「前 8 家」規則；每股權重封頂 30%，用途是比較細分產品／敘事的轉強，不取代產業分類的全市場資金輪動判讀。
 - 舊人工 59→57 題材與 FinMind 36 類檔退出正式管線；每週刷新只重建 `rrg_universe.json` taxonomy SSOT。
