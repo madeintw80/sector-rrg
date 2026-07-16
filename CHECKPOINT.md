@@ -1,17 +1,26 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T09:01:22+08:00
+Updated: 2026-07-16T09:54:25+08:00
 Task Lead: Echo
-Status: complete
+Status: ready_for_release
 Branch: master
-Last verified commit: c91d53f
+Last verified commit: d77d972
 
 ## PM requested
 
+- 將 RRG 個股覆蓋擴充為全部現役上市、上櫃公司；每家公司都必須有題材對應，不能再因 59 個人工挑選的 MoneyDJ 分類頁而靜默消失。
+- 先確認 MoneyDJ 是否真的缺少台玻、萬潤等分類；若 MoneyDJ 有資料，改正來源擷取方式，不無故更換參考來源。
 - 修正搜尋提示與實際功能不一致：搜尋需支援題材關鍵字、公司名與股號，`AI 伺服器` 等含空格輸入也要命中，並自動顯示可選建議。
 
 ## Completed
 
+- MoneyDJ 全目錄共 1,062 類，全部分類頁抓取成功、errors=0；與 TWSE／TPEX 2026-07-15 現役清單交集後共有 1,913 檔公司。
+- 1,912／1,913 檔由 MoneyDJ 直接提供題材（99.9%）；唯一未命中為 `6741 91APP*-KY`，以 `官方產業｜電子商務業` 補底，因此零公司無題材。
+- `1802 台玻` 命中 6 題材：傳產其他、印刷電路板相關、建材、玻璃、玻纖布、複合材料。
+- `6187 萬潤` 命中 2 題材：封測用設備、設備儀器商。
+- 新增 `HoldingsRadar/build_rrg_universe.py`，週更流程擴為三步；擷取失敗、目錄少於 1,000 類、現役公司少於 1,800 檔或 MoneyDJ 覆蓋低於 80% 時不覆蓋舊檔。
+- `rrg_web.json`／離線快照新增 `coverage` 與 `universe`；前端 UI v2.1.0 可搜尋所有公司、股號及 MoneyDJ 題材，並顯示公司題材卡。
+- HoldingsRadar 本機實作 commit：`8b43010`；sector-rrg 本機功能 commit：`d77d972`。兩者皆未 push。
 - PM 於 2026-07-16 明確回覆 `push`；已將 `d349298..c91d53f` 以 fast-forward 推送至 `origin/master`，無遠端分岔或強制推送。
 - 公開 GitHub Pages 已實測為 `UI v2.0.4`；智慧搜尋、桌機寬版、字級與對比修正均已上線，PWA cache 為 `rrg-v2.0.4`。
 - 搜尋索引擴充為題材名稱、公司名、股號；比對會忽略空格、連字號與常見分隔符，`AI 伺服器` 可正確命中 `AI伺服器`。
@@ -35,11 +44,16 @@ Last verified commit: c91d53f
 
 ## Current state
 
-- 智慧搜尋、桌機寬版與對比修正均已同步來源 repo 與公開 repo；`sector-rrg/master` 及公開 GitHub Pages 現在都是 `UI v2.0.4`。
-- 功能發布點為 `c91d53f`；本機 `master` 與 `origin/master` 保持同步，發布收據另以後續 docs commit 記錄。
+- 本機 `sector-rrg/master` 已有 UI v2.1.0 與 1,913 檔全市場索引，尚未 push；公開 GitHub Pages 仍是上一個已驗證版本 UI v2.0.4。
+- 來源 repo 的已追蹤程式／UI 已 commit；原有且持續更新的 `HoldingsRadar/web/rrg_web.json`、`rrg_web_data.js` 產生檔仍保留為未 commit，不清除、不混入程式 commit。
 
 ## Verification
 
+- 正常 TLS 憑證驗證下重爬 MoneyDJ 1,062／1,062 類成功，零分類頁錯誤；輸出 1,913 unique codes、0 topicless、1,912 MoneyDJ、1 official fallback。
+- `rrg_web_export.py` 完成 57 題材 × 5 spans、359／359 檔訊號與 1,913 檔全市場輸出；JSON 約 2.25 MB。
+- 本機瀏覽器實測 `1802`、`6187`、`6741`、`2330` 及題材關鍵字 `玻璃`：公司卡、MoneyDJ 題材、官方補底與既有 RRG 題材連動皆正確。
+- 390×844 實測台玻卡片左右界線 30–345px，document/body scroll width 375px，無水平溢出；Browser console error／warning：0。
+- AST 3／3、PowerShell launcher 語法、JSON 完整性斷言與 `git diff --check` 通過；兩個 repo 的 `index.html`、`sw.js`、`rrg_web.json`、`rrg_web_data.js` SHA-256 全數一致。
 - 發布前 `git fetch origin --prune` 後確認 `HEAD...origin/master` 為 `8 0`，只有本機領先；`git push origin master` 成功：`d349298..c91d53f`。
 - 公開頁 `https://madeintw80.github.io/sector-rrg/?verify=20260716-v204` 顯示 `UI v2.0.4`，資料日期 2026-07-15，主圖與題材下鑽正常。
 - 公開頁輸入 `AI 伺服器` 顯示「題材｜AI伺服器｜13 檔成分股」；輸入 `2330` 顯示「個股｜台積電 2330｜所屬題材：晶圓代工」。
@@ -68,6 +82,8 @@ Last verified commit: c91d53f
 
 ## Decisions and assumptions
 
+- 「全市場覆蓋」定義為 TWSE／TPEX 當日清單中代碼符合 `[1-8]\d{3}` 的現役公司普通股；排除 ETF、ETN、權證、DR 與興櫃。
+- MoneyDJ 完整題材是公司資料／搜尋層；現有 57 個合併題材是 RRG 計算與主圖層。未落入 57 個核心題材的公司仍會顯示所有 MoneyDJ 題材，但不捏造 RRG 座標。
 - 搜尋建議以 10 筆為上限；題材完全／前綴匹配優先，再依所屬題材成交額排序個股結果。
 - 使用者明確選取建議時，結果可自動解除會擋住目標的成交值或象限篩選；直接輸入但未選取時仍保留既有篩選條件。
 - 超寬桌機保留適度邊界，不把內容無上限拉滿；1760px 在資訊密度與閱讀視線跨度間折衷。
@@ -77,12 +93,13 @@ Last verified commit: c91d53f
 
 ## Next actions
 
-- 無。
+- 等待 PM 明確授權 push／deploy；獲准後先確認遠端未分岔，再 push `sector-rrg/master`，最後實測公開 GitHub Pages UI v2.1.0、1,913 檔、台玻、萬潤與 console。
 
 ## Risks / blockers
 
-- 無發布 blocker；既有 PWA 使用者若仍看到舊版，可按「檢查更新」或重新開啟一次讓新版 service worker 接管。
-- `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 產生檔變更仍保留，未納入本次 commit、未修改或清除。
+- 唯一待辦是生產保護門檻：本機功能已完成，公開 push／deploy 尚未取得本輪明確授權。
+- MoneyDJ 為外部公開網站；週更爬蟲已限制 4 workers、重試三次，且任一分類頁失敗就拒絕覆蓋舊檔，避免靜默產生殘缺資料。
+- `HoldingsRadar` 原有 `web/rrg_web.json`、`web/rrg_web_data.js` 已依新管線重新產出，但仍保留為未 commit 產生檔，不清除、不混入程式 commit。
 
 ## Previous eval_records (pending Batnini transcription)
 
