@@ -1,10 +1,10 @@
 # CHECKPOINT
 
-Updated: 2026-07-16T17:41:25+08:00
+Updated: 2026-07-16T17:46:03+08:00
 Task Lead: Echo
-Status: in_progress
+Status: complete
 Branch: master
-Last verified commit: 81fe199
+Last verified commit: aad2585
 
 ## PM requested
 
@@ -29,6 +29,8 @@ Last verified commit: 81fe199
 
 ## Completed
 
+- UI／PWA v4.1.1 已完成正式發布：題材模式預設套用 5 個領先續強＋3 個改善接近領先的強勢起始組；搜尋卡片具高對比未選／已選／樣本不足狀態；題材模式可用公司名或股號直接列出所屬受控題材，批次加入會保留既有比較清單。
+- 來源端 `HoldingsRadar` commit `b790e59`；公開站 `sector-rrg` feature commit `aad2585` 已 fast-forward push 至 `origin/master`，GitHub Pages 首頁、PWA cache 與公開資料均完成驗證。
 - PM 追加授權後，已將 `82ddc38..9529a30` fast-forward push 至 `origin/master`；累積未發布的搜尋／公司圖卡改善、UI v4.0.0、schema v4、受控題材標籤 RRG 與 release SSOT 均已公開。
 - GitHub Pages 公開頁、`rrg_web.json` 與 `sw.js` 已完成 cache-busting 驗證；首頁 UI v4.0.0、schema v4、PWA cache `rrg-v4.0.0` 均生效。
 - UI v4.0.0 完成投資工作台重構：1440px 以上為左 320–380px／中央彈性 RRG／右 360–440px；1280px 筆電改兩欄並把下鑽放到圖下，避免壓縮主圖。
@@ -85,14 +87,16 @@ Last verified commit: 81fe199
 
 ## Current state
 
-- UI v4.0.0、schema v4 與受控題材標籤 RRG 已完成實作、資料重建、瀏覽器驗證、commits 與公開發布。
-- `HoldingsRadar` 功能 commit 為 `cb6a159`；此 repo 未設定 git remote，因此沒有可推送目的地。
-- `sector-rrg` 功能 commit 為 `3c24fe1`、驗證 SSOT commit 為 `5177ca3`、release 授權 commit 為 `9529a30`；第一輪 push 後與 `origin/master` 同步。
-- GitHub Pages 公開站目前為 UI v4.0.0／schema v4／PWA cache `rrg-v4.0.0`，公開資料日期 2026-07-15。
+- UI v4.1.1、schema v4 與受控題材標籤 RRG 已完成實作、PM 桌機／手機預覽驗收、commits 與公開發布。
+- `HoldingsRadar` 最新來源功能 commit 為 `b790e59`；此 repo 未設定 git remote，因此沒有可推送目的地。
+- `sector-rrg` 最新公開功能 commit 為 `aad2585`，已 fast-forward push 至 `origin/master`。
+- GitHub Pages 公開站目前為 UI v4.1.1／schema v4／PWA cache `rrg-v4.1.1`，公開資料日期 2026-07-15。
 
 ## Verification
 
-- UI v4.1.1-local 公司搜尋：`台積電`／`2330` 可映射到 `IC製造`（35 家）與 `晶圓代工`（7 家），兩者皆符合門檻；全市場 universe 題材名稱／別名對 canonical catalog 的未映射數為 0。兩份前端來源 hash 相同、3 段 inline script 均通過語法解析，本機 `http://127.0.0.1:8774/` 回應 HTTP 200。
+- 公開 UI／PWA v4.1.1：首頁與 `sw.js` 皆 HTTP 200；`UI v4.1.1=True`、強勢起始組=True、公司→題材搜尋=True、`rrg-v4.1.1=True`。
+- 公開 `rrg_web.json`：HTTP 200、16,724,540 bytes、schema=4、公司 1,970、canonical 題材 809、可比較 371、min/default/max=5／12／20；`台積電 2330` 題材為 `IC製造、晶圓代工`。
+- UI v4.1.1 公司搜尋：`台積電`／`2330` 可映射到 `IC製造`（35 家）與 `晶圓代工`（7 家），兩者皆符合門檻；全市場 universe 題材名稱／別名對 canonical catalog 的未映射數為 0。兩份前端來源 hash 相同、3 段 inline script 均通過語法解析，本機 `http://127.0.0.1:8774/` 回應 HTTP 200。
 - 公開首頁與 `sw.js`：HTTP 200；`UI v4.0.0=True`、手機三分頁=True、題材模式=True、`rrg-v4.0.0=True`。
 - 公開 `rrg_web.json`：HTTP 200、16,724,540 bytes、schema=4、來源標籤 836、合併後 809、可比較 371、別名 27、min/default/max=5／12／20、weight cap=0.3、warning=0.6，五 spans 皆 371。
 - 公開 390×844 PWA：三分頁各 116×46px；搜尋「散熱」加入 6／20，圖上六個標籤完整；`散熱模組` 顯示 18 檔與單股主導／30% 封頂警告，台達電公司圖卡寬 325px，scroll width=client width，console error／warning=0。
