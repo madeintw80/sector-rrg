@@ -1,13 +1,14 @@
 # CHECKPOINT
 
-Updated: 2026-07-17T05:35:00+08:00
+Updated: 2026-07-17T11:03:07+08:00
 Task Lead: Echo
 Status: complete
 Branch: master
-Last verified commit: HoldingsRadar cfee3bb; sector-rrg 5e53c63（公開功能 commit；本檔為最新發布收據）
+Last verified commit: HoldingsRadar 66f703f; sector-rrg 8d43423（熱門確認本機 feature commits；尚未 push／deploy）
 
 ## PM requested
 
+- 2026-07-17：在正式 RRG 補上「熱門確認」，讓使用者直接找到同時符合 Leading／Improving、成交額升溫、成分股廣度與20日超額條件的產業；定位為研究優先標記，不包裝成買進訊號。
 - 2026-07-17：PM 驗收本機回測頁後，明確授權將今天的回測頁、排程與 Telegram 通知 commit、push 並發布至 GitHub Pages；完成後需驗證公開頁面與資料。
 - 2026-07-17：啟用自動回測排程，並在回測測試頁補充白話說明，讓使用者理解目前是在驗證象限、權重方法、熱門確認與是否足以進入選股，而不是展示買賣保證。
 - 2026-07-17：回測更新成功與每日 RRG 公開頁更新本日數據後，皆需透過 Batnini 使用的共用 Telegram bot 通知；不得在公開頁日期尚未確認時誤報成功。
@@ -36,6 +37,10 @@ Last verified commit: HoldingsRadar cfee3bb; sector-rrg 5e53c63（公開功能 c
 
 ## Completed
 
+- 正式 RRG 本機版已加入「熱門確認」：摘要卡顯示符合數量與前三名；點卡片會清除成交額門檻與搜尋，直接顯示全部符合群組；圖上以 🔥 標記，下鑽逐條解釋象限、成交額升溫、成分股廣度與20日跑贏大盤。
+- 熱門確認資料契約升為 schema v8：5日／20日成交額比 >1.10、20日上漲廣度 ≥50%、20日超額報酬 >0；前端再要求 Leading／Improving。成交量若晚一個交易日到齊，使用最近可得完整日並顯示 `turnover_as_of`，不把缺值當成零成交。
+- 本機 2026-07 月結果：正式分類共有 7 組符合（產業 1、次產業 6），題材另有 12 組探索性符合；下鑽示例「矽晶圓」四條件全數通過。題材因非互斥、成分重疊與 taxonomy 現行快照限制，畫面明示為探索性。
+- HoldingsRadar 全套 29 tests、4 段 inline JavaScript syntax、資料重建與來源／公開 repo 四檔 SHA256 同步通過；桌機及 390×844 手機無水平溢出、console 0 error／warning。
 - PM 明確授權後已發布 UI／PWA v4.4.0：RRG 首頁新增「回測驗證」入口，`validation.html` 以四個分頁動態讀取 schema v1 `rrg_validation.json`，不硬寫回測數字。
 - PWA cache 升 `rrg-v4.4.0`；回測 HTML／CSS／JS 納 app shell，`rrg_validation.json` 與每日 `rrg_web.json` 同採 network-first。`deploy_web.py` 白名單由 5 檔擴為 9 個 web 檔，仍只逐檔 add。
 - 每月回測流程改為 refresh → backtest → deploy → 公開 `as_of` 核對 → Batnini Telegram 成功通知；本次公開頁核對後已實際送出 `version=2026-07-16` 通知。
@@ -234,7 +239,7 @@ Last verified commit: HoldingsRadar cfee3bb; sector-rrg 5e53c63（公開功能 c
 
 ## Next actions
 
-- PM 驗收本機回測結論；在 PM 明確決定前，不修改正式權重、UI、排程或公開站。
+- PM 驗收本機熱門確認 UI；本輪先建立本機 commits，不 push／deploy。若 PM 明確授權發布，再推送並驗證 GitHub Pages 的 UI v4.5.0、schema v8、PWA cache 與當日資料，發布成功後才由既有流程發 Telegram 通知。
 - 若要提高未來驗證品質，另開 task 設計每日／每週 taxonomy 與題材 constituent 快照；此事會碰正式資料保存與排程，需新的明確授權。
 - 個股選股回測暫緩，待群組訊號有較可靠 out-of-sample 證據後再獨立開案。
 - 無 Batnini action-required；本回合不建立 handoff。
