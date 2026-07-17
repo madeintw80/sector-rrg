@@ -102,6 +102,7 @@
   .signal-card[data-signal-cat="L"]{border-top:3px solid var(--leading);}
   .signal-card[data-signal-cat="I"]{border-top:3px solid var(--improving);}
   .signal-card[data-signal-cat="W"]{border-top:3px solid var(--weakening);}
+  .signal-card[data-signal-hot]{border-top:3px solid #e04f2f;}
   .signal-label{grid-area:label;color:var(--sub);font-size:13px;}
   .signal-count{grid-area:count;justify-self:end;font-size:13px;font-variant-numeric:tabular-nums;}
   .signal-names{grid-area:names;font-size:13px;line-height:1.4;}
@@ -241,6 +242,16 @@
   .breadth-item{min-width:0;padding:6px 7px;border-radius:8px;background:color-mix(in srgb,var(--surface) 72%,transparent);}
   .breadth-item span{display:block;color:var(--sub);font-size:10px;white-space:nowrap;}
   .breadth-item strong{display:block;margin-top:1px;font-size:14px;font-variant-numeric:tabular-nums;}
+  .hot-confirm-panel{margin:10px 0;padding:10px;border:1px solid color-mix(in srgb,#e04f2f 45%,var(--line));border-radius:10px;background:color-mix(in srgb,#e04f2f 7%,var(--surface));}
+  .hot-confirm-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
+  .hot-confirm-head strong{font-size:13px}.hot-confirm-head span{color:var(--sub);font-size:10px;text-align:right;}
+  .hot-confirm-status{display:inline-flex;align-items:center;min-height:24px;padding:3px 7px;border-radius:999px;font-size:11px;font-weight:700;}
+  .hot-confirm-status.is-hot{color:#fff;background:#d94727;}.hot-confirm-status.is-wait{color:var(--sub);background:var(--surface-2);border:1px solid var(--line);}
+  .hot-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+  .hot-check{display:grid;grid-template-columns:auto 1fr;gap:2px 6px;align-items:start;padding:7px;border-radius:8px;background:var(--surface);}
+  .hot-check i{grid-row:1/3;font-style:normal;font-weight:800}.hot-check b{font-size:11px}.hot-check span{color:var(--sub);font-size:10px;line-height:1.35;}
+  .hot-check.pass i{color:var(--leading)}.hot-check.fail i{color:var(--lt-r)}.hot-check.missing i{color:var(--sub)}
+  .hot-confirm-note{margin:7px 0 0;color:var(--sub);font-size:10px;line-height:1.45;}
   .stock-guide-flow{margin:-3px 0 9px;color:var(--ink);font-size:12px;font-weight:600;}
   .stock-guide{margin:0 0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);}
   .stock-guide summary{display:flex;align-items:center;min-height:40px;padding:8px 10px;cursor:pointer;color:var(--sub);font-size:12px;font-weight:700;}
@@ -368,6 +379,10 @@
         <button type="button" class="signal-card" data-signal-cat="I" aria-pressed="false">
           <span class="signal-label">改善蓄勢</span><strong class="signal-count" id="improvingCount">0 個</strong>
           <span class="signal-names" id="improvingNames">—</span>
+        </button>
+        <button type="button" class="signal-card" data-signal-hot aria-pressed="false" title="只顯示今日通過四項熱門條件的產業或題材">
+          <span class="signal-label">🔥 熱門確認</span><strong class="signal-count" id="hotCount">0 個</strong>
+          <span class="signal-names" id="hotNames">—</span>
         </button>
         <button type="button" class="signal-card" data-signal-cat="W" aria-pressed="false">
           <span class="signal-label">轉弱警戒</span><strong class="signal-count" id="weakeningCount">0 個</strong>
@@ -668,7 +683,7 @@
   var D = null;   // 資料，載入後填
   var state = { mode:"industry", level:"subindustry", span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
                 floor:100, speed:220, search:"", stockFocus:null, companyFocus:null, cats:{}, tail:null, labels:true,
-                topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
+                hotOnly:false, topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
   var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
@@ -800,6 +815,15 @@
   }
 
   function currentPoint(item){ var s=item.series||[]; return s.length?s[endIndex(s)]:{x:100,y:100,c:"",d:"—"}; }
+  function latestPoint(item){ var s=item.series||[]; return s.length?s[s.length-1]:{x:100,y:100,c:"",d:"—"}; }
+  function hotMetrics(item){
+    var groups=D&&D.confirmation&&D.confirmation.groups;
+    return groups&&groups[themeKey(item)]&&groups[themeKey(item)].hot_confirmation;
+  }
+  function isHotConfirmed(item){
+    var point=latestPoint(item), metrics=hotMetrics(item);
+    return !!(metrics&&metrics.conditions_met&&(point.c==="L"||point.c==="I"));
+  }
   function signalScore(item, cat){
     var s=item.series, end=endIndex(s), p=s[end], prev=s[Math.max(0,end-1)];
     var motion=(p.x-prev.x)+(p.y-prev.y), turnover=Math.log((item.tv||0)+1);
@@ -812,34 +836,42 @@
     return cur().themes.filter(function(item){ return item.series&&item.series.length&&currentPoint(item).c===cat; })
       .sort(function(a,b){ return signalScore(b,cat)-signalScore(a,cat); });
   }
+  function rankedHot(){
+    return cur().themes.filter(isHotConfirmed).sort(function(a,b){
+      var ah=hotMetrics(a)||{}, bh=hotMetrics(b)||{};
+      return Number(bh.trailing_excess20||0)-Number(ah.trailing_excess20||0);
+    });
+  }
   function topNames(items, n){ return items.slice(0,n).map(function(x){return x.name;}).join("、")||"目前無明確訊號"; }
 
   // 決策摘要跟著時間軸更新，先回答主軸、下一棒與風險。
   function renderDecision(){
     if(!D || !cur() || !cur().themes.some(function(item){return item.series&&item.series.length;})){
-      ["leadingCount","improvingCount","weakeningCount"].forEach(function(id){document.getElementById(id).textContent="0 個";});
-      ["leadingNames","improvingNames","weakeningNames"].forEach(function(id){document.getElementById(id).textContent="—";});
+      ["leadingCount","improvingCount","weakeningCount","hotCount"].forEach(function(id){document.getElementById(id).textContent="0 個";});
+      ["leadingNames","improvingNames","weakeningNames","hotNames"].forEach(function(id){document.getElementById(id).textContent="—";});
       if(state.mode==="topic"){
         document.getElementById("decisionTitle").textContent="先搜尋並加入想比較的題材標籤";
         document.getElementById("decisionSummary").textContent="只會畫你選的標籤；預設最多 12 個，可手動加到 20 個。";
       }
       return;
     }
-    var leading=rankedBy("L"), improving=rankedBy("I"), weakening=rankedBy("W");
+    var leading=rankedBy("L"), improving=rankedBy("I"), weakening=rankedBy("W"), hot=rankedHot();
     document.getElementById("leadingCount").textContent=leading.length+" 個";
     document.getElementById("improvingCount").textContent=improving.length+" 個";
     document.getElementById("weakeningCount").textContent=weakening.length+" 個";
     document.getElementById("leadingNames").textContent=topNames(leading,3);
     document.getElementById("improvingNames").textContent=topNames(improving,3);
     document.getElementById("weakeningNames").textContent=topNames(weakening,3);
+    document.getElementById("hotCount").textContent=hot.length+" 個";
+    document.getElementById("hotNames").textContent=topNames(hot,3);
     var title,summary;
     var subject=state.mode==="topic"?"細分題材":"產業分類";
     if(leading.length && improving.length){
       title="主軸在「"+leading[0].name+"」，下一棒留意「"+improving[0].name+"」";
-      summary="領先區共 "+leading.length+" 個"+subject+"；改善區的 "+topNames(improving,2)+" 正在累積動能。轉弱區有 "+weakening.length+" 個，追價前先看軌跡是否持續。";
+      summary="領先區共 "+leading.length+" 個"+subject+"；改善區的 "+topNames(improving,2)+" 正在累積動能。今日熱門確認 "+hot.length+" 個；轉弱區有 "+weakening.length+" 個。";
     }else if(leading.length){
       title="目前由「"+leading[0].name+"」領先，改善區訊號偏少";
-      summary="領先區共 "+leading.length+" 個題材；下一棒尚未形成一致方向，優先追蹤領先題材能否維持右上移動。";
+      summary="領先區共 "+leading.length+" 個題材；今日熱門確認 "+hot.length+" 個。下一棒尚未形成一致方向，優先追蹤領先題材能否維持右上移動。";
     }else{
       title="輪動尚未形成清楚主軸";
       summary="目前沒有題材站穩領先區；先觀察改善區的 "+topNames(improving,2)+"，避免只憑單日成交值追價。";
@@ -915,6 +947,7 @@
       if(!t.series || !t.series.length) continue;            // 分類仍在資料裡；無價格時不畫座標
       if(state.mode!=="topic" && state.floor && t.tv < state.floor) continue;      // 成交值旋鈕
       if(hasCat && !state.cats[currentPoint(t).c]) continue; // 策略分類隨時間軸更新
+      if(state.hotOnly && !isHotConfirmed(t)) continue;      // 熱門確認固定看最新盤後資料
       if(state.mode!=="topic" && !themeMatchesSearch(t,q)) continue;               // 題材、公司名或股號
       out.push(t);
     }
@@ -1064,14 +1097,14 @@
       toggleTopicSelection(entry.topicId); renderSearchSuggestions(); input.focus(); return;
     }
     input.value=entry.label; state.search=entry.searchTerm; state.stockFocus=entry.stockCode||null;
-    state.companyFocus=entry.company||null;
+    state.companyFocus=entry.company||null; state.hotOnly=false;
     if(entry.kind==="topic"){
-      state.floor=0; state.cats={}; state.sel={}; state.focus=null;
+      state.floor=0; state.cats={}; state.hotOnly=false; state.sel={}; state.focus=null;
       syncFloorButtons(); syncLegend();
     }
     if(target){
       if(state.floor && target.tv<state.floor){ state.floor=0; syncFloorButtons(); }
-      if(Object.keys(state.cats).length && !state.cats[currentPoint(target).c]){ state.cats={}; syncLegend(); }
+      if(Object.keys(state.cats).length && !state.cats[currentPoint(target).c]){ state.cats={}; state.hotOnly=false; syncLegend(); }
     }
     document.getElementById("themeBrowser").open=true; applyFilter();
     if(target){
@@ -1194,7 +1227,8 @@
       if(!faded){
         var ax=sx(last.x), estW=item.name.length*11.5;   // 估中文字寬（font-size 11）
         var side=(ax+9+estW>594)?"L":"R";
-        labels.push({name:item.name, key:themeKey(item), ax:ax, ay:sy(last.y), side:side, picked:picked, color:col});
+        var hotPrefix=state.pos===cur().frames-1&&isHotConfirmed(item)?"🔥 ":"";
+        labels.push({name:hotPrefix+item.name, key:themeKey(item), ax:ax, ay:sy(last.y), side:side, picked:picked, color:col});
       }
     }
     if(state.labels) drawLabels(labels, th);               // 標籤開關關掉時不畫
@@ -1240,7 +1274,7 @@
     visibleThemes().forEach(function(item){
       var key=themeKey(item), b=document.createElement("button"); b.type="button"; b.className="chip"+(state.sel[key]?" on":"");
       b.setAttribute("aria-pressed",state.sel[key]?"true":"false");
-      b.innerHTML='<span class="dot" style="background:'+th.cats[currentPoint(item).c]+'"></span>'+item.name;
+      b.innerHTML='<span class="dot" style="background:'+th.cats[currentPoint(item).c]+'"></span>'+(isHotConfirmed(item)?'🔥 ':'')+item.name;
       b.addEventListener("click",function(e){ e.stopPropagation(); toggle(key); });
       box.appendChild(b);
     });
@@ -1305,7 +1339,7 @@
 
   function setMode(mode){
     if(mode==="topic" && (!D.topic_rrg || !D.topic_rrg.spans)) return;
-    stopPlay(); state.mode=mode; state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null; state.cats={};
+    stopPlay(); state.mode=mode; state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.hotOnly=false;
     if(mode==="topic") state.floor=0;
     document.querySelectorAll("#modeBtns [data-mode]").forEach(function(button){
       var active=button.dataset.mode===mode; button.classList.toggle("on",active); button.setAttribute("aria-pressed",active?"true":"false");
@@ -1446,6 +1480,29 @@
       '<div class="breadth-item"><span>20日上漲</span><strong>'+((breadth.up_20===null||breadth.up_20===undefined)?"—":breadth.up_20+"%")+'</strong></div></div></section>';
   }
 
+  function hotCheck(label, detail, passed){
+    var cls=passed===true?"pass":(passed===false?"fail":"missing"), icon=passed===true?"✓":(passed===false?"×":"—");
+    return '<div class="hot-check '+cls+'"><i>'+icon+'</i><b>'+escapeHtml(label)+'</b><span>'+escapeHtml(detail)+'</span></div>';
+  }
+
+  function renderHotConfirmation(item){
+    var metrics=hotMetrics(item), point=latestPoint(item);
+    if(!metrics) return "";
+    var checks=metrics.checks||{}, quadrantPass=point.c==="L"||point.c==="I", confirmed=isHotConfirmed(item),
+        heat=metrics.turnover_heat===null||metrics.turnover_heat===undefined?"資料不足":Number(metrics.turnover_heat).toFixed(2)+" 倍（門檻 > 1.10；截至 "+(metrics.turnover_as_of||"最近可得日")+"）",
+        breadth=metrics.breadth_up20===null||metrics.breadth_up20===undefined?"資料不足":metrics.breadth_up20+"%（門檻 ≥ 50%）",
+        excess=metrics.trailing_excess20===null||metrics.trailing_excess20===undefined?"資料不足":percentText(metrics.trailing_excess20)+"（門檻 > 0%）",
+        status=confirmed?'<span class="hot-confirm-status is-hot">🔥 熱門確認</span>':'<span class="hot-confirm-status is-wait">尚未確認</span>',
+        note=state.mode==="topic"?"題材非互斥、成分重疊，本標記僅供探索性排序；不是買進訊號。":"用於縮小產業研究清單；回測仍不足以把它當成買進訊號。";
+    return '<section class="hot-confirm-panel" aria-label="熱門確認"><div class="hot-confirm-head"><div><strong>熱門確認</strong><span style="display:block;text-align:left;">最新盤後資料 · 四項全過才點亮</span></div>'+status+'</div>'+
+      '<div class="hot-checks">'+
+        hotCheck("RRG 象限",CAT_NAME[point.c]||"資料不足",quadrantPass)+
+        hotCheck("成交額升溫",heat,checks.turnover_heat)+
+        hotCheck("成分股廣度",breadth,checks.breadth)+
+        hotCheck("20日跑贏大盤",excess,checks.excess)+
+      '</div><p class="hot-confirm-note">'+escapeHtml(note)+'</p></section>';
+  }
+
   function activateCompanyRows(side){
     side.querySelectorAll("[data-company-code]").forEach(function(row){
       row.addEventListener("click",function(event){
@@ -1496,6 +1553,7 @@
       var tally='總成交額 '+item.tv+' 億　·　成分股 '+(item.member_count||item.stocks.length)+' 檔';
       if(stars.length) tally+='　·　主角燈 紅 '+rr+'／黃 '+yy+'／綠 '+gg;
       html+='<div class="sub-tally">'+tally+'</div>';
+      html+=renderHotConfirmation(item);
       html+=renderConfirmation(item);
       html+='<div class="stock-guide-flow">建議順序：先看價格／廣度確認 → ★ 主角 → 燈號 → RSI 與原因</div>'+ 
             '<details class="stock-guide"><summary>燈號、★、RSI 怎麼看？</summary><div class="stock-guide-body">'+
@@ -1626,6 +1684,8 @@
     document.querySelectorAll("[data-signal-cat]").forEach(function(card){
       var c=card.getAttribute("data-signal-cat"); card.setAttribute("aria-pressed",has && !!state.cats[c]?"true":"false");
     });
+    var hotCard=document.querySelector("[data-signal-hot]");
+    if(hotCard) hotCard.setAttribute("aria-pressed",state.hotOnly?"true":"false");
   }
 
   // 下載目前這張 SVG 圖成 PNG（補背景色，因為 SVG 本身透明）→ 跳預覽存相簿/分享
@@ -1774,7 +1834,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.4.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.5.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
@@ -1852,6 +1912,7 @@
     document.querySelectorAll("#legend [data-cat]").forEach(function(sp){
       sp.addEventListener("click",function(){
         var c=this.getAttribute("data-cat");
+        state.hotOnly=false;
         if(state.cats[c]) delete state.cats[c]; else state.cats[c]=true;
         syncLegend(); applyFilter(); });
     });
@@ -1859,11 +1920,21 @@
     document.querySelectorAll("[data-signal-cat]").forEach(function(card){
       card.addEventListener("click",function(){
         var c=this.getAttribute("data-signal-cat"), only=Object.keys(state.cats).length===1 && state.cats[c];
+        state.hotOnly=false;
         state.cats={}; if(!only) state.cats[c]=true; syncLegend(); applyFilter();
       });
     });
+    document.querySelector("[data-signal-hot]").addEventListener("click",function(){
+      state.hotOnly=!state.hotOnly; state.cats={};
+      if(state.hotOnly){
+        stopPlay(); state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null;
+        document.getElementById("search").value=""; syncFloorButtons(); closeSearchSuggestions();
+        state.pos=cur().frames-1; slider.value=state.pos; updateDay();
+      }
+      syncLegend(); applyFilter();
+    });
     document.getElementById("resetFilters").addEventListener("click",function(){
-      state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.sel={}; state.focus=null;
+      state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.hotOnly=false; state.sel={}; state.focus=null;
       document.getElementById("search").value="";
       syncFloorButtons(); syncLegend(); closeSearchSuggestions(); applyFilter(); renderTopicPicker();
     });
@@ -1871,7 +1942,7 @@
     document.getElementById("downloadBtn").addEventListener("click",downloadPng);
     document.getElementById("gifBtn").addEventListener("click",downloadGif);
 
-    slider.addEventListener("input",function(){ stopPlay(); state.pos=+slider.value; drawThemes(); updateDay(); renderDecision(); });
+    slider.addEventListener("input",function(){ stopPlay(); state.hotOnly=false; syncLegend(); state.pos=+slider.value; drawThemes(); updateDay(); renderDecision(); });
     document.getElementById("play").addEventListener("click",play);
     // 點圖空白處＝清空選取（有選才清，避免無謂重繪）
     document.getElementById("rrg").addEventListener("click",function(){

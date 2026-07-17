@@ -10,10 +10,10 @@
 
 ## 架構
 
-- `index.html`：無框架單頁前端，含 CSS、RRG SVG 與互動邏輯。桌機寬版採左控制／中 RRG／右下鑽；一般筆電採左控制＋中 RRG、下鑽置於圖下；980px 以下的 PWA 改用「輪動圖／設定／下鑽」固定底部分頁。
+- `index.html`：無框架單頁前端，含 CSS、RRG SVG 與互動邏輯。UI／PWA v4.5.0 在摘要、圖上標籤與下鑽加入「熱門確認」；桌機寬版採左控制／中 RRG／右下鑽，一般筆電採左控制＋中 RRG、下鑽置於圖下，980px 以下的 PWA 改用「輪動圖／設定／下鑽」固定底部分頁。
 - `validation.html`／`validation.css`／`validation.js`：UI／PWA v4.4.0 新增的獨立回測驗證頁；首頁「回測驗證」進入，動態讀取 `rrg_validation.json`，分為研究摘要、象限表現、權重穩定、定期驗證四頁，不把探索性結果包裝成交易訊號。
 - `rrg_validation.json`：schema v1 月度回測精簡契約，提供資料窗、四方法、象限、熱門確認、跨年穩定性、研究問題與限制；前端採 network-first，不硬寫回測數字。
-- `rrg_web.json`：schema v7 每日資料；保留 12／34／229 個三層互斥產業分類，另含受控 `topic_rrg`、1,970 家全市場公司索引、MoneyDJ 多標籤、逐層覆蓋率、5／20／60 日群組確認資料、近 126 個交易日個股價量，以及分類 50%／題材 30% 的 `index_weighting` 契約；前端採 network-first。
+- `rrg_web.json`：schema v8 每日資料；保留 12／34／229 個三層互斥產業分類，另含受控 `topic_rrg`、1,970 家全市場公司索引、MoneyDJ 多標籤、逐層覆蓋率、5／20／60 日群組確認資料、近 126 個交易日個股價量，以及分類 50%／題材 30% 的 `index_weighting` 契約。每個群組另輸出 `hot_confirmation`，以最近可得成交量日的 5／20 日成交額比、20 日上漲廣度與20日超額報酬構成；前端再要求最新 RRG 位於 Leading／Improving，前端採 network-first。
 - `rrg_web_data.js`：離線 fallback 快照。
 - `manifest.json`、`sw.js`、`icons/`：PWA 與離線快取。
 - 題材標籤 RRG：只從搜尋命中或使用者自選進入，預設最多 12 個、硬上限 20 個；成分至少 5 家才可比較，完全相同成分合併為別名，每股合成權重上限 30%，原始單股成交額占比超過 60% 時揭露品質警告。
@@ -61,7 +61,7 @@
 - UI 真正來源在 `C:/Users/User/projects/HoldingsRadar/web/`；只改公開 repo 會在下一次排程被覆蓋。
 - 產生資料可能在來源 repo 保持未 commit 狀態；UI commit 必須只納入明確 UI 檔案。
 - 目前公司實際命中 836 個 MoneyDJ 標籤，經完全相同成分合併後為 809 組，其中 371 組達到 5 家門檻；不會把全部標籤同時畫上主圖，三層 taxonomy 仍是正式互斥分類 SSOT。
-- schema v7 JSON 約 18.44 MiB；個股價量以 126 日共用時間軸、compact offset 與緊湊數值陣列輸出，前端只展開目前公司圖卡與最多 20 個題材。後續若手機實測載入變慢，再評估拆檔或按需載入。
+- schema v8 JSON 約 18.66 MiB；個股價量以 126 日共用時間軸、compact offset 與緊湊數值陣列輸出，前端只展開目前公司圖卡與最多 20 個題材。熱門確認採明確日期與條件欄位，若最新交易日成交量尚未到齊，會退回最近有完整成交量的日期，避免把缺值誤判為零成交。後續若手機實測載入變慢，再評估拆檔或按需載入。
 
 ## 產業分類層級
 

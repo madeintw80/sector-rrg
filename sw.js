@@ -3,7 +3,7 @@
    ⚠️ 改版規則：每次更新前端檔案，把 CACHE 版本號 +1（例 v1.0.0 → v1.0.1）
       使用者的瀏覽器才會抓到新版（對應 App Versioning Rule）
    ===================================================================== */
-const CACHE = 'rrg-v4.4.0';
+const CACHE = 'rrg-v4.5.0';
 
 // App shell：前端本體，預先快取（相對路徑，配合 GitHub Pages 子目錄）
 // ⚠️ 注意 rrg_web.json（資料檔）不放這裡 → 它每天更新，改走 network-first（見下方 fetch）
