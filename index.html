@@ -106,6 +106,8 @@
   .signal-label{grid-area:label;color:var(--sub);font-size:13px;}
   .signal-count{grid-area:count;justify-self:end;font-size:13px;font-variant-numeric:tabular-nums;}
   .signal-names{grid-area:names;font-size:13px;line-height:1.4;}
+  .signal-card.rotation-card{border-top:3px solid #7c6cf0;text-decoration:none;color:inherit;cursor:pointer;}
+  .signal-card.rotation-card .signal-count{color:#a99df5;}
   .control-panel{padding:0;background:transparent;border:0;}
   .mode-block,.taxonomy-row{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line);}
   .mode-block .field-label,.taxonomy-row .field-label{display:block;margin-bottom:7px;font-weight:700;}
@@ -388,6 +390,11 @@
           <span class="signal-label">轉弱警戒</span><strong class="signal-count" id="weakeningCount">0 個</strong>
           <span class="signal-names" id="weakeningNames">—</span>
         </button>
+        <!-- 輪動訊號 OOS 追蹤入口：資料來自 rotation_signals.json（每日排程產出），點卡進對帳頁 -->
+        <a class="signal-card rotation-card" id="rotationCard" href="signals.html" hidden>
+          <span class="signal-label">🔄 輪動訊號</span><strong class="signal-count" id="rotationCount">—</strong>
+          <span class="signal-names" id="rotationNames">—</span>
+        </a>
       </section>
 
       <section class="control-panel" id="controls" aria-labelledby="controlsTitle" hidden>
@@ -1834,7 +1841,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.5.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.6.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
@@ -1990,6 +1997,24 @@
       }).catch(function(){ /* file:// 或不支援就算了 */ });
     });
   }
+
+  // ── 輪動訊號入口卡：讀 rotation_signals.json 填「今日訊號＋OOS 戰績」──
+  // 獨立於主資料流：抓得到才顯示卡，抓不到（檔案還沒產出/離線首次）就保持隱藏。
+  fetch("rotation_signals.json",{cache:"no-cache"}).then(function(res){
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    return res.json();
+  }).then(function(p){
+    var card=document.getElementById("rotationCard");
+    var todays=(p.signals||[]).filter(function(s){ return s.date===p.as_of; });
+    document.getElementById("rotationCount").textContent="今日 "+todays.length+" 個";
+    var stats=p.stats||{};
+    var names=todays.map(function(s){ return s.group_name; }).slice(0,4).join("、");
+    var score=stats.oos_filled
+      ? "OOS 勝率 "+stats.win_rate+"%（"+stats.oos_filled+" 筆）"
+      : "OOS 累積 "+(stats.oos_total||0)+" 筆";
+    document.getElementById("rotationNames").textContent=(names?names+" · ":"")+score+" · 點看對帳";
+    card.hidden=false;
+  }).catch(function(){ /* 帳本還沒產出就先不顯示卡 */ });
 })();
 </script>
 </body>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07110f">
+  <meta name="description" content="輪動訊號 OOS 追蹤：C 等權族群轉入領先＋量能確認後 5 日對等權市場的超額，公開對帳">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="validation.css">
+  <style>
+    /* 本頁專屬：訊號對帳表（validation.css 沒有的部分才寫在這） */
+    .sig-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .sig-table th, .sig-table td { padding: .55rem .6rem; text-align: left; border-bottom: 1px solid rgba(148, 210, 189, .12); white-space: nowrap; }
+    .sig-table th { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
+    .sig-table td.members { white-space: normal; font-size: .74rem; opacity: .75; max-width: 300px; }
+    .sig-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .sig-win { color: #6ee7b7; font-weight: 700; }
+    .sig-loss { color: #fda4af; font-weight: 700; }
+    .sig-wait { opacity: .6; }
+    .sig-ref { opacity: .45; }
+    .level-chip { display: inline-block; padding: .1rem .45rem; border-radius: 999px; font-size: .66rem; border: 1px solid rgba(148, 210, 189, .3); margin-left: .35rem; opacity: .8; }
+    .table-wrap { overflow-x: auto; }
+    .empty-note { padding: 1.2rem; opacity: .7; font-size: .85rem; }
+    @media (max-width: 720px) { .sig-table td.members, .sig-table th.members { display: none; } }
+  </style>
+  <title>輪動訊號追蹤｜台股產業輪動</title>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="signals.html" aria-label="輪動訊號追蹤">
+      <span class="brand-mark">R</span>
+      <span><b>Rotation Signals</b><small>OOS TRACKING</small></span>
+    </a>
+    <div class="header-meta">
+      <span class="local-pill"><i></i>每日自動更新</span>
+      <span class="asof" id="headerAsOf">資料讀取中</span>
+      <a class="back-link" href="index.html">← 回輪動圖</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="loading-state page-shell" id="loadingState" role="status" aria-live="polite">
+      <div><b>正在讀取訊號帳本</b><p>載入輪動訊號與對帳結果。</p></div>
+    </section>
+
+    <div class="page-shell" id="signalsApp" hidden>
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="hero-label">輪動訊號 <span>／ 公開考試</span></p>
+          <h1>回測亮點，<br><em>接受新樣本檢驗</em></h1>
+          <p>回測找到一格「轉入領先＋量能確認」的組合（勝率 51.5%、平均 +0.60%）。這頁把它凍結成固定規則，每天掃描、每筆自動對帳——用未來的新樣本證明它不是巧合，才有資格升級。</p>
+        </div>
+        <div class="hero-summary">
+          <div class="summary-top"><span class="pulse"></span><b>OOS 戰績</b><small>非交易訊號</small></div>
+          <div class="summary-score"><strong id="oosWinRate">—</strong><span id="oosSummary">等待第一筆對帳</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-details">
+            <div><span>累積訊號</span><b id="oosTotal">—</b></div>
+            <div><span>已對帳</span><b id="oosFilled">—</b></div>
+            <div><span>等待中</span><b id="oosPending">—</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="test-guide" aria-labelledby="guideTitle">
+        <div class="test-guide-head">
+          <div><p class="eyebrow">先懂規則，再看戰績</p><h2 id="guideTitle">訊號怎麼定義？</h2></div>
+          <p>某個族群「同一天」滿足三件事就亮訊號：① 相對加權指數的強度剛從「改善中」跨進「領先」；② 近 5 日均成交額比近月高一成以上；③ 族群裡至少一半成分股近月上漲、且族群近月已跑贏大盤。</p>
+        </div>
+        <div class="reading-rule">
+          <div><span>對帳方式</span><b>5 日後 vs 等權市場</b></div>
+          <p>訊號日收盤起算 5 個交易日，族群報酬跟「全市場等權平均」比：贏＝該族群跑贏市場平均股。判準事前固定：勝率要 &gt; 50% 且平均超額 &gt; 0，累積上百筆新樣本仍成立才算通過。</p>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="OOS 對帳統計">
+        <article class="metric-card mint-card">
+          <div class="metric-kicker"><span class="metric-index">01</span> 超額勝率</div>
+          <div class="metric-value"><span>回測 51.5%</span><b>→</b><strong id="statWin">—</strong></div>
+          <p>OOS 新樣本的勝率。低於 50% 太久＝回測那格只是巧合。</p>
+          <div class="metric-tag">門檻：&gt; 50%</div>
+        </article>
+        <article class="metric-card blue-card">
+          <div class="metric-kicker"><span class="metric-index">02</span> 平均超額</div>
+          <div class="metric-value"><span>回測 +0.60%</span><b>→</b><strong id="statMean">—</strong></div>
+          <p>每筆訊號 5 日平均贏市場平均股多少（未扣交易成本）。</p>
+          <div class="metric-tag">門檻：&gt; 0%</div>
+        </article>
+        <article class="metric-card amber-card">
+          <div class="metric-kicker"><span class="metric-index">03</span> 中位超額</div>
+          <div class="metric-value"><span>回測 +0.16%</span><b>→</b><strong id="statMedian">—</strong></div>
+          <p>看中位數避免被少數大贏拉高平均的錯覺。</p>
+          <div class="metric-tag">參考指標</div>
+        </article>
+      </section>
+
+      <section class="split-grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <div class="panel-heading">
+            <div><p class="eyebrow">每筆訊號 · 新到舊</p><h2>對帳明細</h2></div>
+            <span class="small-chip" id="ledgerCount">—</span>
+          </div>
+          <div class="table-wrap">
+            <table class="sig-table" aria-label="輪動訊號對帳明細">
+              <thead><tr>
+                <th>日期</th><th>族群</th><th class="members">主力成分股</th>
+                <th class="num">量能</th><th class="num">廣度</th><th class="num">5 日超額</th><th>結果</th>
+              </tr></thead>
+              <tbody id="signalRows"></tbody>
+            </table>
+            <div class="empty-note" id="emptyNote" hidden>還沒有訊號。訊號亮起當天會出現在這裡，5 個交易日後自動對帳。</div>
+          </div>
+          <div class="chart-note"><span></span>「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入上方統計。</div>
+        </article>
+      </section>
+
+      <section class="data-warning">
+        <span class="warning-icon">!</span>
+        <div><b>使用限制</b><ul class="limitations-list">
+          <li>探索性候選：回測 51.5% 只比擲硬幣好 1.5 個百分點，且事件視窗互相重疊，統計證據薄。</li>
+          <li>回測期間 2025 年勝率僅 46.9%（輸的年份）；訊號優勢依賴「權值股獨強」的行情結構。</li>
+          <li>平均 +0.60% 為毛超額，未扣手續費、證交稅與滑價；族群無法直接買進。</li>
+          <li>用途是「值得優先研究的族群排序」，不是買進訊號，也不預測絕對報酬。</li>
+        </ul></div>
+        <span class="warning-label">EXPLORATORY</span>
+      </section>
+
+      <footer><span>Rotation Signals</span><p>Frozen rules · Daily scan · Auto settlement</p><span id="generatedAt">僅供研究驗證</span></footer>
+    </div>
+  </main>
+  <script src="signals.js" defer></script>
+</body>
+</html>

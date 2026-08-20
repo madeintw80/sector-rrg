@@ -1,0 +1,138 @@
+{
+ "schema_version": 1,
+ "generated": "2026-08-21T03:01:54+08:00",
+ "as_of": "2026-08-20",
+ "oos_start": "2026-08-21",
+ "backtest_reference": {
+  "win_rate": 51.5,
+  "mean_excess": 0.6,
+  "median_excess": 0.16,
+  "sample": 499,
+  "window": "2023-08~2026-08"
+ },
+ "stats": {
+  "oos_total": 0,
+  "oos_filled": 0,
+  "oos_pending": 0,
+  "win_rate": null,
+  "mean_excess": null,
+  "median_excess": null
+ },
+ "level_labels": {
+  "sector": "大分類",
+  "industry": "產業",
+  "subindustry": "細產業"
+ },
+ "signals": [
+  {
+   "date": "2026-08-20",
+   "level": "industry",
+   "group_id": "industry:05",
+   "group_name": "電機機械",
+   "members": [
+    "大量 3167",
+    "上銀 2049",
+    "高力 8996",
+    "新代 7750",
+    "中砂 1560",
+    "亞德客-KY 1590",
+    "東元 1504",
+    "華城 1519"
+   ],
+   "rs_ratio": 100.21,
+   "rs_momentum": 103.13,
+   "turnover_heat": 1.217,
+   "breadth_up20": 0.515,
+   "trailing_excess20": 0.61,
+   "excess_eqw_5": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-08-20",
+   "level": "subindustry",
+   "group_id": "subindustry:05:aggregate",
+   "group_name": "電機機械綜合",
+   "members": [
+    "大量 3167",
+    "上銀 2049",
+    "高力 8996",
+    "東元 1504",
+    "大同 2371",
+    "中興電 1513",
+    "鈦昇 8027",
+    "廣運 6125"
+   ],
+   "rs_ratio": 100.17,
+   "rs_momentum": 104.19,
+   "turnover_heat": 1.323,
+   "breadth_up20": 0.574,
+   "trailing_excess20": 0.685,
+   "excess_eqw_5": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-08-20",
+   "level": "subindustry",
+   "group_id": "subindustry:18:C029010",
+   "group_name": "百貨業",
+   "members": [
+    "遠百 2903",
+    "大洋-KY 5907",
+    "欣欣 2901",
+    "統領 2910"
+   ],
+   "rs_ratio": 100.9,
+   "rs_momentum": 104.96,
+   "turnover_heat": 1.324,
+   "breadth_up20": 0.5,
+   "trailing_excess20": 0.874,
+   "excess_eqw_5": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-08-20",
+   "level": "subindustry",
+   "group_id": "subindustry:20:C099030",
+   "group_name": "製罐業",
+   "members": [
+    "雷虎 8033",
+    "宏全 9939",
+    "統一實 9907",
+    "大華 9905",
+    "福貞-KY 8411",
+    "吉源-KY 8488"
+   ],
+   "rs_ratio": 100.14,
+   "rs_momentum": 104.22,
+   "turnover_heat": 1.527,
+   "breadth_up20": 0.5,
+   "trailing_excess20": 0.338,
+   "excess_eqw_5": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-08-20",
+   "level": "subindustry",
+   "group_id": "subindustry:37:C099383",
+   "group_name": "運動用品",
+   "members": [
+    "寶成 9904",
+    "拓凱 4536",
+    "波力-KY 8467",
+    "民盛 7811"
+   ],
+   "rs_ratio": 100.88,
+   "rs_momentum": 104.42,
+   "turnover_heat": 1.288,
+   "breadth_up20": 0.5,
+   "trailing_excess20": 1.27,
+   "excess_eqw_5": null,
+   "win": null,
+   "filled_at": null
+  }
+ ]
+}
