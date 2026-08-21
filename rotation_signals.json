@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-08-21T10:52:10+08:00",
- "as_of": "2026-08-20",
+ "generated": "2026-08-21T18:04:10+08:00",
+ "as_of": "2026-08-21",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -11,9 +11,9 @@
   "window": "2023-08~2026-08"
  },
  "stats": {
-  "oos_total": 0,
+  "oos_total": 1,
   "oos_filled": 0,
-  "oos_pending": 0,
+  "oos_pending": 1,
   "win_rate": null,
   "mean_excess": null,
   "median_excess": null,
@@ -25,6 +25,34 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-08-21",
+   "level": "subindustry",
+   "group_id": "subindustry:22:C017023",
+   "group_name": "醫藥研發外包服務",
+   "members": [
+    "保瑞 6472",
+    "台康生技 6589",
+    "北極星藥業-KY 6550",
+    "永昕 4726",
+    "醣聯 4168"
+   ],
+   "rs_ratio": 102.22,
+   "rs_momentum": 105.01,
+   "turnover_heat": 1.598,
+   "breadth_up20": 0.6,
+   "trailing_excess20": 2.602,
+   "improving_days": 2,
+   "breadth_slope5": 0.2,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "win": null,
+   "filled_at": null
+  },
   {
    "date": "2026-08-20",
    "level": "industry",
