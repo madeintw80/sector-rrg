@@ -108,6 +108,23 @@
   .signal-names{grid-area:names;font-size:13px;line-height:1.4;}
   .signal-card.rotation-card{border-top:3px solid #7c6cf0;text-decoration:none;color:inherit;cursor:pointer;}
   .signal-card.rotation-card .signal-count{color:#a99df5;}
+  /* ⚡ 今日輪動訊號列：一鍵過濾 + 逐族群定位（資料來自 rotation_signals.json） */
+  .rotation-strip{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-4px 0 12px;padding:8px 10px;border:1px solid var(--line);border-left:3px solid #7c6cf0;}
+  .rotation-strip .strip-label{color:var(--sub);font-size:12px;margin-right:2px;}
+  .rotation-strip button{padding:4px 10px;font-size:12px;min-height:0;}
+  .rotation-strip button.rot-only.on{border-color:#7c6cf0;color:#a99df5;font-weight:700;}
+  .rotation-strip .rot-chip small{opacity:.65;font-size:10px;margin-left:3px;}
+  /* 側欄：輪動訊號細節面板 */
+  .rotation-panel{margin:10px 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid #7c6cf0;}
+  .rotation-panel .rp-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
+  .rotation-panel .rp-head b{font-size:13px;}
+  .rotation-panel .rp-head a{color:#a99df5;font-size:12px;text-decoration:none;white-space:nowrap;}
+  .rotation-panel .rp-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px;}
+  .rotation-panel .rp-grid span{color:var(--sub);}
+  .rotation-panel .rp-note{margin:8px 0 0;color:var(--sub);font-size:11px;line-height:1.5;}
+  .rotation-panel .rp-tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;border:1px solid var(--line);margin-left:4px;}
+  .rotation-panel .rp-tag.good{border-color:rgba(63,191,79,.6);color:var(--leading,#3fbf4f);}
+  .rotation-panel .rp-tag.warn{border-color:rgba(232,185,58,.6);color:#d9a94a;}
   .control-panel{padding:0;background:transparent;border:0;}
   .mode-block,.taxonomy-row{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line);}
   .mode-block .field-label,.taxonomy-row .field-label{display:block;margin-bottom:7px;font-weight:700;}
@@ -358,7 +375,7 @@
         <h1>台股全市場產業輪動</h1>
         <p class="tagline">產業分類看全市場資金；題材標籤看細分產品與敘事</p>
         <div class="tools" aria-label="工具">
-          <a href="validation.html" title="查看 RRG 有效性與權重方法回測">回測驗證</a>
+          <a href="validation.html" title="查看假設記分板：裸 RRG 地基證據、候選與 T+1、九假設判決">假設實驗室</a>
           <button id="downloadBtn" title="匯出目前這張靜態圖">匯出圖</button>
           <button id="themeBtn" title="切換深色或淺色">切換主題</button>
           <button id="checkUpdate" title="檢查網站程式是否有新版">檢查更新</button>
@@ -396,6 +413,9 @@
           <span class="signal-names" id="rotationNames">—</span>
         </a>
       </section>
+
+      <!-- ⚡ 今日輪動訊號互動列：只看訊號＝過濾圖上族群；點族群名＝自動切層級定位 -->
+      <div class="rotation-strip" id="rotationStrip" hidden aria-label="今日輪動訊號快速定位"></div>
 
       <section class="control-panel" id="controls" aria-labelledby="controlsTitle" hidden>
         <div class="mode-block">
@@ -664,7 +684,8 @@
       q:{ul:"#deebf7", ur:"#e5f5e0", ll:"#fdece2", lr:"#fff7bc"},
       corner:{lead:"#2c7a3f", impr:"#2b6ca3", lag:"#b03a2e", weak:"#a9781a"},
       cats:{L:"#2ca02c", I:"#1f77b4", W:"#e07b00", "":"#b8b8b8"},
-      lights:{R:"#d64545", Y:"#d99a00", G:"#2ca02c"}
+      lights:{R:"#d64545", Y:"#d99a00", G:"#2ca02c"},
+      sig:"#6d4fd8"
     },
     dark: {
       panelStroke:"#3a3a44", grid:"#3f3f48", axis:"#9a9a94", label:"#c8c8c2", leader:"#4a4a52",
@@ -672,7 +693,8 @@
       q:{ul:"#16324a", ur:"#1a3a1e", ll:"#3a1e18", lr:"#3a3416"},
       corner:{lead:"#5fcf6f", impr:"#5fb0ea", lag:"#e07a68", weak:"#d9a94a"},
       cats:{L:"#3fbf4f", I:"#4a9fe0", W:"#f0913a", "":"#6a6a66"},
-      lights:{R:"#e56a6a", Y:"#e8b93a", G:"#4fc45f"}
+      lights:{R:"#e56a6a", Y:"#e8b93a", G:"#4fc45f"},
+      sig:"#a99df5"
     }
   };
   var CAT_NAME = {L:"領先追強", I:"改善翻正", W:"領先轉弱", "":"落後／其他"};
@@ -690,7 +712,7 @@
   var D = null;   // 資料，載入後填
   var state = { mode:"industry", level:"subindustry", span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
                 floor:100, speed:220, search:"", stockFocus:null, companyFocus:null, cats:{}, tail:null, labels:true,
-                hotOnly:false, topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
+                hotOnly:false, rotationOnly:false, topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
   var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
@@ -831,6 +853,99 @@
     var point=latestPoint(item), metrics=hotMetrics(item);
     return !!(metrics&&metrics.conditions_met&&(point.c==="L"||point.c==="I"));
   }
+
+  // ── ⚡ 今日輪動訊號（rotation_signals.json，每日排程）：圖上標記＋側欄細節＋定位＋過濾 ──
+  var rotation=null;   // {byId:{}, todays:[], asOf:""} 載入後填；byId 只收「今日」訊號
+  function rotationRecord(item){
+    if(!rotation || state.mode==="topic") return null;
+    return rotation.byId[themeKey(item)]||null;
+  }
+  // 只在時間軸停在最新一格時亮標記（訊號是「今天」的事，拉回歷史日期就不標）
+  function isRotationMarked(item){
+    return !!(rotationRecord(item) && state.pos===cur().frames-1);
+  }
+
+  // 側欄：今日輪動訊號細節（含「蓄勢確認／追高警戒」品質標籤＋對帳頁連結）
+  function renderRotationPanel(item){
+    var rec=rotationRecord(item);
+    if(!rec) return "";
+    var days=rec.improving_days, slope=rec.breadth_slope5, tags="";
+    if(days!==null&&days!==undefined){
+      tags+=days>=4?'<span class="rp-tag good">✓ 蓄勢確認 '+days+' 日</span>'
+                   :'<span class="rp-tag">蓄勢 '+days+' 日</span>';
+    }
+    if(slope!==null&&slope!==undefined&&slope>0.10) tags+='<span class="rp-tag warn">⚠ 追高警戒</span>';
+    return '<section class="rotation-panel" aria-label="今日輪動訊號">'+
+      '<div class="rp-head"><b>⚡ 今日輪動訊號（'+escapeHtml(rotation.asOf)+'）'+tags+'</b><a href="signals.html">看對帳 →</a></div>'+
+      '<div class="rp-grid">'+
+        '<span>量能升溫</span><b>'+(rec.turnover_heat!=null?rec.turnover_heat+"x":"—")+'</b>'+
+        '<span>成分廣度</span><b>'+(rec.breadth_up20!=null?Math.round(rec.breadth_up20*100)+"%":"—")+'</b>'+
+        '<span>廣度 5 日斜率</span><b>'+(slope!=null?slope:"—")+'</b>'+
+        '<span>近月既有超額</span><b>'+(rec.trailing_excess20!=null?percentText(rec.trailing_excess20):"—")+'</b>'+
+      '</div>'+
+      '<p class="rp-note">訊號＝改善轉入領先＋熱門確認（研究排序用，不是買進訊號）；5 個交易日後在對帳頁自動結算。蓄勢確認＝跨線前在改善區蓄勢 ≥4 日（回測較佳桶）；追高警戒＝廣度 5 日斜率 &gt;0.10（回測最爛桶）。</p></section>';
+  }
+
+  // 定位：點互動列的族群名 → 切回產業模式＋對應層級，選取該族群並捲到圖
+  function locateRotationSignal(rec){
+    stopPlay();
+    if(state.mode!=="industry") setMode("industry");
+    if(state.level!==rec.level) setLevel(rec.level);
+    state.floor=0; state.search=""; state.cats={}; state.hotOnly=false;
+    document.getElementById("search").value=""; syncFloorButtons(); closeSearchSuggestions();
+    state.pos=cur().frames-1; slider.value=state.pos;
+    state.sel={}; state.sel[rec.group_id]=true; state.focus=rec.group_id;
+    state.stockFocus=null; state.companyFocus=null;
+    syncLegend(); applyFilter(); updateDay(); renderDecision();
+    setMobileView("chart");
+  }
+
+  // 「只看訊號」：像熱門確認卡的一鍵過濾；目前層級沒訊號就自動跳到訊號最多的層級
+  function toggleRotationOnly(){
+    var enable=!state.rotationOnly;
+    if(enable && state.mode!=="industry") setMode("industry");   // setMode 會清 rotationOnly，所以先切
+    state.rotationOnly=enable;
+    if(enable){
+      stopPlay(); state.cats={}; state.hotOnly=false; state.floor=0; state.search="";
+      state.stockFocus=null; state.companyFocus=null;
+      document.getElementById("search").value=""; syncFloorButtons(); closeSearchSuggestions();
+      var counts={}, here=0, best=null;
+      rotation.todays.forEach(function(s){ counts[s.level]=(counts[s.level]||0)+1; if(s.level===state.level) here+=1; });
+      if(!here){
+        Object.keys(counts).forEach(function(lv){ if(best===null||counts[lv]>counts[best]) best=lv; });
+        if(best && best!==state.level) setLevel(best);
+      }
+      state.pos=cur().frames-1; slider.value=state.pos; updateDay();
+    }
+    syncLegend(); applyFilter(); renderDecision();
+  }
+
+  function renderRotationStrip(){
+    var strip=document.getElementById("rotationStrip");
+    if(!strip) return;
+    if(!rotation || !rotation.todays.length || !D){ strip.hidden=true; return; }
+    strip.innerHTML="";
+    var label=document.createElement("span"); label.className="strip-label"; label.textContent="⚡ 今日訊號"; strip.appendChild(label);
+    var only=document.createElement("button"); only.type="button"; only.id="rotationOnlyBtn";
+    only.className="rot-only"+(state.rotationOnly?" on":""); only.textContent="只看訊號";
+    only.title="圖上只顯示今日亮訊號的族群"; only.setAttribute("aria-pressed",state.rotationOnly?"true":"false");
+    only.addEventListener("click",toggleRotationOnly); strip.appendChild(only);
+    rotation.todays.forEach(function(rec){
+      var b=document.createElement("button"); b.type="button"; b.className="rot-chip";
+      b.innerHTML=escapeHtml(rec.group_name)+'<small>'+escapeHtml((D.level_labels&&D.level_labels[rec.level])||rec.level)+'</small>';
+      b.title="在圖上定位 "+rec.group_name;
+      b.addEventListener("click",function(){ locateRotationSignal(rec); });
+      strip.appendChild(b);
+    });
+    strip.hidden=false;
+  }
+
+  // 訊號資料到位（或 boot 完成）後套用圖上標記與互動列；兩邊都會呼叫、先到先等
+  function applyRotationUI(){
+    if(!rotation || !D) return;
+    renderRotationStrip();
+    drawThemes(); renderChips(); renderSide();
+  }
   function signalScore(item, cat){
     var s=item.series, end=endIndex(s), p=s[end], prev=s[Math.max(0,end-1)];
     var motion=(p.x-prev.x)+(p.y-prev.y), turnover=Math.log((item.tv||0)+1);
@@ -955,6 +1070,7 @@
       if(state.mode!=="topic" && state.floor && t.tv < state.floor) continue;      // 成交值旋鈕
       if(hasCat && !state.cats[currentPoint(t).c]) continue; // 策略分類隨時間軸更新
       if(state.hotOnly && !isHotConfirmed(t)) continue;      // 熱門確認固定看最新盤後資料
+      if(state.rotationOnly && !rotationRecord(t)) continue; // 只看今日輪動訊號族群
       if(state.mode!=="topic" && !themeMatchesSearch(t,q)) continue;               // 題材、公司名或股號
       out.push(t);
     }
@@ -1225,6 +1341,12 @@
         if(isCur && !faded){ c.setAttribute("stroke",th.dotStroke); c.setAttribute("stroke-width",picked?2:1.3); }
         g.appendChild(c);
       }
+      // ⚡ 今日輪動訊號：當前點外圈光環（僅時間軸最新一格；faded 不畫）
+      if(!faded && isRotationMarked(item)){
+        g.appendChild(el("circle",{cx:sx(last.x).toFixed(1),cy:sy(last.y).toFixed(1),
+          r:(radius(item.tv)*(picked?1.25:1)+4.5).toFixed(1),fill:"none",
+          stroke:th.sig,"stroke-width":2,"stroke-dasharray":"3 2.4",opacity:0.95}));
+      }
       // 點擊熱區（疊在當前點上，較大好點）
       var hit=el("circle",{cx:sx(last.x).toFixed(1),cy:sy(last.y).toFixed(1),r:13,fill:"transparent"});
       g.appendChild(hit);
@@ -1235,6 +1357,7 @@
         var ax=sx(last.x), estW=item.name.length*11.5;   // 估中文字寬（font-size 11）
         var side=(ax+9+estW>594)?"L":"R";
         var hotPrefix=state.pos===cur().frames-1&&isHotConfirmed(item)?"🔥 ":"";
+        if(isRotationMarked(item)) hotPrefix="⚡ "+hotPrefix;
         labels.push({name:hotPrefix+item.name, key:themeKey(item), ax:ax, ay:sy(last.y), side:side, picked:picked, color:col});
       }
     }
@@ -1281,7 +1404,7 @@
     visibleThemes().forEach(function(item){
       var key=themeKey(item), b=document.createElement("button"); b.type="button"; b.className="chip"+(state.sel[key]?" on":"");
       b.setAttribute("aria-pressed",state.sel[key]?"true":"false");
-      b.innerHTML='<span class="dot" style="background:'+th.cats[currentPoint(item).c]+'"></span>'+(isHotConfirmed(item)?'🔥 ':'')+item.name;
+      b.innerHTML='<span class="dot" style="background:'+th.cats[currentPoint(item).c]+'"></span>'+(isRotationMarked(item)?'⚡ ':'')+(isHotConfirmed(item)?'🔥 ':'')+item.name;
       b.addEventListener("click",function(e){ e.stopPropagation(); toggle(key); });
       box.appendChild(b);
     });
@@ -1346,7 +1469,7 @@
 
   function setMode(mode){
     if(mode==="topic" && (!D.topic_rrg || !D.topic_rrg.spans)) return;
-    stopPlay(); state.mode=mode; state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.hotOnly=false;
+    stopPlay(); state.mode=mode; state.sel={}; state.focus=null; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.hotOnly=false; state.rotationOnly=false;
     if(mode==="topic") state.floor=0;
     document.querySelectorAll("#modeBtns [data-mode]").forEach(function(button){
       var active=button.dataset.mode===mode; button.classList.toggle("on",active); button.setAttribute("aria-pressed",active?"true":"false");
@@ -1560,6 +1683,7 @@
       var tally='總成交額 '+item.tv+' 億　·　成分股 '+(item.member_count||item.stocks.length)+' 檔';
       if(stars.length) tally+='　·　主角燈 紅 '+rr+'／黃 '+yy+'／綠 '+gg;
       html+='<div class="sub-tally">'+tally+'</div>';
+      html+=renderRotationPanel(item);
       html+=renderHotConfirmation(item);
       html+=renderConfirmation(item);
       html+='<div class="stock-guide-flow">建議順序：先看價格／廣度確認 → ★ 主角 → 燈號 → RSI 與原因</div>'+ 
@@ -1693,6 +1817,8 @@
     });
     var hotCard=document.querySelector("[data-signal-hot]");
     if(hotCard) hotCard.setAttribute("aria-pressed",state.hotOnly?"true":"false");
+    var rotBtn=document.getElementById("rotationOnlyBtn");
+    if(rotBtn){ rotBtn.classList.toggle("on",state.rotationOnly); rotBtn.setAttribute("aria-pressed",state.rotationOnly?"true":"false"); }
   }
 
   // 下載目前這張 SVG 圖成 PNG（補背景色，因為 SVG 本身透明）→ 跳預覽存相簿/分享
@@ -1841,7 +1967,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.6.0"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.7.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
@@ -1919,7 +2045,7 @@
     document.querySelectorAll("#legend [data-cat]").forEach(function(sp){
       sp.addEventListener("click",function(){
         var c=this.getAttribute("data-cat");
-        state.hotOnly=false;
+        state.hotOnly=false; state.rotationOnly=false;
         if(state.cats[c]) delete state.cats[c]; else state.cats[c]=true;
         syncLegend(); applyFilter(); });
     });
@@ -1927,12 +2053,12 @@
     document.querySelectorAll("[data-signal-cat]").forEach(function(card){
       card.addEventListener("click",function(){
         var c=this.getAttribute("data-signal-cat"), only=Object.keys(state.cats).length===1 && state.cats[c];
-        state.hotOnly=false;
+        state.hotOnly=false; state.rotationOnly=false;
         state.cats={}; if(!only) state.cats[c]=true; syncLegend(); applyFilter();
       });
     });
     document.querySelector("[data-signal-hot]").addEventListener("click",function(){
-      state.hotOnly=!state.hotOnly; state.cats={};
+      state.hotOnly=!state.hotOnly; state.cats={}; state.rotationOnly=false;
       if(state.hotOnly){
         stopPlay(); state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null;
         document.getElementById("search").value=""; syncFloorButtons(); closeSearchSuggestions();
@@ -1941,7 +2067,7 @@
       syncLegend(); applyFilter();
     });
     document.getElementById("resetFilters").addEventListener("click",function(){
-      state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.hotOnly=false; state.sel={}; state.focus=null;
+      state.floor=0; state.search=""; state.stockFocus=null; state.companyFocus=null; state.cats={}; state.hotOnly=false; state.rotationOnly=false; state.sel={}; state.focus=null;
       document.getElementById("search").value="";
       syncFloorButtons(); syncLegend(); closeSearchSuggestions(); applyFilter(); renderTopicPicker();
     });
@@ -1949,7 +2075,7 @@
     document.getElementById("downloadBtn").addEventListener("click",downloadPng);
     document.getElementById("gifBtn").addEventListener("click",downloadGif);
 
-    slider.addEventListener("input",function(){ stopPlay(); state.hotOnly=false; syncLegend(); state.pos=+slider.value; drawThemes(); updateDay(); renderDecision(); });
+    slider.addEventListener("input",function(){ stopPlay(); state.hotOnly=false; state.rotationOnly=false; syncLegend(); state.pos=+slider.value; drawThemes(); updateDay(); renderDecision(); });
     document.getElementById("play").addEventListener("click",play);
     // 點圖空白處＝清空選取（有選才清，避免無謂重繪）
     document.getElementById("rrg").addEventListener("click",function(){
@@ -1958,6 +2084,7 @@
     setLevel(state.level);
     setMode("industry");
     setMobileView("chart");
+    applyRotationUI();   // 訊號 fetch 若比主資料先到，這裡補畫標記與互動列
     if(UI_DEMO==="empty"){
       state.search="__ui_empty_state__"; document.getElementById("search").value="不會存在的測試題材";
       document.getElementById("themeBrowser").open=true; applyFilter();
@@ -2006,6 +2133,8 @@
   }).then(function(p){
     var card=document.getElementById("rotationCard");
     var todays=(p.signals||[]).filter(function(s){ return s.date===p.as_of; });
+    rotation={ byId:{}, todays:todays, asOf:p.as_of||"" };
+    todays.forEach(function(s){ rotation.byId[s.group_id]=s; });
     document.getElementById("rotationCount").textContent="今日 "+todays.length+" 個";
     var stats=p.stats||{};
     var names=todays.map(function(s){ return s.group_name; }).slice(0,4).join("、");
@@ -2014,6 +2143,7 @@
       : "OOS 累積 "+(stats.oos_total||0)+" 筆";
     document.getElementById("rotationNames").textContent=(names?names+" · ":"")+score+" · 點看對帳";
     card.hidden=false;
+    applyRotationUI();   // 主資料若已 boot 完成，立即補畫圖上標記與互動列
   }).catch(function(){ /* 帳本還沒產出就先不顯示卡 */ });
 })();
 </script>

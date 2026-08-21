@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated": "2026-08-21T03:01:54+08:00",
+ "generated": "2026-08-21T10:52:10+08:00",
  "as_of": "2026-08-20",
  "oos_start": "2026-08-21",
  "backtest_reference": {
@@ -16,7 +16,8 @@
   "oos_pending": 0,
   "win_rate": null,
   "mean_excess": null,
-  "median_excess": null
+  "median_excess": null,
+  "extra": {}
  },
  "level_labels": {
   "sector": "大分類",
@@ -46,7 +47,14 @@
    "trailing_excess20": 0.61,
    "excess_eqw_5": null,
    "win": null,
-   "filled_at": null
+   "filled_at": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "improving_days": 1,
+   "breadth_slope5": 0.0655
   },
   {
    "date": "2026-08-20",
@@ -70,7 +78,14 @@
    "trailing_excess20": 0.685,
    "excess_eqw_5": null,
    "win": null,
-   "filled_at": null
+   "filled_at": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "improving_days": 2,
+   "breadth_slope5": 0.1663
   },
   {
    "date": "2026-08-20",
@@ -90,7 +105,14 @@
    "trailing_excess20": 0.874,
    "excess_eqw_5": null,
    "win": null,
-   "filled_at": null
+   "filled_at": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "improving_days": 7,
+   "breadth_slope5": 0.5
   },
   {
    "date": "2026-08-20",
@@ -112,7 +134,14 @@
    "trailing_excess20": 0.338,
    "excess_eqw_5": null,
    "win": null,
-   "filled_at": null
+   "filled_at": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "improving_days": 4,
+   "breadth_slope5": 0.0
   },
   {
    "date": "2026-08-20",
@@ -132,7 +161,14 @@
    "trailing_excess20": 1.27,
    "excess_eqw_5": null,
    "win": null,
-   "filled_at": null
+   "filled_at": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "improving_days": 8,
+   "breadth_slope5": 0.0
   }
  ]
 }

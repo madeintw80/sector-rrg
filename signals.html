@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07110f">
-  <meta name="description" content="輪動訊號 OOS 追蹤：C 等權族群轉入領先＋量能確認後 5 日對等權市場的超額，公開對帳">
+  <meta name="description" content="輪動訊號 OOS 追蹤：轉入領先＋熱門確認後的超額對帳，T+0 主判準與 T+1 執行視窗平行公開">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="validation.css">
@@ -13,15 +13,40 @@
     .sig-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
     .sig-table th, .sig-table td { padding: .55rem .6rem; text-align: left; border-bottom: 1px solid rgba(148, 210, 189, .12); white-space: nowrap; }
     .sig-table th { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
-    .sig-table td.members { white-space: normal; font-size: .74rem; opacity: .75; max-width: 300px; }
+    .sig-table td.members { white-space: normal; font-size: .74rem; opacity: .75; max-width: 260px; }
     .sig-table .num { text-align: right; font-variant-numeric: tabular-nums; }
     .sig-win { color: #6ee7b7; font-weight: 700; }
     .sig-loss { color: #fda4af; font-weight: 700; }
     .sig-wait { opacity: .6; }
     .sig-ref { opacity: .45; }
     .level-chip { display: inline-block; padding: .1rem .45rem; border-radius: 999px; font-size: .66rem; border: 1px solid rgba(148, 210, 189, .3); margin-left: .35rem; opacity: .8; }
+    /* 品質標籤 chip：蓄勢確認（綠）／追高警戒（黃）／未達門檻（灰） */
+    .sig-tag { display: inline-block; padding: .1rem .45rem; border-radius: 999px; font-size: .66rem; margin-left: .35rem; border: 1px solid rgba(148, 210, 189, .25); opacity: .75; }
+    .sig-tag.good { border-color: rgba(110, 231, 183, .55); color: #6ee7b7; opacity: 1; }
+    .sig-tag.warn { border-color: rgba(240, 197, 106, .6); color: #f0c56a; opacity: 1; }
     .table-wrap { overflow-x: auto; }
+    /* grid item 預設 min-width:auto 會被寬表撐開 → 鎖 0 讓 table-wrap 自己捲 */
+    .split-grid > .panel { min-width: 0; }
     .empty-note { padding: 1.2rem; opacity: .7; font-size: .85rem; }
+    /* 對帳視窗切換 pill（5／10／20 日） */
+    .win-pills { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .win-pills button { padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(148, 210, 189, .3); background: transparent; color: inherit; font-size: .78rem; cursor: pointer; }
+    .win-pills button.on { background: rgba(110, 231, 183, .14); border-color: rgba(110, 231, 183, .6); font-weight: 700; }
+    .win-pills small { opacity: .55; font-size: .7rem; }
+    /* 平行對帳統計表 */
+    .ptable { width: 100%; border-collapse: collapse; font-size: .8rem; margin-top: 14px; }
+    .ptable th, .ptable td { padding: .5rem .55rem; border-bottom: 1px solid rgba(148, 210, 189, .12); text-align: right; white-space: nowrap; }
+    .ptable th { font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
+    .ptable th:first-child, .ptable td:first-child { text-align: left; }
+    .ptable .is-main td { color: #6ee7b7; }
+    .ptable .muted { opacity: .55; }
+    /* 品質分層小卡 */
+    .tier-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
+    .tier-card { border: 1px solid rgba(148, 210, 189, .18); padding: 12px 14px; }
+    .tier-card small { display: block; opacity: .6; font-size: .68rem; letter-spacing: .06em; }
+    .tier-card strong { font: 500 22px/1.3 Georgia, "Noto Serif TC", serif; }
+    .tier-card span { display: block; opacity: .7; font-size: .72rem; margin-top: 2px; }
+    .metric-sub { margin-top: 10px !important; font-size: .72rem !important; opacity: .85; color: #f0c56a !important; }
     @media (max-width: 720px) { .sig-table td.members, .sig-table th.members { display: none; } }
   </style>
   <title>輪動訊號追蹤｜台股產業輪動</title>
@@ -49,7 +74,7 @@
         <div class="hero-copy">
           <p class="hero-label">輪動訊號 <span>／ 公開考試</span></p>
           <h1>回測亮點，<br><em>接受新樣本檢驗</em></h1>
-          <p>回測找到一格「轉入領先＋量能確認」的組合（勝率 51.5%、平均 +0.60%）。這頁把它凍結成固定規則，每天掃描、每筆自動對帳——用未來的新樣本證明它不是巧合，才有資格升級。</p>
+          <p>回測找到一格「轉入領先＋熱門確認」的組合（訊號日收盤 T+0 口徑：勝率 51.5%、平均 +0.60%）。誠實揭露：若隔天收盤才進場（T+1），回測只剩 49.5%／+0.44%、跌破門檻——優勢約一半集中在訊號隔天的第一根 K。這頁把規則凍結，每天掃描、每筆同時對帳 T+0 與 T+1，用新樣本說話。</p>
         </div>
         <div class="hero-summary">
           <div class="summary-top"><span class="pulse"></span><b>OOS 戰績</b><small>非交易訊號</small></div>
@@ -66,11 +91,19 @@
       <section class="test-guide" aria-labelledby="guideTitle">
         <div class="test-guide-head">
           <div><p class="eyebrow">先懂規則，再看戰績</p><h2 id="guideTitle">訊號怎麼定義？</h2></div>
-          <p>某個族群「同一天」滿足三件事就亮訊號：① 相對加權指數的強度剛從「改善中」跨進「領先」；② 近 5 日均成交額比近月高一成以上；③ 族群裡至少一半成分股近月上漲、且族群近月已跑贏大盤。</p>
+          <p>某個族群「同一天」滿足三件事就亮訊號：① 相對加權指數的強度剛從「改善中」跨進「領先」；② 近 5 日均成交額比近月高一成以上；③ 族群裡至少一半成分股近月上漲、且族群近月已跑贏大盤。②＋③ 就是主頁的「熱門確認」。</p>
         </div>
         <div class="reading-rule">
-          <div><span>對帳方式</span><b>5 日後 vs 等權市場</b></div>
-          <p>訊號日收盤起算 5 個交易日，族群報酬跟「全市場等權平均」比：贏＝該族群跑贏市場平均股。判準事前固定：勝率要 &gt; 50% 且平均超額 &gt; 0，累積上百筆新樣本仍成立才算通過。</p>
+          <div><span>主判準（凍結）</span><b>5 日 T+0 vs 等權市場</b></div>
+          <p>訊號日收盤起算 5 個交易日，族群報酬跟「全市場等權平均」比：贏＝跑贏市場平均股。這是事前凍結的主統計，不歸零、不改口徑：勝率要 &gt; 50% 且平均超額 &gt; 0，累積上百筆新樣本仍成立才算通過。</p>
+        </div>
+        <div class="reading-rule">
+          <div><span>執行視窗（平行對照）</span><b>T+1＝隔天進場的你</b></div>
+          <p>實務上看到訊號多半隔天才動作。T+1 欄從訊號隔天收盤起算同樣天數——回測顯示這一步就把 5 日勝率從 51.5% 打到 49.5%。兩口徑平行公開、永不混成一個數字；10／20 日視窗同樣各自對帳。</p>
+        </div>
+        <div class="reading-rule">
+          <div><span>品質標籤（分層用）</span><b>蓄勢確認 ✓／追高警戒 ⚠</b></div>
+          <p>「蓄勢確認」＝訊號亮起前已在改善區蓄勢 ≥4 個交易日（回測這桶勝率 54.4%，急跨線只有 47.2%）。「追高警戒」＝廣度 5 日斜率 &gt;0.10、大家已搶上車（回測最爛桶 44.4%）。兩個標籤不影響是否亮訊號，只做分層對帳。</p>
         </div>
       </section>
 
@@ -78,19 +111,22 @@
         <article class="metric-card mint-card">
           <div class="metric-kicker"><span class="metric-index">01</span> 超額勝率</div>
           <div class="metric-value"><span>回測 51.5%</span><b>→</b><strong id="statWin">—</strong></div>
-          <p>OOS 新樣本的勝率。低於 50% 太久＝回測那格只是巧合。</p>
+          <p>OOS 新樣本的 5 日 T+0 勝率。低於 50% 太久＝回測那格只是巧合。</p>
+          <p class="metric-sub">T+1 口徑回測 49.5%（已跌破門檻，平行對照見下表）</p>
           <div class="metric-tag">門檻：&gt; 50%</div>
         </article>
         <article class="metric-card blue-card">
           <div class="metric-kicker"><span class="metric-index">02</span> 平均超額</div>
           <div class="metric-value"><span>回測 +0.60%</span><b>→</b><strong id="statMean">—</strong></div>
           <p>每筆訊號 5 日平均贏市場平均股多少（未扣交易成本）。</p>
+          <p class="metric-sub">T+1 口徑回測 +0.44%（中位數轉負 −0.03%）</p>
           <div class="metric-tag">門檻：&gt; 0%</div>
         </article>
         <article class="metric-card amber-card">
           <div class="metric-kicker"><span class="metric-index">03</span> 中位超額</div>
           <div class="metric-value"><span>回測 +0.16%</span><b>→</b><strong id="statMedian">—</strong></div>
           <p>看中位數避免被少數大贏拉高平均的錯覺。</p>
+          <p class="metric-sub">T+1 口徑回測中位 −0.03%（一半以上的訊號拿不到超額）</p>
           <div class="metric-tag">參考指標</div>
         </article>
       </section>
@@ -98,20 +134,55 @@
       <section class="split-grid">
         <article class="panel" style="grid-column: 1 / -1;">
           <div class="panel-heading">
+            <div><p class="eyebrow">主判準之外 · 各視窗各自回填</p><h2>平行對帳統計</h2></div>
+            <span class="small-chip">主判準＝5 日 T+0</span>
+          </div>
+          <div class="table-wrap">
+            <table class="ptable" aria-label="平行對帳統計">
+              <thead><tr>
+                <th>對帳視窗</th><th>OOS 已對帳</th><th>OOS 勝率</th><th>OOS 平均</th><th>回測參考</th>
+              </tr></thead>
+              <tbody id="parallelRows"></tbody>
+            </table>
+          </div>
+          <div class="chart-note"><span></span>回測參考＝2023-08～2026-08 in-sample 成績（勝率／平均超額），只當對照、不混入 OOS 統計。10 日 T+1 是回測唯一 ≥50% 的 T+1 視窗（50.2%），但跨年不穩（2025 僅 42.8%）。</div>
+        </article>
+      </section>
+
+      <section class="split-grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <div class="panel-heading">
+            <div><p class="eyebrow">品質標籤 · 5 日 T+0 口徑</p><h2>分層對帳</h2></div>
+            <span class="small-chip">蓄勢確認／追高警戒</span>
+          </div>
+          <div class="tier-grid" id="tierCards"></div>
+          <div class="chart-note"><span></span><span id="tierNote">OOS 有第一筆對帳後，這裡自動比較「蓄勢確認」與「追高警戒」分組的勝率——驗證回測的分層結論能不能在新樣本重現。</span></div>
+        </article>
+      </section>
+
+      <section class="split-grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <div class="panel-heading">
             <div><p class="eyebrow">每筆訊號 · 新到舊</p><h2>對帳明細</h2></div>
-            <span class="small-chip" id="ledgerCount">—</span>
+            <div class="win-pills" id="winPills" role="group" aria-label="對帳視窗切換">
+              <button type="button" data-win="5" class="on">5 日<small>（主）</small></button>
+              <button type="button" data-win="10">10 日</button>
+              <button type="button" data-win="20">20 日</button>
+              <span class="small-chip" id="ledgerCount">—</span>
+            </div>
           </div>
           <div class="table-wrap">
             <table class="sig-table" aria-label="輪動訊號對帳明細">
               <thead><tr>
-                <th>日期</th><th>族群</th><th class="members">主力成分股</th>
-                <th class="num">量能</th><th class="num">廣度</th><th class="num">5 日超額</th><th>結果</th>
+                <th>日期</th><th>族群＋標籤</th><th class="members">主力成分股</th>
+                <th class="num">量能</th><th class="num">廣度</th>
+                <th class="num" id="colT0">5日 T+0</th><th class="num" id="colT1">5日 T+1</th><th>結果</th>
               </tr></thead>
               <tbody id="signalRows"></tbody>
             </table>
-            <div class="empty-note" id="emptyNote" hidden>還沒有訊號。訊號亮起當天會出現在這裡，5 個交易日後自動對帳。</div>
+            <div class="empty-note" id="emptyNote" hidden>還沒有訊號。訊號亮起當天會出現在這裡，各視窗滿天數後自動對帳。</div>
           </div>
-          <div class="chart-note"><span></span>「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入上方統計。</div>
+          <div class="chart-note"><span></span>「結果」永遠依 5 日 T+0 主判準判定；「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入統計。標籤：<b>✓ 蓄勢 N 日</b>＝蓄勢確認（≥4 日）、<b>⚠ 追高警戒</b>＝廣度 5 日斜率 &gt;0.10。</div>
         </article>
       </section>
 
@@ -119,6 +190,7 @@
         <span class="warning-icon">!</span>
         <div><b>使用限制</b><ul class="limitations-list">
           <li>探索性候選：回測 51.5% 只比擲硬幣好 1.5 個百分點，且事件視窗互相重疊，統計證據薄。</li>
+          <li>T+1 執行視窗下回測僅 49.5%／+0.44%、中位 −0.03%＝隔天才進場的話，回測已不達標；優勢約一半集中在訊號隔天第一根 K。</li>
           <li>回測期間 2025 年勝率僅 46.9%（輸的年份）；訊號優勢依賴「權值股獨強」的行情結構。</li>
           <li>平均 +0.60% 為毛超額，未扣手續費、證交稅與滑價；族群無法直接買進。</li>
           <li>用途是「值得優先研究的族群排序」，不是買進訊號，也不預測絕對報酬。</li>

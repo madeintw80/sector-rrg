@@ -4,164 +4,283 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07110f">
-  <meta name="description" content="RRG 產業輪動有效性驗證：比較權重方法、象限表現、熱門確認與跨年穩定性">
+  <meta name="description" content="RRG 假設實驗室：裸象限沒有 alpha 的地基證據、候選格與 T+1 執行視窗、九個假設的事前宣告與判決、OOS 公開考試">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="validation.css">
-  <title>RRG 有效性驗證｜台股產業輪動</title>
+  <style>
+    /* 本頁專屬：假設記分板與視窗對照表（validation.css 沒有的部分才寫在這） */
+    .lab-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    .lab-table th, .lab-table td { padding: .55rem .6rem; border-bottom: 1px solid rgba(148, 210, 189, .12); text-align: left; vertical-align: top; }
+    .lab-table th { font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; opacity: .65; white-space: nowrap; }
+    .lab-table td.num, .lab-table th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .lab-table .is-main td { color: #6ee7b7; }
+    .table-wrap { overflow-x: auto; }
+    /* grid item 預設 min-width:auto 會被寬表撐開 → 鎖 0 讓 table-wrap 自己捲 */
+    .split-grid > .panel { min-width: 0; }
+    .score-table td:first-child { white-space: nowrap; font-weight: 700; }
+    .score-table td { font-size: .76rem; line-height: 1.6; min-width: 130px; }
+    .score-table td.verdict-cell { min-width: 150px; }
+    /* 判決 chip */
+    .verdict { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .7rem; border: 1px solid rgba(148, 210, 189, .3); white-space: nowrap; }
+    .verdict.adopt { border-color: rgba(110, 231, 183, .6); color: #6ee7b7; }
+    .verdict.dead { border-color: rgba(253, 164, 175, .5); color: #fda4af; }
+    .verdict.flip { border-color: rgba(240, 197, 106, .6); color: #f0c56a; }
+    .verdict.weak, .verdict.nodata { opacity: .7; }
+    .next-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; font-size: .78rem; }
+    .next-list li { padding: 10px 12px; border: 1px solid rgba(148, 210, 189, .15); line-height: 1.6; }
+    .next-list b { color: #6ee7b7; }
+    .oos-cta { display: inline-block; margin-top: 16px; padding: 12px 20px; border: 1px solid rgba(110, 231, 183, .5); color: #6ee7b7; text-decoration: none; font-size: .85rem; }
+    .oos-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 18px; }
+    .oos-stats div { border: 1px solid rgba(148, 210, 189, .18); padding: 12px 14px; }
+    .oos-stats small { display: block; opacity: .6; font-size: .68rem; }
+    .oos-stats strong { font: 500 22px/1.4 Georgia, "Noto Serif TC", serif; }
+  </style>
+  <title>RRG 假設實驗室｜台股產業輪動</title>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="validation.html" aria-label="RRG 驗證首頁">
+    <a class="brand" href="validation.html" aria-label="RRG 假設實驗室">
       <span class="brand-mark">R</span>
-      <span><b>Rotation Research</b><small>RRG VALIDATION LAB</small></span>
+      <span><b>Rotation Research</b><small>HYPOTHESIS LAB</small></span>
     </a>
     <div class="header-meta">
-      <span class="local-pill"><i></i>每月自動更新</span>
-      <span class="asof" id="headerAsOf">資料讀取中</span>
+      <span class="local-pill"><i></i>地基每月重跑</span>
+      <span class="asof" id="headerAsOf">凍結研究 2023-08~2026-08</span>
       <a class="back-link" href="index.html">← 回輪動圖</a>
     </div>
   </header>
 
   <main>
-    <section class="loading-state page-shell" id="loadingState" role="status" aria-live="polite">
-      <div><b>正在讀取回測結果</b><p>載入 walk-forward 驗證資料與跨年穩定性。</p></div>
-    </section>
-
-    <div class="page-shell" id="validationApp" hidden>
+    <div class="page-shell" id="validationApp">
       <section class="hero" id="top">
         <div class="hero-copy">
-          <p class="hero-label">RRG 有效性驗證 <span>／ schema v1</span></p>
-          <h1 id="heroTitle">目前不建議<br><em>更換正式權重</em></h1>
-          <p>目標是建立一套可驗證的產業篩選邏輯：先用 RRG 縮小研究範圍，再確認是否真的熱門，最後才決定要不要進入個股選擇。</p>
+          <p class="hero-label">RRG 假設實驗室 <span>／ 公開實驗紀錄簿</span></p>
+          <h1>裸 RRG 沒有 alpha，<br><em>優勢要靠條件疊出來</em></h1>
+          <p>這頁是公開的實驗紀錄簿：每個假設先寫下猜想與門檻，再跑回測、照實公佈判決——採用、死亡、反向轉生，全部列出、不挑好看的。目前唯一活下來的候選已凍結成規則，天天接受新樣本對帳。</p>
         </div>
         <div class="hero-summary">
-          <div class="summary-top"><span class="pulse"></span><b>研究結論</b><small>非交易訊號</small></div>
-          <div class="summary-score"><strong id="decisionScore">保留 A</strong><span id="decisionSummary">現行單日成交額＋50% cap</span></div>
+          <div class="summary-top"><span class="pulse"></span><b>實驗室現況</b><small>非交易訊號</small></div>
+          <div class="summary-score"><strong>T+1 未達標</strong><span>候選轉入 OOS 公開考試中</span></div>
           <div class="summary-divider"></div>
           <div class="summary-details">
-            <div><span>交易日</span><b id="tradingDays">—</b></div>
-            <div><span>正式分類</span><b id="categoryCount">—</b></div>
-            <div><span>比較方法</span><b id="methodCount">—</b></div>
+            <div><span>假設已判決</span><b>9 個</b></div>
+            <div><span>存活候選</span><b>2 個</b></div>
+            <div><span>OOS 累積</span><b id="heroOos">—</b></div>
           </div>
         </div>
       </section>
 
-      <nav class="tab-nav" aria-label="研究報告分頁" role="tablist">
-        <button type="button" class="active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">研究摘要</button>
-        <button type="button" role="tab" aria-selected="false" aria-controls="panel-quadrants" id="tab-quadrants" data-tab="quadrants">象限表現</button>
-        <button type="button" role="tab" aria-selected="false" aria-controls="panel-stability" id="tab-stability" data-tab="stability">權重穩定</button>
-        <button type="button" role="tab" aria-selected="false" aria-controls="panel-monitor" id="tab-monitor" data-tab="monitor">定期驗證</button>
+      <nav class="tab-nav" aria-label="實驗室分頁" role="tablist">
+        <button type="button" class="active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">研究地基</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="panel-candidate" id="tab-candidate" data-tab="candidate">候選與 T+1</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="panel-scoreboard" id="tab-scoreboard" data-tab="scoreboard">假設記分板</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="panel-oos" id="tab-oos" data-tab="oos">公開考試</button>
       </nav>
 
       <div class="tab-content">
         <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview">
-          <section class="test-guide" aria-labelledby="testGuideTitle">
+          <section class="test-guide" aria-labelledby="labGuideTitle">
             <div class="test-guide-head">
-              <div><p class="eyebrow">先理解目的，再看數字</p><h2 id="testGuideTitle">這頁到底在測什麼？</h2></div>
-              <p>不是回測「照 RRG 買進會賺多少」，而是檢查它能不能把真正值得研究的產業，穩定地排到前面。</p>
+              <div><p class="eyebrow">先懂規則，再看判決</p><h2 id="labGuideTitle">這個實驗室怎麼運作？</h2></div>
+              <p>順序永遠是：① 寫下猜想與通過門檻（事前宣告，不能事後挑桶）→ ② 跑 walk-forward 回測 → ③ 全部桶列出、照實判決 → ④ 活下來的凍結成規則，交給每天的新樣本考試。通過門檻固定：勝率 &gt;50%、平均超額 &gt;0、樣本數百筆、跨年一致、OOS 重現。</p>
             </div>
-            <div class="question-grid" id="questionGrid"></div>
             <div class="reading-rule">
-              <div><span>判讀方式</span><b>勝率不是報酬率</b></div>
-              <p>「20 日超額勝率 36%」代表 100 次訊號約 36 次跑贏大盤，不是平均賺 36%。真正通過還要同時看平均、中位數、最差結果與跨年一致性。</p>
+              <div><span>為什麼要這麼麻煩</span><b>幾十個桶總有幾個好看</b></div>
+              <p>同一份資料切 26 個桶來測，就算全是雜訊也預期出現 1~2 個「假亮點」。事前宣告方向＋跨年拆分＋OOS 對帳，就是在防這種自欺。</p>
             </div>
           </section>
 
-          <section class="metric-grid" aria-label="三項主要結論">
+          <section class="metric-grid" aria-label="地基三結論">
             <article class="metric-card mint-card">
-              <div class="metric-kicker"><span class="metric-index">01</span> 權重上限</div>
-              <div class="metric-value"><span id="legacyWorst">—</span><b>→</b><strong id="cappedWorst">—</strong></div>
-              <p>50% cap 是否縮小最差結果，同時避免把風險護欄誤認成預測力。</p>
-              <div class="metric-tag">保留：風險護欄</div>
+              <div class="metric-kicker"><span class="metric-index">01</span> 裸象限沒有 alpha</div>
+              <div class="metric-value"><span>擲硬幣 50%</span><b>→</b><strong id="baseQuadrant">37.0%</strong></div>
+              <p>族群進入多頭象限（領先＋改善）後 20 日的超額勝率只有三成多——漲過的族群之後反而跑輸，均值回歸主導。這就是「不能照 RRG 直接買」的證據。</p>
+              <div class="metric-tag">每月自動重跑更新</div>
             </article>
             <article class="metric-card blue-card">
-              <div class="metric-kicker"><span class="metric-index">02</span> 權重穩定</div>
-              <div class="metric-value"><span id="aChurn">—</span><b>→</b><strong id="bChurn">—</strong></div>
-              <p id="stabilityCardText">20 日均額是否讓成分更穩，並同步提高前瞻表現。</p>
-              <div class="metric-tag">觀察：穩定 ≠ 更準</div>
+              <div class="metric-kicker"><span class="metric-index">02</span> alpha 藏在確認條件</div>
+              <div class="metric-value"><span id="baseHotOff">33.2%</span><b>→</b><strong id="baseHotOn">42.5%</strong></div>
+              <p>疊上「熱門確認」（量能＋廣度＋既有超額）勝率提升約 9 個百分點，但仍低於 50%。方向確立：優勢要往條件疊加找，不在象限本身。</p>
+              <div class="metric-tag">等權法 · 20 日視窗</div>
             </article>
             <article class="metric-card amber-card">
-              <div class="metric-kicker"><span class="metric-index">03</span> 熱門確認</div>
-              <div class="metric-value"><span id="hotOffWin">—</span><b>→</b><strong id="hotOnWin">—</strong></div>
-              <p id="hotCardText">成交額升溫、廣度與既有超額能否降低單股帶動的假熱門。</p>
-              <div class="metric-tag">探索性：不可單獨交易</div>
+              <div class="metric-kicker"><span class="metric-index">03</span> 換把公平的尺再量</div>
+              <div class="metric-value"><span>twii +140.6%</span><b>vs</b><strong>eqw +43.4%</strong></div>
+              <p>回測窗內加權指數被權值股拉著跑贏全市場等權近百個百分點。把衡量基準換成等權後，象限勝率升到 40~41% 仍不及格——但這把「公平尺」催生了下一頁的候選格。</p>
+              <div class="metric-tag">基準位移確認</div>
             </article>
           </section>
 
           <section class="split-grid">
-            <article class="panel comparison-panel">
-              <div class="panel-heading"><div><p class="eyebrow">20 日後 · 相對加權指數</p><h2>四種權重方法比較</h2></div><span class="small-chip">Leading + Improving</span></div>
-              <div class="method-list" id="methodList"></div>
-              <div class="chart-note"><span></span>超額勝率若低於 50%，不能只看方法之間的相對名次就宣稱具有穩定預測力。</div>
-            </article>
-            <article class="panel hot-panel">
-              <div class="panel-heading"><div><p class="eyebrow">輔助條件</p><h2>熱門確認有沒有幫助？</h2></div><span class="status-dot">部分支持</span></div>
-              <div class="hot-compare">
-                <div class="hot-side muted"><span>未確認</span><strong id="hotOffWinDetail">—</strong><small id="hotOffSample">n = —</small></div>
-                <div class="hot-arrow"><span id="hotGain">—</span><b>→</b></div>
-                <div class="hot-side active"><span>量能＋廣度確認</span><strong id="hotOnWinDetail">—</strong><small id="hotOnSample">n = —</small></div>
+            <article class="panel" style="grid-column: 1 / -1;">
+              <div class="panel-heading">
+                <div><p class="eyebrow">前身研究 · 已濃縮歸檔</p><h2>權重方法驗證的三個結論</h2></div>
+                <span class="small-chip" id="baseAsOf">地基回測 每月 1 日重跑</span>
               </div>
-              <div class="distribution">
-                <div><span>平均超額</span><strong class="delta negative" id="hotMean">—</strong></div>
-                <div><span>中位超額</span><strong class="delta negative" id="hotMedian">—</strong></div>
-                <div><span>最差結果</span><strong class="delta negative" id="hotWorst">—</strong></div>
-              </div>
-              <p class="panel-footnote">定義：5 日均額／20 日均額升溫、成分股廣度、超額報酬共同確認。仍需跨年一致才可升級。</p>
-            </article>
-          </section>
-        </section>
-
-        <section id="panel-quadrants" role="tabpanel" aria-labelledby="tab-quadrants" data-panel="quadrants" hidden>
-          <section class="split-grid quadrant-layout">
-            <article class="panel rrg-panel">
-              <div class="panel-heading"><div><p class="eyebrow">現行方法 A · 20 日後</p><h2>RRG 象限有效性</h2></div><span class="small-chip">超額勝率</span></div>
-              <div class="rrg-map" id="quadrantMap" role="img" aria-label="四象限超額勝率示意圖"><div class="axis x-axis"></div><div class="axis y-axis"></div><span class="axis-label top">RS-Momentum +</span><span class="axis-label right">RS-Ratio +</span></div>
-            </article>
-            <article class="panel state-panel">
-              <div class="panel-heading"><div><p class="eyebrow">不只看勝率</p><h2>各狀態的報酬分布</h2></div></div>
-              <div class="state-table"><div class="state-head"><span>狀態</span><span>勝率</span><span>平均</span><span>中位</span></div><div id="stateRows"></div></div>
-              <div class="insight-box"><b>這不是教科書式排序。</b><p id="quadrantInsight">正在比較四象限的實際分布。</p></div>
-            </article>
-          </section>
-        </section>
-
-        <section id="panel-stability" role="tabpanel" aria-labelledby="tab-stability" data-panel="stability" hidden>
-          <section class="split-grid stability-layout">
-            <article class="panel stability-panel">
-              <div class="panel-heading"><div><p class="eyebrow">每日成分變動率</p><h2>20 日均額確實更穩</h2></div><span class="status-dot blue-dot" id="churnReduction">—</span></div>
-              <div class="stability-bars">
-                <div class="stability-item"><div><span>A · 單日成交額</span><strong id="aChurnDetail">—</strong></div><div class="thick-track"><span id="aChurnBar"></span></div></div>
-                <div class="stability-item blue-item"><div><span>B · 20 日平均成交額</span><strong id="bChurnDetail">—</strong></div><div class="thick-track"><span id="bChurnBar"></span></div></div>
-              </div>
-              <div class="stability-stats"><div><span>平均權重週轉</span><b id="aTurnover">—</b><small>A</small></div><div class="arrow-cell">→</div><div><span>平均權重週轉</span><b id="bTurnover">—</b><small>B</small></div></div>
-            </article>
-            <article class="panel decision-panel">
-              <p class="eyebrow">研究決策</p><h2>穩定性改善，預測性沒有</h2>
               <ul class="decision-list">
-                <li class="yes"><span>✓</span><div><b>50% 上限值得保留</b><p>它降低單股集中與最差尾端，不需要改核心公式。</p></div></li>
-                <li class="hold"><span>–</span><div><b>20 日均額先不要取代正式方法</b><p id="bDecisionText">雖然成分更穩，前瞻超額勝率沒有改善。</p></div></li>
-                <li class="no"><span>×</span><div><b>暫不往個股選擇延伸</b><p>群組層訊號尚未穩定，另開選股 task 的證據不足。</p></div></li>
+                <li class="yes"><span>✓</span><div><b>保留現行 A 法＋50% 單股上限</b><p>單日成交額加權照舊；50% cap 縮小最差尾端，是風險護欄、不是預測力。</p></div></li>
+                <li class="hold"><span>–</span><div><b>20 日均額成分更穩，但沒有更準</b><p>成分變動率大降，前瞻超額勝率沒改善——穩定 ≠ 預測，不更換正式權重。</p></div></li>
+                <li class="no"><span>×</span><div><b>暫不往個股選擇延伸</b><p>族群層訊號還在考試，往下鑽個股的證據不足。</p></div></li>
+              </ul>
+              <div class="chart-note"><span></span>本頁前身「RRG 有效性驗證」（A／B／C／D 權重法、象限表現、權重穩定、跨年四章）結論濃縮於此；地基回測仍每月 1 日 07:10 自動重跑，異常時上方數字會跟著更新。</div>
+            </article>
+          </section>
+        </section>
+
+        <section id="panel-candidate" role="tabpanel" aria-labelledby="tab-candidate" data-panel="candidate" hidden>
+          <section class="test-guide" aria-labelledby="candidateTitle">
+            <div class="test-guide-head">
+              <div><p class="eyebrow">幾十個格子裡唯一活的</p><h2 id="candidateTitle">候選格怎麼來的？</h2></div>
+              <p>混合視角＝訊號照舊用「相對加權指數」判定（現行雷達口徑），衡量改用「全市場等權」這把公平尺。在權值股獨強的行情裡，還能被判「轉入領先＋熱門確認」的族群是真的強——這是全部組合裡第一個勝率、平均、中位數三項同時轉正的格子。</p>
+            </div>
+            <div class="reading-rule">
+              <div><span>口徑原則（凍結）</span><b>5 日 T+0 主判準 · T+1 平行對照</b></div>
+              <p>OOS 對帳頁的主統計固定用「訊號日收盤起算 5 日」（T+0），不歸零、不改口徑；T+1（隔天進場）與 10／20 日視窗全部平行對帳、各自統計，永不混成一個數字。</p>
+            </div>
+          </section>
+
+          <section class="metric-grid" aria-label="候選與 T+1 三數字">
+            <article class="metric-card mint-card">
+              <div class="metric-kicker"><span class="metric-index">01</span> 候選格（T+0）</div>
+              <div class="metric-value"><span>門檻 50%</span><b>→</b><strong>51.5%</strong></div>
+              <p>C 等權法「改善→領先＋熱門確認」5 日超額：勝率 51.5%、平均 +0.60%、中位 +0.16%（n=499）。跨年 52.9／46.9／54.2——2025 掉下 50%，按事前判準只算「探索性候選」。</p>
+              <div class="metric-tag">凍結於 2026-08-20 資料窗</div>
+            </article>
+            <article class="metric-card amber-card">
+              <div class="metric-kicker"><span class="metric-index">02</span> T+1 打殘測試</div>
+              <div class="metric-value"><span>51.5%</span><b>→</b><strong>49.5%</strong></div>
+              <p>改成「隔天收盤才進場」（實際拿得到的報酬）：勝率 49.5%、平均 +0.44%、中位 −0.03%＝跌破門檻。主判準已改用 T+1 檢驗新假設。</p>
+              <div class="metric-tag">執行視窗誠實測試</div>
+            </article>
+            <article class="metric-card blue-card">
+              <div class="metric-kicker"><span class="metric-index">03</span> 優勢集中在第一根 K</div>
+              <div class="metric-value"><span>20日 +1.42%</span><b>→</b><strong>+1.13%</strong></div>
+              <p>20 日平均超額從 T+0 的 +1.42% 掉到 T+1 的 +1.13%——差距約等於 5 日的全部優勢。訊號隔天那根 K 吃掉一半 edge，是這個訊號最大的實務限制。</p>
+              <div class="metric-tag">慢一天，少一半</div>
+            </article>
+          </section>
+
+          <section class="split-grid">
+            <article class="panel" style="grid-column: 1 / -1;">
+              <div class="panel-heading">
+                <div><p class="eyebrow">同一格 · 六個視窗</p><h2>T+0 vs T+1 全對照</h2></div>
+                <span class="small-chip">in-sample n=499</span>
+              </div>
+              <div class="table-wrap">
+                <table class="lab-table" aria-label="候選格各視窗回測成績">
+                  <thead><tr><th>對帳視窗</th><th class="num">勝率</th><th class="num">平均超額</th><th>備註</th></tr></thead>
+                  <tbody>
+                    <tr class="is-main"><td>5 日 T+0（主判準）</td><td class="num">51.5%</td><td class="num">+0.60%</td><td>OOS 主統計口徑，凍結不歸零</td></tr>
+                    <tr><td>5 日 T+1</td><td class="num">49.5%</td><td class="num">+0.44%</td><td>跌破門檻；中位 −0.03%</td></tr>
+                    <tr><td>10 日 T+0</td><td class="num">53.0%</td><td class="num">+1.02%</td><td>—</td></tr>
+                    <tr><td>10 日 T+1</td><td class="num">50.2%</td><td class="num">+1.00%</td><td>唯一 ≥50% 的 T+1 視窗，但跨年 49.5／42.8／59.0 靠 2026 撐，不算達標</td></tr>
+                    <tr><td>20 日 T+0</td><td class="num">49.3%</td><td class="num">+1.42%</td><td>—</td></tr>
+                    <tr><td>20 日 T+1</td><td class="num">47.4%</td><td class="num">+1.13%</td><td>—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="chart-note"><span></span>全部數字凍結於 2026-08-20 資料窗（2023-08 起、事件約 128 萬筆、walk-forward 無前視）；OOS 對帳頁的六個視窗與這張表一一對應。</div>
+            </article>
+          </section>
+        </section>
+
+        <section id="panel-scoreboard" role="tabpanel" aria-labelledby="tab-scoreboard" data-panel="scoreboard" hidden>
+          <section class="split-grid">
+            <article class="panel" style="grid-column: 1 / -1;">
+              <div class="panel-heading">
+                <div><p class="eyebrow">2026-08-21 批次 · 事前宣告制</p><h2>九個假設的判決</h2></div>
+                <span class="small-chip">基準＝候選 5 日 T+1：49.5%／+0.44%</span>
+              </div>
+              <div class="table-wrap">
+                <table class="lab-table score-table" aria-label="假設記分板">
+                  <thead><tr><th>假設</th><th>事前猜想</th><th>回測結果</th><th class="verdict-cell">判決</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td>A1 蓄勢期長度</td>
+                      <td>在改善區蓄勢越久（≥4 日）再跨線越好</td>
+                      <td>4~10 日桶 54.4%／+0.94%（n=158）vs ≤3 日 47.2%／+0.20%；增量 +4.9pp、跨年 2/3 同向；20 日仍持方向</td>
+                      <td class="verdict-cell"><span class="verdict adopt">✅ 採用</span><br>命名「蓄勢確認」，tag 上線 OOS 分層＝候選 v2</td>
+                    </tr>
+                    <tr>
+                      <td>A2 廣度斜率</td>
+                      <td>廣度升溫中（斜率 &gt;0）較好</td>
+                      <td>反向：&gt;0.10 最爛（44.4%，n=277）、≤0 最好（54.9%／+0.98%）；20 日同型態</td>
+                      <td class="verdict-cell"><span class="verdict flip">🔁 反向轉生</span><br>原假設死亡；反向命名「追高警戒」tag 上線記錄</td>
+                    </tr>
+                    <tr>
+                      <td>A3 好量比</td>
+                      <td>漲日量 ÷ 跌日量越高越好</td>
+                      <td>方向一致但增量弱（≥2.5x 僅 +1.9pp）；&lt;1x 爛桶明確（37.0%，n=27 樣本薄）</td>
+                      <td class="verdict-cell"><span class="verdict weak">➖ 增量不足</span><br>只適合當排除濾網候選</td>
+                    </tr>
+                    <tr>
+                      <td>A4 已跑贏甜蜜點</td>
+                      <td>已贏 0~5% 最好，贏太多＝追高</td>
+                      <td>四桶 48~50% 全平，「贏 &gt;10% 變差」也沒出現</td>
+                      <td class="verdict-cell"><span class="verdict dead">❌ 死亡</span></td>
+                    </tr>
+                    <tr>
+                      <td>A5a 同族群再觸發</td>
+                      <td>首次觸發或隔 &gt;60 日的較乾淨</td>
+                      <td>反向：≤20 日重觸發最好（53.5%／+0.54%，n=297，跨年增量三年皆正）、21~60 日最爛（42.7%）</td>
+                      <td class="verdict-cell"><span class="verdict flip">🔁 反向列下輪</span><br>「短間隔重觸發＝輪動進行中」待事前宣告再驗</td>
+                    </tr>
+                    <tr>
+                      <td>A5b 同日齊亮</td>
+                      <td>多族群同日齊亮＝輪動大浪更可信</td>
+                      <td>三桶無差異</td>
+                      <td class="verdict-cell"><span class="verdict dead">❌ 死亡</span></td>
+                    </tr>
+                    <tr>
+                      <td>A6 龍頭 vs 雨露</td>
+                      <td>雨露均霑優於單一龍頭帶動</td>
+                      <td>5 日 ≤−2.5% 桶 55.7% 三年一致，但相鄰桶最爛（非單調）、20 日整個翻轉＝雜訊嫌疑大</td>
+                      <td class="verdict-cell"><span class="verdict weak">⚠️ 不穩定不採</span></td>
+                    </tr>
+                    <tr>
+                      <td>B1 法人跟單</td>
+                      <td>成分股近 5 日投信／外資淨買超＝加分</td>
+                      <td>資料僅 2026-04 起 93 個交易日、無上櫃；窗內 91 筆方向相反（高跟單 54.8% &lt; 同窗基準 61.5%），有擁擠反指味道但單一多頭窗不可下結論</td>
+                      <td class="verdict-cell"><span class="verdict nodata">🚫 資料不足</span><br>續累積；下輪拆外資／投信</td>
+                    </tr>
+                    <tr>
+                      <td>B2 籌碼乾淨度</td>
+                      <td>融資增幅低的訊號比較乾淨</td>
+                      <td>個股融資餘額零歷史落地，無法回測</td>
+                      <td class="verdict-cell"><span class="verdict nodata">🚫 無法回測</span><br>要驗得先回補約 700 日資料（另立資料工程）</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="insight-box"><b>防過擬合警語。</b><p>26 個桶同測，就算全是雜訊也預期 1~2 個假陽性；A1 因方向事前宣告、跨年多數同向，可信度相對較高——但仍要 OOS 重現才算數。</p></div>
+              <ul class="next-list" aria-label="下輪排程">
+                <li><b>A2'</b>「追高警戒」當排除濾網（tag 已上線累積 OOS 證據）</li>
+                <li><b>A5a'</b> ≤20 日重觸發加分（先事前宣告門檻再驗）</li>
+                <li><b>B1'</b> 法人跟單拆外資／投信重測（投信在小族群常缺席）</li>
+                <li><b>H-X1</b> 題材外生價格動能（散裝航運案例：BDI 領先股價 9~10 個交易日）</li>
+                <li><b>C 組</b> 營收動能背景濾網（構思中）</li>
               </ul>
             </article>
           </section>
         </section>
 
-        <section id="panel-monitor" role="tabpanel" aria-labelledby="tab-monitor" data-panel="monitor" hidden>
-          <section class="monitor-grid">
-            <article class="panel cadence-panel">
-              <div class="panel-heading"><div><p class="eyebrow">定期驗證 · 已啟用</p><h2>之後會怎麼更新？</h2></div><span class="preview-badge">每月 1 日 07:10</span></div>
-              <div class="timeline">
-                <div class="timeline-row done"><span></span><div><b id="baselineDate">—</b><p id="baselineText">基準版完成</p></div><strong>完成</strong></div>
-                <div class="timeline-row next"><span></span><div><b>每月 1 日</b><p>刷新資料、重跑回測並發布驗證 JSON</p></div><strong>自動</strong></div>
-                <div class="timeline-row"><span></span><div><b>每次完成</b><p>公開資料確認後由 Batnini Telegram bot 通知</p></div><strong>通知</strong></div>
+        <section id="panel-oos" role="tabpanel" aria-labelledby="tab-oos" data-panel="oos" hidden>
+          <section class="split-grid">
+            <article class="panel" style="grid-column: 1 / -1;">
+              <div class="panel-heading">
+                <div><p class="eyebrow">記分板贏家 · 凍結成規則</p><h2>公開考試進行中</h2></div>
+                <span class="status-dot">OOS 起算 2026-08-21</span>
               </div>
-              <div class="cadence-note">回測只更新研究報告與驗證頁，不會自動改寫正式 RRG 權重、RS-Ratio／RS-Momentum 或選股規則。</div>
-            </article>
-            <article class="panel year-panel">
-              <div class="panel-heading"><div><p class="eyebrow">熱門確認 · 20 日超額勝率</p><h2>跨年穩定性</h2></div></div>
-              <div class="year-table"><div class="year-head"><span>年份</span><span>A 確認</span><span>A 未確認</span><span>B 確認</span><span>B 未確認</span></div><div id="yearRows"></div></div>
-              <div class="year-callout"><span>!</span><p><b>只要有年份沒有穩定增益，就不能包裝成交易保證。</b> 這頁會持續追蹤跨年結果，而不是只挑最佳區間。</p></div>
+              <p style="margin:14px 0 0;color:#9eb0aa;font-size:12px;line-height:1.8;">候選（轉入領先＋熱門確認）連同「蓄勢確認」「追高警戒」兩個品質標籤已凍結成固定規則：每天 18:00 自動掃描、每筆訊號在 T+0／T+1 × 5／10／20 日六個視窗各自對帳。升級門檻事前約定：累積百筆以上新樣本仍勝率 &gt;50% 且平均 &gt;0 才升級；低於 50% 太久＝候選作廢。</p>
+              <div class="oos-stats" aria-label="OOS 即時統計">
+                <div><small>累積訊號</small><strong id="oosTotal">—</strong></div>
+                <div><small>已對帳</small><strong id="oosFilled">—</strong></div>
+                <div><small>5 日 T+0 勝率</small><strong id="oosWin">—</strong></div>
+                <div><small>平均超額</small><strong id="oosMean">—</strong></div>
+              </div>
+              <a class="oos-cta" href="signals.html">看逐筆對帳明細與分層統計 →</a>
+              <div class="chart-note"><span></span><span id="oosNote">統計每天 18:00 排程後更新；訊號亮起後各視窗滿天數自動回填。</span></div>
             </article>
           </section>
         </section>
@@ -169,11 +288,17 @@
 
       <section class="data-warning">
         <span class="warning-icon">!</span>
-        <div><b>資料品質限制</b><ul class="limitations-list" id="limitationsList"></ul></div>
+        <div><b>資料品質限制</b><ul class="limitations-list">
+          <li>產業分類採今日快照回推（前視偏誤）；已下市股票不在樣本（存活者偏誤）。</li>
+          <li>成交額以 Yahoo 價量代理，與交易所口徑有差；族群指數無法直接買進。</li>
+          <li>前瞻視窗互相重疊，事件非獨立樣本，顯著性被高估。</li>
+          <li>候選勝率 51.5% 只比擲硬幣好 1.5 個百分點，且 T+1 執行視窗下已跌破門檻。</li>
+          <li>全部為毛超額，未扣手續費、證交稅與滑價；本頁僅供研究，不構成投資建議。</li>
+        </ul></div>
         <span class="warning-label">EXPLORATORY</span>
       </section>
 
-      <footer><span>RRG Validation Lab</span><p>Walk-forward · Lagged inputs · No look-ahead</p><span id="generatedAt">僅供研究驗證</span></footer>
+      <footer><span>Hypothesis Lab</span><p>Pre-registered thresholds · All buckets reported · No cherry-picking</p><span id="generatedAt">僅供研究驗證</span></footer>
     </div>
   </main>
   <script src="validation.js" defer></script>
