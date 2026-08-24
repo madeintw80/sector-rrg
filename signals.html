@@ -24,6 +24,7 @@
     .sig-tag { display: inline-block; padding: .1rem .45rem; border-radius: 999px; font-size: .66rem; margin-left: .35rem; border: 1px solid rgba(148, 210, 189, .25); opacity: .75; }
     .sig-tag.good { border-color: rgba(110, 231, 183, .55); color: #6ee7b7; opacity: 1; }
     .sig-tag.warn { border-color: rgba(240, 197, 106, .6); color: #f0c56a; opacity: 1; }
+    .sig-tag.star { border-color: rgba(196, 181, 253, .6); color: #c4b5fd; opacity: 1; }
     .table-wrap { overflow-x: auto; }
     /* grid item 預設 min-width:auto 會被寬表撐開 → 鎖 0 讓 table-wrap 自己捲 */
     .split-grid > .panel { min-width: 0; }
@@ -102,8 +103,8 @@
           <p>實務上看到訊號多半隔天才動作。T+1 欄從訊號隔天收盤起算同樣天數——回測顯示這一步就把 5 日勝率從 51.5% 打到 49.5%。兩口徑平行公開、永不混成一個數字；10／20 日視窗同樣各自對帳。</p>
         </div>
         <div class="reading-rule">
-          <div><span>品質標籤（分層用）</span><b>蓄勢確認 ✓／追高警戒 ⚠</b></div>
-          <p>「蓄勢確認」＝訊號亮起前已在改善區蓄勢 ≥4 個交易日（回測這桶勝率 54.4%，急跨線只有 47.2%）。「追高警戒」＝廣度 5 日斜率 &gt;0.10、大家已搶上車（回測最爛桶 44.4%）。兩個標籤不影響是否亮訊號，只做分層對帳。</p>
+          <div><span>品質標籤（分層用）</span><b>蓄勢確認 ✓／追高警戒 ⚠／組合 v3 ⭐</b></div>
+          <p>「蓄勢確認」＝訊號亮起前已在改善區蓄勢 ≥4 個交易日（回測這桶勝率 54.4%，急跨線只有 47.2%）。「追高警戒」＝廣度 5 日斜率 &gt;0.10、大家已搶上車（回測最爛桶 44.4%）。「組合 v3」＝蓄勢確認且無追高、兩條件經交叉驗證近乎獨立（回測最佳格 60.3%／+1.30%，但僅 73 筆、2025 年 47.1%——樣本薄，正因如此才上 OOS 公開考）。標籤不影響是否亮訊號，只做分層對帳。</p>
         </div>
       </section>
 
@@ -153,10 +154,10 @@
         <article class="panel" style="grid-column: 1 / -1;">
           <div class="panel-heading">
             <div><p class="eyebrow">品質標籤 · 5 日 T+0 口徑</p><h2>分層對帳</h2></div>
-            <span class="small-chip">蓄勢確認／追高警戒</span>
+            <span class="small-chip">組合 v3／蓄勢確認／追高警戒</span>
           </div>
           <div class="tier-grid" id="tierCards"></div>
-          <div class="chart-note"><span></span><span id="tierNote">OOS 有第一筆對帳後，這裡自動比較「蓄勢確認」與「追高警戒」分組的勝率——驗證回測的分層結論能不能在新樣本重現。</span></div>
+          <div class="chart-note"><span></span><span id="tierNote">OOS 有第一筆對帳後，這裡自動比較「組合 v3」「蓄勢確認」「追高警戒」各分組的勝率——驗證回測的分層結論能不能在新樣本重現。</span></div>
         </article>
       </section>
 
@@ -182,7 +183,7 @@
             </table>
             <div class="empty-note" id="emptyNote" hidden>還沒有訊號。訊號亮起當天會出現在這裡，各視窗滿天數後自動對帳。</div>
           </div>
-          <div class="chart-note"><span></span>「結果」永遠依 5 日 T+0 主判準判定；「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入統計。標籤：<b>✓ 蓄勢 N 日</b>＝蓄勢確認（≥4 日）、<b>⚠ 追高警戒</b>＝廣度 5 日斜率 &gt;0.10。</div>
+          <div class="chart-note"><span></span>「結果」永遠依 5 日 T+0 主判準判定；「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入統計。標籤：<b>✓ 蓄勢 N 日</b>＝蓄勢確認（≥4 日）、<b>⚠ 追高警戒</b>＝廣度 5 日斜率 &gt;0.10、<b>⭐ 組合 v3</b>＝蓄勢確認且無追高。</div>
         </article>
       </section>
 

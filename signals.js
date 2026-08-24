@@ -38,8 +38,20 @@
     return `<td class="num ${cls}">${text}</td>`;
   }
 
+  // 組合 v3（2026-08-24 拍板追蹤）：蓄勢 ≥4 日 ∩ 廣度斜率有值且 ≤0.10。
+  // 回測 in-sample（T+1 5 日）60.3%／+1.30%（n=73、2025 年 47.1%）＝樣本薄的探索性候選。
+  function isComboV3(s) {
+    return s.improving_days !== null && s.improving_days !== undefined
+      && s.improving_days >= 4
+      && s.breadth_slope5 !== null && s.breadth_slope5 !== undefined
+      && s.breadth_slope5 <= 0.10;
+  }
+
   function tagChips(signal) {
     let chips = "";
+    if (isComboV3(signal)) {
+      chips += `<span class="sig-tag star" title="組合 v3：蓄勢確認且無追高（回測最佳格 60.3%，n=73 樣本薄，看 OOS）">⭐ 組合 v3</span>`;
+    }
     const days = signal.improving_days;
     if (days !== null && days !== undefined) {
       chips += days >= 4
@@ -102,10 +114,11 @@
       return { n: rows.length, win: (wins / rows.length) * 100, mean };
     };
     const tiers = [
+      ["⭐ 組合 v3（蓄勢∩非追高）", done.filter(isComboV3), "回測 60.3%"],
       ["✓ 蓄勢確認（≥4 日）", done.filter((s) => (s.improving_days ?? -1) >= 4), "回測 54.4%"],
       ["未蓄勢（≤3 日）", done.filter((s) => s.improving_days !== null && s.improving_days !== undefined && s.improving_days <= 3), "回測 47.2%"],
       ["⚠ 追高警戒（斜率>0.10）", done.filter((s) => (s.breadth_slope5 ?? 0) > 0.10), "回測 44.4%"],
-      ["無追高警戒", done.filter((s) => s.breadth_slope5 !== null && s.breadth_slope5 !== undefined && s.breadth_slope5 <= 0.10), "回測較佳組"],
+      ["無追高警戒", done.filter((s) => s.breadth_slope5 !== null && s.breadth_slope5 !== undefined && s.breadth_slope5 <= 0.10), "回測 55.9%"],
     ];
     $("tierCards").innerHTML = tiers.map(([label, rows, ref]) => {
       const stat = bucket(rows);

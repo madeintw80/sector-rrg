@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated": "2026-08-23T18:03:45+08:00",
+ "generated": "2026-08-24T11:58:34+08:00",
  "as_of": "2026-08-21",
  "oos_start": "2026-08-21",
  "backtest_reference": {
@@ -17,7 +17,12 @@
   "win_rate": null,
   "mean_excess": null,
   "median_excess": null,
-  "extra": {}
+  "extra": {},
+  "combo_v3": {
+   "total": 0,
+   "t0": null,
+   "t1": null
+  }
  },
  "level_labels": {
   "sector": "大分類",
