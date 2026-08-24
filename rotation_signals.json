@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-08-24T11:58:34+08:00",
- "as_of": "2026-08-21",
+ "generated": "2026-08-24T18:04:28+08:00",
+ "as_of": "2026-08-24",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
