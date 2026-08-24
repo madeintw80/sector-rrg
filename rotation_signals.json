@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated": "2026-08-24T18:04:28+08:00",
+ "generated": "2026-08-24T18:11:14+08:00",
  "as_of": "2026-08-24",
  "oos_start": "2026-08-21",
  "backtest_reference": {
@@ -56,7 +56,14 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "win": null,
-   "filled_at": null
+   "filled_at": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "days_since_prev_il": 18
   },
   {
    "date": "2026-08-20",
@@ -87,7 +94,14 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "improving_days": 1,
-   "breadth_slope5": 0.0655
+   "breadth_slope5": 0.0655,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "days_since_prev_il": 17
   },
   {
    "date": "2026-08-20",
@@ -118,7 +132,14 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "improving_days": 2,
-   "breadth_slope5": 0.1663
+   "breadth_slope5": 0.1663,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "days_since_prev_il": 17
   },
   {
    "date": "2026-08-20",
@@ -145,7 +166,14 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "improving_days": 7,
-   "breadth_slope5": 0.5
+   "breadth_slope5": 0.5,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "days_since_prev_il": 37
   },
   {
    "date": "2026-08-20",
@@ -174,7 +202,14 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "improving_days": 4,
-   "breadth_slope5": 0.0
+   "breadth_slope5": 0.0,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "days_since_prev_il": 38
   },
   {
    "date": "2026-08-20",
@@ -201,7 +236,14 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "improving_days": 8,
-   "breadth_slope5": 0.0
+   "breadth_slope5": 0.0,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "days_since_prev_il": 31
   }
  ]
 }

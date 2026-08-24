@@ -16,6 +16,17 @@
     excess_eqw_20:      { label: "20 日 T+0", win: 49.3, mean: 1.42 },
     excess_eqw_lag1_20: { label: "20 日 T+1", win: 47.4, mean: 1.13 },
   };
+  // vs 加權指數平行對帳（2026-08-24 拍板 A 案）：同一批訊號換「加權指數」這把尺打分，
+  // 純平行參考、不做判準。回測參考＝benchmark_hot_transition twii 列（C 法＋熱門確認）：
+  // 換這把尺全視窗不達標，正是主判準維持等權尺的攤牌證據，放著對照防混淆。
+  const BACKTEST_REF_TWII = {
+    excess_twii_5:       { label: "5 日 T+0", win: 48.5, mean: 0.18 },
+    excess_twii_lag1_5:  { label: "5 日 T+1", win: 46.7, mean: -0.12 },
+    excess_twii_10:      { label: "10 日 T+0", win: 46.8, mean: -0.03 },
+    excess_twii_lag1_10: { label: "10 日 T+1", win: 44.7, mean: -0.31 },
+    excess_twii_20:      { label: "20 日 T+0", win: 41.0, mean: -0.71 },
+    excess_twii_lag1_20: { label: "20 日 T+1", win: 38.6, mean: -0.98 },
+  };
   // 對帳視窗切換：pill 選天數 → 明細表顯示該視窗的 T+0／T+1 兩欄
   const WINDOWS = {
     "5":  { t0: "excess_eqw_5",  t1: "excess_eqw_lag1_5" },
@@ -62,6 +73,15 @@
     if (slope !== null && slope !== undefined && slope > 0.10) {
       chips += `<span class="sig-tag warn" title="追高警戒：廣度 5 日斜率 ${slope}（>0.10，回測最爛桶）">⚠ 追高警戒</span>`;
     }
+    // A5a' 重觸發（2026-08-24 上考試）：null＝首次跨線、undefined＝舊記錄還沒回填不顯示
+    const gap = signal.days_since_prev_il;
+    if (gap === null) {
+      chips += `<span class="sig-tag" title="首次跨線：回測窗內這族群第一次 I→L（first 桶回測 50.0%，n=22 樣本薄）">首次跨線</span>`;
+    } else if (gap !== undefined) {
+      chips += gap <= 20
+        ? `<span class="sig-tag retrig" title="重觸發：距同族群上一次 I→L 跨線 ${gap} 個交易日（≤20 日＝輪動進行中，回測 53.5% 較佳桶、三年皆正）">🔁 重觸發 ${gap} 日</span>`
+        : `<span class="sig-tag" title="距上一次 I→L 跨線 ${gap} 個交易日（>20 日；回測 21-60 日桶 42.7% 最爛）">間隔 ${gap} 日</span>`;
+    }
     return chips;
   }
 
@@ -103,6 +123,22 @@
     $("parallelRows").innerHTML = rows.join("");
   }
 
+  // vs 加權指數平行對帳表：全部列都吃 stats.extra（這把尺沒有主判準列）
+  function renderParallelTwii(stats) {
+    const extra = stats.extra || {};
+    const rows = Object.keys(BACKTEST_REF_TWII).map((field) => {
+      const ref = BACKTEST_REF_TWII[field];
+      const live = extra[field];
+      const hasLive = live && live.filled;
+      const cells = hasLive
+        ? `<td>${live.filled} 筆</td><td>${fmtPct(live.win_rate, 1)}</td><td>${fmtPct(live.mean, 2, true)}</td>`
+        : '<td class="muted">累積中</td><td class="muted">—</td><td class="muted">—</td>';
+      return `<tr><td>${ref.label}</td>${cells}` +
+        `<td class="muted">${ref.win.toFixed(1)}%／${fmtPct(ref.mean, 2, true)}</td></tr>`;
+    });
+    $("parallelTwiiRows").innerHTML = rows.join("");
+  }
+
   // 品質分層對帳（前端自算，只看 OOS 且 5 日 T+0 已回填的訊號）
   function renderTiers(signals, oosStart) {
     const done = signals.filter((s) => s.date >= oosStart
@@ -119,6 +155,9 @@
       ["未蓄勢（≤3 日）", done.filter((s) => s.improving_days !== null && s.improving_days !== undefined && s.improving_days <= 3), "回測 47.2%"],
       ["⚠ 追高警戒（斜率>0.10）", done.filter((s) => (s.breadth_slope5 ?? 0) > 0.10), "回測 44.4%"],
       ["無追高警戒", done.filter((s) => s.breadth_slope5 !== null && s.breadth_slope5 !== undefined && s.breadth_slope5 <= 0.10), "回測 55.9%"],
+      // A5a' 重觸發分組（null＝首次是合法值、undefined＝還沒回填不進任何桶）
+      ["🔁 重觸發（≤20 日）", done.filter((s) => typeof s.days_since_prev_il === "number" && s.days_since_prev_il <= 20), "回測 53.5%"],
+      ["首次／間隔 >20 日", done.filter((s) => s.days_since_prev_il === null || (typeof s.days_since_prev_il === "number" && s.days_since_prev_il > 20)), "回測 43.6%"],
     ];
     $("tierCards").innerHTML = tiers.map(([label, rows, ref]) => {
       const stat = bucket(rows);
@@ -190,6 +229,7 @@
     const stats = payload.stats || {};
     renderStats(stats);
     renderParallel(stats);
+    renderParallelTwii(stats);
     renderTiers(payload.signals || [], payload.oos_start || "");
     setupPills();
     renderRows();
