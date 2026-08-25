@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07110f">
-  <meta name="description" content="輪動訊號 OOS 追蹤：改善點火／二次點火／蓄勢優選三個訊號各自對帳，回測承諾 vs 新樣本實績＋影子單淨值公開">
+  <meta name="description" content="輪動訊號 OOS 追蹤：改善點火／二次點火／蓄勢優選三個訊號各自對帳，回測承諾 vs 新樣本實績＋影子單戰績公開">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="signals.css">
@@ -119,7 +119,7 @@
         <div class="hero-copy">
           <p class="hero-label">輪動訊號 <span>／ 公開考試</span></p>
           <h1>三個追蹤中的訊號，<br><em>各自對帳、各自說話</em></h1>
-          <p>回測裡活下來的候選全部凍結成規則，每天自動掃描、每筆訊號公開對帳。用下方分頁切換：<b>一個訊號一頁</b>（一句話定義、完整條件、回測承諾 vs OOS 實績、影子單淨值），對帳明細與訊號來歷合併在最後一頁。判準事前約定：累積百筆新樣本仍勝率 &gt;50%＋平均 &gt;0 才算通過。</p>
+          <p>回測裡活下來的候選全部凍結成規則，每天自動掃描、每筆訊號公開對帳。用下方分頁切換：<b>一個訊號一頁</b>（一句話定義、完整條件、回測承諾 vs OOS 實績、影子單戰績），對帳明細與訊號來歷合併在最後一頁。判準事前約定：累積百筆新樣本仍勝率 &gt;50%＋平均 &gt;0 才算通過。</p>
         </div>
         <div class="hero-summary">
           <div class="summary-top"><span class="pulse"></span><b>追蹤中訊號</b><small>OOS 起算 2026-08-21</small></div>
@@ -157,7 +157,7 @@
           <div class="tier-grid">
             <div class="tier-card"><small>回測承諾 · 5 日 T+0</small><strong>51.5%</strong><span>平均 +0.60%（n=499）；T+1 只剩 49.5%</span></div>
             <div class="tier-card"><small>OOS 實績 · 5 日 T+0</small><strong id="statWin">—</strong><span id="ilOosSub">等待對帳</span></div>
-            <div class="tier-card"><small>🕶 影子單淨值</small><strong id="ilShadowWin">—</strong><span id="ilShadowSub">等待對帳</span></div>
+            <div class="tier-card"><small>🕶 影子單戰績</small><strong id="ilShadowWin">—</strong><span id="ilShadowSub">等待對帳</span></div>
           </div>
           <details class="sig-more">
             <summary>展開細節：兩把尺平行對帳、品質分層、使用限制</summary>
@@ -302,7 +302,7 @@
               <ul class="limitations-list">
                 <li>回測 n=73＝樣本薄；2025 年 47.1% 跌破 50%，跨年不一致。</li>
                 <li>條件是從 26 個桶的分層測試選出來的，選擇效應風險高。</li>
-                <li>沒有獨立影子單：它是改善點火的子集合，不另外模擬。</li>
+                <li>影子單戰績非獨立開單：直接取改善點火影子單裡標 ⭐ 的那些筆分組統計，不重複模擬、不另計成本。</li>
               </ul>
             </details>
           </details>
@@ -319,8 +319,8 @@
             <div><p class="eyebrow">可執行版對帳 · 2026-08-25 起</p><h2>🕶 影子單</h2></div>
             <span class="small-chip">零風險模擬 · 非買進建議</span>
           </div>
-          <p class="bench-note">考卷答的是「訊號有沒有資訊」（族群指數的<b>相對超額</b>）；影子單答的是另一個問題——「<b>真的照訊號進場，扣掉成本會賺賠多少</b>」。回測已攤牌：二次點火平均毛超額 +0.35%／筆，比台股一趟來回成本（約 0.4~0.5%）還小，數學上先輸在起跑線；影子單就是把這筆帳每天自動記給你看。注意這是<b>絕對報酬</b>口徑（會跟著大盤方向走），跟上面的相對超額是兩把尺、不能互比。累積 20~30 筆後淨值仍為正，再談真金小額也不遲。</p>
-          <div class="chart-note"><span></span><span id="shadowNote">規則：訊號隔天（T+1）收盤模擬買進族群成交額前 3 大主角、持 5 個交易日機械出場，毛報酬扣來回成本 0.45%＝淨損益；不補歷史。兩訊號的淨值各自顯示在上方主卡。</span></div>
+          <p class="bench-note">考卷答的是「訊號有沒有資訊」（族群指數的<b>相對超額</b>）；影子單答的是另一個問題——「<b>真的照訊號進場，扣掉成本會賺賠多少</b>」。回測已攤牌：二次點火平均毛超額 +0.35%／筆，比台股一趟來回成本（約 0.4~0.5%）還小，數學上先輸在起跑線；影子單就是把這筆帳每天自動記給你看。注意這是<b>絕對報酬</b>口徑（會跟著大盤方向走），跟上面的相對超額是兩把尺、不能互比。累積 20~30 筆後平均淨損益仍為正，再談真金小額也不遲。</p>
+          <div class="chart-note"><span></span><span id="shadowNote">規則：訊號隔天（T+1）收盤模擬買進族群成交額前 3 大主角、持 5 個交易日機械出場，毛報酬扣來回成本 0.45%＝淨損益；不補歷史。影子單戰績各自顯示在各訊號分頁的主卡。</span></div>
         </article>
       </section>
 

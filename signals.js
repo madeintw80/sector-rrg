@@ -351,7 +351,7 @@
       `<span>平均 ${fmtPct(ref.t1.mean_excess, 2, true)}（n=${ref.sample}）；T+0 ${ref.t0.win_rate}%／${fmtPct(ref.t0.mean_excess, 2, true)}</span></div>` +
       card(`OOS 實績 · 5 日 T+0（主統計）`, wl.t0) +
       card(`OOS 實績 · 5 日 T+1（平行）`, wl.t1) +
-      `<div class="tier-card"><small>🕶 影子單淨值</small><strong id="wlShadowWin">—</strong><span id="wlShadowSub">等待對帳</span></div>`;
+      `<div class="tier-card"><small>🕶 影子單戰績</small><strong id="wlShadowWin">—</strong><span id="wlShadowSub">等待對帳</span></div>`;
     const note = $("wlNote");
     if (note) {
       note.textContent = wl.total
@@ -373,11 +373,27 @@
         : `<strong class="sig-wait">—</strong><span>等待對帳</span>`;
       return `<div class="tier-card"><small>${label}</small>${body}</div>`;
     };
+    // 🕶 影子單戰績（分層版）：不另外開單，直接取改善點火影子單裡標 ⭐ 的那些筆分組統計
+    const shadowRows = (signals || []).filter((s) => isIL(s) && s.date >= oosStart
+      && isComboV3(s) && s.shadow_net_5 !== null && s.shadow_net_5 !== undefined);
+    let shadowCard;
+    if (shadowRows.length) {
+      const wins = shadowRows.filter((s) => s.shadow_net_5 > 0).length;
+      const meanNet = shadowRows.reduce((t, s) => t + s.shadow_net_5, 0) / shadowRows.length;
+      const meanGross = shadowRows.reduce((t, s) => t + (s.shadow_gross_5 ?? 0), 0) / shadowRows.length;
+      shadowCard = `<div class="tier-card"><small>🕶 影子單戰績</small>` +
+        `<strong>${fmtPct((wins / shadowRows.length) * 100, 1)}</strong>` +
+        `<span>n=${shadowRows.length} · 淨 ${fmtPct(meanNet, 2, true)} · 毛 ${fmtPct(meanGross, 2, true)}</span></div>`;
+    } else {
+      shadowCard = `<div class="tier-card"><small>🕶 影子單戰績</small>` +
+        `<strong class="sig-wait">—</strong><span>等待對帳（取 ⭐ 筆分組）</span></div>`;
+    }
     box.innerHTML =
       `<div class="tier-card"><small>回測承諾 · 5 日 T+1</small><strong>60.3%</strong>` +
       `<span>平均 +1.30%（n=73、2025 年 47.1%＝樣本薄）</span></div>` +
       card("OOS 實績 · 5 日 T+0（主口徑）", combo.t0) +
-      card("OOS 實績 · 5 日 T+1（平行）", combo.t1);
+      card("OOS 實績 · 5 日 T+1（平行）", combo.t1) +
+      shadowCard;
   }
 
   // 🕶 影子單（2026-08-25 拍板 A）：T+1 收盤買前 3 大主角、持 5 日、扣來回成本的淨損益。
@@ -403,7 +419,7 @@
         `規則凍結：訊號隔天（T+1）收盤等金額模擬買進族群成交額前 ${cfg.top_n ?? 3} 大主角、` +
         `持 ${cfg.hold_days ?? 5} 個交易日機械出場，毛報酬扣來回成本 ${cost}%＝淨損益；` +
         `${cfg.start ?? "2026-08-25"} 起的新訊號才記（不補歷史）。勝負以淨損益 >0 判定；` +
-        `兩訊號的淨值各自顯示在上方主卡。`;
+        `影子單戰績各自顯示在各訊號分頁的主卡（蓄勢優選＝取 ⭐ 筆分組、不另開單）。`;
     }
   }
 
