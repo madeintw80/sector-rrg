@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated": "2026-08-25T11:48:34+08:00",
+ "generated": "2026-08-25T14:08:19+08:00",
  "as_of": "2026-08-24",
  "oos_start": "2026-08-21",
  "backtest_reference": {
@@ -29,6 +29,12 @@
   "il": "改善→領先",
   "wl": "轉弱→領先"
  },
+ "shadow_config": {
+  "start": "2026-08-25",
+  "cost": 0.45,
+  "top_n": 3,
+  "hold_days": 5
+ },
  "stats": {
   "oos_total": 1,
   "oos_filled": 0,
@@ -46,6 +52,11 @@
    "total": 0,
    "t0": null,
    "t1": null
+  },
+  "shadow": {
+   "assumed_cost": 0.45,
+   "il": null,
+   "wl": null
   }
  },
  "level_labels": {

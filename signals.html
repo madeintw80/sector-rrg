@@ -153,6 +153,18 @@
       <section class="split-grid">
         <article class="panel" style="grid-column: 1 / -1;">
           <div class="panel-heading">
+            <div><p class="eyebrow">可執行版對帳 · 2026-08-25 起</p><h2>🕶 影子單</h2></div>
+            <span class="small-chip">零風險模擬 · 非買進建議</span>
+          </div>
+          <p class="bench-note">考卷答的是「訊號有沒有資訊」（族群指數的<b>相對超額</b>）；影子單答的是另一個問題——「<b>真的照訊號進場，扣掉成本會賺賠多少</b>」。回測已攤牌：F1 平均毛超額 +0.35%／筆，比台股一趟來回成本（約 0.4~0.5%）還小，數學上先輸在起跑線；影子單就是把這筆帳每天自動記給你看：每筆訊號模擬 T+1 收盤買前 3 大主角、持 5 日機械出場、扣 0.45% 成本記<b>淨損益</b>。注意這是<b>絕對報酬</b>口徑（會跟著大盤方向走），跟上面考卷的相對超額是兩把尺、不能互比。累積 20~30 筆後淨值仍為正，再談真金小額也不遲。</p>
+          <div class="tier-grid" id="shadowCards"></div>
+          <div class="chart-note"><span></span><span id="shadowNote">等待第一筆影子單對帳。</span></div>
+        </article>
+      </section>
+
+      <section class="split-grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <div class="panel-heading">
             <div><p class="eyebrow">主判準之外 · 各視窗各自回填</p><h2>平行對帳統計</h2></div>
             <span class="small-chip">主判準＝5 日 T+0 vs 等權</span>
           </div>
@@ -206,7 +218,8 @@
               <thead><tr>
                 <th>日期</th><th>族群＋標籤</th><th class="members">主力成分股</th>
                 <th class="num">量能</th><th class="num">廣度</th>
-                <th class="num" id="colT0">5日 T+0</th><th class="num" id="colT1">5日 T+1</th><th>結果</th>
+                <th class="num" id="colT0">5日 T+0</th><th class="num" id="colT1">5日 T+1</th>
+                <th class="num" title="影子單：T+1 收盤買前 3 大主角、持 5 日、扣 0.45% 成本的淨損益（絕對報酬口徑）">🕶 淨(5日)</th><th>結果</th>
               </tr></thead>
               <tbody id="signalRows"></tbody>
             </table>
@@ -225,6 +238,7 @@
           <li>成績改用「vs 加權指數」打分（平行參考表）時回測全視窗 &lt;50%——訊號贏的是「市場平均股」，不保證贏過權值股拉動的大盤。</li>
           <li>平均 +0.60% 為毛超額，未扣手續費、證交稅與滑價；族群無法直接買進。</li>
           <li>F1（轉弱→領先）回測 52.8% 距 50% 約 1.5 個標準差＝統計上未達顯著，且只在等權指數作法上存在（成交額加權法 44.x%）；四條進領先路徑挑最亮的一格、有選擇效應——正因如此才上 OOS 考試而不是直接採用。</li>
+          <li>影子單是「絕對報酬」口徑：淨值受大盤方向影響大，跟考卷的相對超額不能互比；模擬以收盤價成交、未含滑價與流動性衝擊，實際成交只會更差。</li>
           <li>用途是「值得優先研究的族群排序」，不是買進訊號，也不預測絕對報酬。</li>
         </ul></div>
         <span class="warning-label">EXPLORATORY</span>

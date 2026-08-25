@@ -219,6 +219,33 @@
     }
   }
 
+  // 🕶 影子單（2026-08-25 拍板 A）：可執行版對帳——T+1 收盤買前 3 大主角、
+  // 持 5 日、扣來回成本的「淨損益」。絕對報酬口徑（真的進場賺賠多少），
+  // 跟考卷的相對超額是兩把尺；兩張考卷分開列。
+  function renderShadow(stats) {
+    const box = $("shadowCards");
+    if (!box) return;
+    const shadow = stats.shadow || {};
+    const cost = shadow.assumed_cost ?? 0.45;
+    const card = (label, live) => {
+      const body = live
+        ? `<strong>${fmtPct(live.win_rate, 1)}</strong><span>n=${live.filled} · 淨 ${fmtPct(live.mean_net, 2, true)} · 毛 ${fmtPct(live.mean_gross, 2, true)}</span>`
+        : `<strong class="sig-wait">—</strong><span>等待對帳</span>`;
+      return `<div class="tier-card"><small>${label}</small>${body}</div>`;
+    };
+    box.innerHTML =
+      card("⚡ 主考卷影子單（改善→領先）", shadow.il) +
+      card("🔁 F1 影子單（轉弱→領先）", shadow.wl);
+    const note = $("shadowNote");
+    if (note) {
+      const cfg = (payload && payload.shadow_config) || {};
+      note.textContent =
+        `規則凍結：訊號隔天（T+1）收盤等金額模擬買進族群成交額前 ${cfg.top_n ?? 3} 大主角、` +
+        `持 ${cfg.hold_days ?? 5} 個交易日機械出場，毛報酬扣來回成本 ${cost}%＝淨損益；` +
+        `${cfg.start ?? "2026-08-25"} 起的新訊號才記（不補歷史）。勝負以淨損益 >0 判定。`;
+    }
+  }
+
   function resultCell(signal, isReference) {
     if (isReference) return '<span class="sig-ref">參考</span>';
     if (signal.excess_eqw_5 === null || signal.excess_eqw_5 === undefined)
@@ -248,6 +275,7 @@
           ? Math.round(signal.breadth_up20 * 100) + "%" : "—"}</td>` +
         excessCell(signal[fields.t0]) +
         excessCell(signal[fields.t1]) +
+        excessCell(signal.shadow_net_5) +
         `<td>${resultCell(signal, isReference)}</td>` +
         "</tr>";
     });
@@ -278,6 +306,7 @@
     renderParallel(stats);
     renderParallelTwii(stats);
     renderF1(stats);
+    renderShadow(stats);
     renderTiers(payload.signals || [], payload.oos_start || "");
     setupPills();
     renderRows();
