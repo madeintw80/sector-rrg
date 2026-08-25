@@ -39,26 +39,35 @@
     excess_eqw_20:      { label: "20 日 T+0", win: 51.9, mean: 1.57 },
     excess_eqw_lag1_20: { label: "20 日 T+1", win: 53.1, mean: 1.41 },
   };
-  // 蓄勢優選：回測只留存 T+1 5 日那格（60.3%／+1.30%，n=73），其餘視窗無參考。
+  // 蓄勢優選（n=73，六視窗同一批事件）：2026-08-25 用 8/24 凍結事件明細補齊六視窗；
+  // 補算前先復現候選（499／49.5／+0.44）與宣告格（T+1 5 日 60.3／+1.30）checksum 才落表。
   const COMBO_BACKTEST_REF = {
-    excess_eqw_5:       { label: "5 日 T+0（主口徑）", win: null, mean: null, main: true },
+    excess_eqw_5:       { label: "5 日 T+0（主口徑）", win: 61.6, mean: 1.35, main: true },
     excess_eqw_lag1_5:  { label: "5 日 T+1", win: 60.3, mean: 1.30 },
-    excess_eqw_10:      { label: "10 日 T+0", win: null, mean: null },
-    excess_eqw_lag1_10: { label: "10 日 T+1", win: null, mean: null },
-    excess_eqw_20:      { label: "20 日 T+0", win: null, mean: null },
-    excess_eqw_lag1_20: { label: "20 日 T+1", win: null, mean: null },
+    excess_eqw_10:      { label: "10 日 T+0", win: 67.1, mean: 2.88 },
+    excess_eqw_lag1_10: { label: "10 日 T+1", win: 64.4, mean: 3.00 },
+    excess_eqw_20:      { label: "20 日 T+0", win: 61.6, mean: 2.69 },
+    excess_eqw_lag1_20: { label: "20 日 T+1", win: 52.1, mean: 2.23 },
   };
-  // 加權尺六視窗（wl／combo 用：無回測參考、只看 OOS live）
-  const TWII_LABELS = {
-    excess_twii_5:       "5 日 T+0",
-    excess_twii_lag1_5:  "5 日 T+1",
-    excess_twii_10:      "10 日 T+0",
-    excess_twii_lag1_10: "10 日 T+1",
-    excess_twii_20:      "20 日 T+0",
-    excess_twii_lag1_20: "20 日 T+1",
+  // wl 加權尺六視窗（2026-08-25 補算；n=744，10 日 T+0 743／T+1 741、20 日 729）：
+  // 換這把尺全視窗貼平或跌破 50%＝二次點火的優勢也只對等權市場存在。
+  const WL_BACKTEST_REF_TWII = {
+    excess_twii_5:       { label: "5 日 T+0", win: 50.1, mean: -0.02 },
+    excess_twii_lag1_5:  { label: "5 日 T+1", win: 49.7, mean: -0.06 },
+    excess_twii_10:      { label: "10 日 T+0", win: 49.4, mean: 0.21 },
+    excess_twii_lag1_10: { label: "10 日 T+1", win: 48.9, mean: -0.04 },
+    excess_twii_20:      { label: "20 日 T+0", win: 45.5, mean: -0.22 },
+    excess_twii_lag1_20: { label: "20 日 T+1", win: 42.7, mean: -0.43 },
   };
-  const noRef = (labels) => Object.fromEntries(Object.entries(labels)
-    .map(([field, label]) => [field, { label, win: null, mean: null }]));
+  // combo 加權尺六視窗（2026-08-25 補算；n=73）：5 日仍 61.6% 但 20 日 T+1 跌到 45.2%。
+  const COMBO_BACKTEST_REF_TWII = {
+    excess_twii_5:       { label: "5 日 T+0", win: 61.6, mean: 1.03 },
+    excess_twii_lag1_5:  { label: "5 日 T+1", win: 61.6, mean: 0.87 },
+    excess_twii_10:      { label: "10 日 T+0", win: 53.4, mean: 1.83 },
+    excess_twii_lag1_10: { label: "10 日 T+1", win: 52.1, mean: 1.34 },
+    excess_twii_20:      { label: "20 日 T+0", win: 50.7, mean: 0.73 },
+    excess_twii_lag1_20: { label: "20 日 T+1", win: 45.2, mean: 0.38 },
+  };
   // 對帳視窗切換：pill 選天數 → 明細表顯示該視窗的 T+0／T+1 兩欄
   const WINDOWS = {
     "5":  { t0: "excess_eqw_5",  t1: "excess_eqw_lag1_5" },
@@ -527,10 +536,10 @@
     renderScaleTable("parallelTwiiRows", BACKTEST_REF_TWII, stats.extra);
     const wlStats = stats.wl || {};
     renderScaleTable("parallelWlRows", WL_BACKTEST_REF, wlStats.extra, wlStats.t0 || null);
-    renderScaleTable("parallelWlTwiiRows", noRef(TWII_LABELS), wlStats.extra);
+    renderScaleTable("parallelWlTwiiRows", WL_BACKTEST_REF_TWII, wlStats.extra);
     const comboStats = stats.combo_v3 || {};
     renderScaleTable("parallelComboRows", COMBO_BACKTEST_REF, comboStats.extra, comboStats.t0 || null);
-    renderScaleTable("parallelComboTwiiRows", noRef(TWII_LABELS), comboStats.extra);
+    renderScaleTable("parallelComboTwiiRows", COMBO_BACKTEST_REF_TWII, comboStats.extra);
     renderWl(stats);
     renderCombo(stats, payload.signals || [], payload.oos_start || "");
     renderShadow(stats);
