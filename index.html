@@ -114,6 +114,9 @@
   .rotation-strip button{padding:4px 10px;font-size:12px;min-height:0;}
   .rotation-strip button.rot-only.on{border-color:#7c6cf0;color:#a99df5;font-weight:700;}
   .rotation-strip .rot-chip small{opacity:.65;font-size:10px;margin-left:3px;}
+  /* F1 二次點火（轉弱→領先）訊號：橘色系跟主考卷（紫）區分 */
+  .rotation-strip .rot-chip.wl{border-color:#e08a3c;color:#e08a3c;}
+  .rotation-panel.wl{border-left-color:#e08a3c;}
   /* 側欄：輪動訊號細節面板 */
   .rotation-panel{margin:10px 0;padding:12px 14px;border:1px solid var(--line);border-left:3px solid #7c6cf0;}
   .rotation-panel .rp-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;}
@@ -685,7 +688,7 @@
       corner:{lead:"#2c7a3f", impr:"#2b6ca3", lag:"#b03a2e", weak:"#a9781a"},
       cats:{L:"#2ca02c", I:"#1f77b4", W:"#e07b00", "":"#b8b8b8"},
       lights:{R:"#d64545", Y:"#d99a00", G:"#2ca02c"},
-      sig:"#6d4fd8"
+      sig:"#6d4fd8", sigWl:"#c96b1f"
     },
     dark: {
       panelStroke:"#3a3a44", grid:"#3f3f48", axis:"#9a9a94", label:"#c8c8c2", leader:"#4a4a52",
@@ -694,7 +697,7 @@
       corner:{lead:"#5fcf6f", impr:"#5fb0ea", lag:"#e07a68", weak:"#d9a94a"},
       cats:{L:"#3fbf4f", I:"#4a9fe0", W:"#f0913a", "":"#6a6a66"},
       lights:{R:"#e56a6a", Y:"#e8b93a", G:"#4fc45f"},
-      sig:"#a99df5"
+      sig:"#a99df5", sigWl:"#f0a05a"
     }
   };
   var CAT_NAME = {L:"領先追強", I:"改善翻正", W:"領先轉弱", "":"落後／其他"};
@@ -865,25 +868,36 @@
     return !!(rotationRecord(item) && state.pos===cur().frames-1);
   }
 
-  // 側欄：今日輪動訊號細節（含「蓄勢確認／追高警戒」品質標籤＋對帳頁連結）
+  // 側欄：今日輪動訊號細節（含品質標籤＋對帳頁連結）。
+  // 主考卷（il＝改善→領先）掛蓄勢/追高標籤；F1（wl＝轉弱→領先）只列中性的歇腳天數
+  // ——il 的分層標籤對 wl 沒驗證過，不掛。
   function renderRotationPanel(item){
     var rec=rotationRecord(item);
     if(!rec) return "";
+    var isWl=rec.signal_type==="wl";
     var days=rec.improving_days, slope=rec.breadth_slope5, tags="";
-    if(days!==null&&days!==undefined){
-      tags+=days>=4?'<span class="rp-tag good">✓ 蓄勢確認 '+days+' 日</span>'
-                   :'<span class="rp-tag">蓄勢 '+days+' 日</span>';
+    if(isWl){
+      if(rec.weakening_days) tags+='<span class="rp-tag">歇腳 '+rec.weakening_days+' 日再點火</span>';
+    }else{
+      if(days!==null&&days!==undefined){
+        tags+=days>=4?'<span class="rp-tag good">✓ 蓄勢確認 '+days+' 日</span>'
+                     :'<span class="rp-tag">蓄勢 '+days+' 日</span>';
+      }
+      if(slope!==null&&slope!==undefined&&slope>0.10) tags+='<span class="rp-tag warn">⚠ 追高警戒</span>';
     }
-    if(slope!==null&&slope!==undefined&&slope>0.10) tags+='<span class="rp-tag warn">⚠ 追高警戒</span>';
-    return '<section class="rotation-panel" aria-label="今日輪動訊號">'+
-      '<div class="rp-head"><b>⚡ 今日輪動訊號（'+escapeHtml(rotation.asOf)+'）'+tags+'</b><a href="signals.html">看對帳 →</a></div>'+
+    var head=isWl?'🔁 今日輪動訊號・F1 二次點火（':'⚡ 今日輪動訊號（';
+    var note=isWl
+      ?'F1 第二張考卷＝轉弱→領先（曾領先→動能歇腳→再點火）＋熱門確認，2026-08-25 起與主考卷分開計分（回測 T+1 5 日 52.8%／+0.35%、n=744；研究排序用，不是買進訊號）。'
+      :'訊號＝改善轉入領先＋熱門確認（研究排序用，不是買進訊號）；5 個交易日後在對帳頁自動結算。蓄勢確認＝跨線前在改善區蓄勢 ≥4 日（回測較佳桶）；追高警戒＝廣度 5 日斜率 &gt;0.10（回測最爛桶）。';
+    return '<section class="rotation-panel'+(isWl?' wl':'')+'" aria-label="今日輪動訊號">'+
+      '<div class="rp-head"><b>'+head+escapeHtml(rotation.asOf)+'）'+tags+'</b><a href="signals.html">看對帳 →</a></div>'+
       '<div class="rp-grid">'+
         '<span>量能升溫</span><b>'+(rec.turnover_heat!=null?rec.turnover_heat+"x":"—")+'</b>'+
         '<span>成分廣度</span><b>'+(rec.breadth_up20!=null?Math.round(rec.breadth_up20*100)+"%":"—")+'</b>'+
         '<span>廣度 5 日斜率</span><b>'+(slope!=null?slope:"—")+'</b>'+
         '<span>近月既有超額</span><b>'+(rec.trailing_excess20!=null?percentText(rec.trailing_excess20):"—")+'</b>'+
       '</div>'+
-      '<p class="rp-note">訊號＝改善轉入領先＋熱門確認（研究排序用，不是買進訊號）；5 個交易日後在對帳頁自動結算。蓄勢確認＝跨線前在改善區蓄勢 ≥4 日（回測較佳桶）；追高警戒＝廣度 5 日斜率 &gt;0.10（回測最爛桶）。</p></section>';
+      '<p class="rp-note">'+note+'</p></section>';
   }
 
   // 定位：點互動列的族群名 → 切回產業模式＋對應層級，選取該族群並捲到圖
@@ -931,9 +945,11 @@
     only.title="圖上只顯示今日亮訊號的族群"; only.setAttribute("aria-pressed",state.rotationOnly?"true":"false");
     only.addEventListener("click",toggleRotationOnly); strip.appendChild(only);
     rotation.todays.forEach(function(rec){
-      var b=document.createElement("button"); b.type="button"; b.className="rot-chip";
-      b.innerHTML=escapeHtml(rec.group_name)+'<small>'+escapeHtml((D.level_labels&&D.level_labels[rec.level])||rec.level)+'</small>';
-      b.title="在圖上定位 "+rec.group_name;
+      var isWl=rec.signal_type==="wl";
+      var b=document.createElement("button"); b.type="button";
+      b.className="rot-chip"+(isWl?" wl":"");
+      b.innerHTML=(isWl?"🔁 ":"")+escapeHtml(rec.group_name)+'<small>'+escapeHtml((D.level_labels&&D.level_labels[rec.level])||rec.level)+'</small>';
+      b.title=(isWl?"F1 二次點火（轉弱→領先）：":"")+"在圖上定位 "+rec.group_name;
       b.addEventListener("click",function(){ locateRotationSignal(rec); });
       strip.appendChild(b);
     });
@@ -1341,11 +1357,14 @@
         if(isCur && !faded){ c.setAttribute("stroke",th.dotStroke); c.setAttribute("stroke-width",picked?2:1.3); }
         g.appendChild(c);
       }
-      // ⚡ 今日輪動訊號：當前點外圈光環（僅時間軸最新一格；faded 不畫）
+      // ⚡ 今日輪動訊號：當前點外圈光環（僅時間軸最新一格；faded 不畫）。
+      // 主考卷（改善→領先）＝紫色短虛線；F1 二次點火（轉弱→領先）＝橘色長虛線。
       if(!faded && isRotationMarked(item)){
+        var rotRec=rotationRecord(item), isWl=rotRec&&rotRec.signal_type==="wl";
         g.appendChild(el("circle",{cx:sx(last.x).toFixed(1),cy:sy(last.y).toFixed(1),
           r:(radius(item.tv)*(picked?1.25:1)+4.5).toFixed(1),fill:"none",
-          stroke:th.sig,"stroke-width":2,"stroke-dasharray":"3 2.4",opacity:0.95}));
+          stroke:isWl?th.sigWl:th.sig,"stroke-width":2,
+          "stroke-dasharray":isWl?"7 3":"3 2.4",opacity:0.95}));
       }
       // 點擊熱區（疊在當前點上，較大好點）
       var hit=el("circle",{cx:sx(last.x).toFixed(1),cy:sy(last.y).toFixed(1),r:13,fill:"transparent"});
@@ -1357,7 +1376,10 @@
         var ax=sx(last.x), estW=item.name.length*11.5;   // 估中文字寬（font-size 11）
         var side=(ax+9+estW>594)?"L":"R";
         var hotPrefix=state.pos===cur().frames-1&&isHotConfirmed(item)?"🔥 ":"";
-        if(isRotationMarked(item)) hotPrefix="⚡ "+hotPrefix;
+        if(isRotationMarked(item)){
+          var mk=rotationRecord(item);
+          hotPrefix=(mk&&mk.signal_type==="wl"?"🔁 ":"⚡ ")+hotPrefix;
+        }
         labels.push({name:hotPrefix+item.name, key:themeKey(item), ax:ax, ay:sy(last.y), side:side, picked:picked, color:col});
       }
     }
@@ -1967,7 +1989,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.7.2"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.8.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
@@ -2137,7 +2159,7 @@
     todays.forEach(function(s){ rotation.byId[s.group_id]=s; });
     document.getElementById("rotationCount").textContent="今日 "+todays.length+" 個";
     var stats=p.stats||{};
-    var names=todays.map(function(s){ return s.group_name; }).slice(0,4).join("、");
+    var names=todays.map(function(s){ return (s.signal_type==="wl"?"🔁":"")+s.group_name; }).slice(0,4).join("、");
     var score=stats.oos_filled
       ? "OOS 勝率 "+stats.win_rate+"%（"+stats.oos_filled+" 筆）"
       : "OOS 累積 "+(stats.oos_total||0)+" 筆";

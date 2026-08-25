@@ -26,6 +26,7 @@
     .sig-tag.warn { border-color: rgba(240, 197, 106, .6); color: #f0c56a; opacity: 1; }
     .sig-tag.star { border-color: rgba(196, 181, 253, .6); color: #c4b5fd; opacity: 1; }
     .sig-tag.retrig { border-color: rgba(125, 211, 252, .6); color: #7dd3fc; opacity: 1; }
+    .sig-tag.wl { border-color: rgba(240, 160, 90, .65); color: #f0a05a; opacity: 1; }
     .table-wrap { overflow-x: auto; }
     /* grid item 預設 min-width:auto 會被寬表撐開 → 鎖 0 讓 table-wrap 自己捲 */
     .split-grid > .panel { min-width: 0; }
@@ -83,7 +84,7 @@
           <p>回測找到一格「轉入領先＋熱門確認」的組合（訊號日收盤 T+0 口徑：勝率 51.5%、平均 +0.60%）。誠實揭露：若隔天收盤才進場（T+1），回測只剩 49.5%／+0.44%、跌破門檻——優勢約一半集中在訊號隔天的第一根 K。這頁把規則凍結，每天掃描、每筆同時對帳 T+0 與 T+1，用新樣本說話。</p>
         </div>
         <div class="hero-summary">
-          <div class="summary-top"><span class="pulse"></span><b>OOS 戰績</b><small>非交易訊號</small></div>
+          <div class="summary-top"><span class="pulse"></span><b>主考卷 OOS 戰績</b><small>改善→領先</small></div>
           <div class="summary-score"><strong id="oosWinRate">—</strong><span id="oosSummary">等待第一筆對帳</span></div>
           <div class="summary-divider"></div>
           <div class="summary-details">
@@ -97,7 +98,7 @@
       <section class="test-guide" aria-labelledby="guideTitle">
         <div class="test-guide-head">
           <div><p class="eyebrow">先懂規則，再看戰績</p><h2 id="guideTitle">訊號怎麼定義？</h2></div>
-          <p>某個族群「同一天」滿足三件事就亮訊號：① 相對加權指數的強度剛從「改善中」跨進「領先」；② 近 5 日均成交額比近月高一成以上；③ 族群裡至少一半成分股近月上漲、且族群近月已跑贏大盤。②＋③ 就是主頁的「熱門確認」。</p>
+          <p>某個族群「同一天」滿足三件事就亮訊號：① 相對加權指數的強度剛跨進「領先」——從「改善中」跨進來＝主考卷（⚡），從「轉弱」重新站回來＝二次點火、F1 第二張考卷（🔁，2026-08-25 起追蹤，兩張考卷分開計分）；② 近 5 日均成交額比近月高一成以上；③ 族群裡至少一半成分股近月上漲、且族群近月已跑贏大盤。②＋③ 就是主頁的「熱門確認」。</p>
         </div>
         <div class="reading-rule">
           <div><span>主判準（凍結）</span><b>5 日 T+0 vs 等權市場</b></div>
@@ -134,6 +135,18 @@
           <p>看中位數避免被少數大贏拉高平均的錯覺。</p>
           <p class="metric-sub">T+1 口徑回測中位 −0.03%（一半以上的訊號拿不到超額）</p>
           <div class="metric-tag">參考指標</div>
+        </article>
+      </section>
+
+      <section class="split-grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <div class="panel-heading">
+            <div><p class="eyebrow">第二張考卷 · 2026-08-25 起</p><h2>F1：轉弱→領先（二次點火）</h2></div>
+            <span class="small-chip">與主考卷分開計分</span>
+          </div>
+          <p class="bench-note">起點是 Boss 看圖的觀察：「很多熱門確認是從落後或轉弱<b>直接</b>轉進領先，沒經過改善」。回測驗證屬實——熱門確認的進領先事件裡，<b>53% 走「轉弱→領先」</b>（曾領先→動能歇腳幾天→再點火），主考卷抓的「改善→領先」路徑只涵蓋 36%。而「轉弱→領先＋熱門確認」本身：T+1 5 日勝率 52.8%／平均 +0.35%（n=744），跨年 49.4／53.0／57.0——<b>整條研究線第一個 2025 年也站上 50% 的格子</b>。誠實標註：只在等權指數作法上存在（成交額加權法全滅 44.x%）、距 50% 約 1.5 個標準差＝統計上未達顯著，所以跟主考卷一樣凍結定義上 OOS 公開考試。明細表中 <b>🔁 轉弱→領先</b> 就是這類訊號；「歇腳 N 日」＝跨線前在轉弱區停留天數（純記錄）。</p>
+          <div class="tier-grid" id="f1Cards"></div>
+          <div class="chart-note"><span></span><span id="f1Note">F1 考試起跑，等待第一筆訊號。</span></div>
         </article>
       </section>
 
@@ -199,7 +212,7 @@
             </table>
             <div class="empty-note" id="emptyNote" hidden>還沒有訊號。訊號亮起當天會出現在這裡，各視窗滿天數後自動對帳。</div>
           </div>
-          <div class="chart-note"><span></span>「結果」永遠依 5 日 T+0 主判準判定；「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入統計。標籤：<b>✓ 蓄勢 N 日</b>＝蓄勢確認（≥4 日）、<b>⚠ 追高警戒</b>＝廣度 5 日斜率 &gt;0.10、<b>⭐ 組合 v3</b>＝蓄勢確認且無追高、<b>🔁 重觸發 N 日</b>＝距同族群上一次跨進領先 ≤20 個交易日（首次跨線／間隔 &gt;20 日則以灰字標示）。</div>
+          <div class="chart-note"><span></span>「結果」永遠依 5 日 T+0 主判準判定；「參考」＝OOS 起算日之前的訊號（回測樣本期內），不計入統計。主考卷標籤：<b>✓ 蓄勢 N 日</b>＝蓄勢確認（≥4 日）、<b>⚠ 追高警戒</b>＝廣度 5 日斜率 &gt;0.10、<b>⭐ 組合 v3</b>＝蓄勢確認且無追高、<b>🔁 重觸發 N 日</b>＝距同族群上一次跨進領先 ≤20 個交易日（首次跨線／間隔 &gt;20 日則以灰字標示）。<b>🔁 轉弱→領先</b>＝F1 第二張考卷的訊號（統計分開算、勝負記號同一把 5 日 T+0 尺；主考卷的品質標籤對它未驗證、不掛）。</div>
         </article>
       </section>
 
@@ -211,6 +224,7 @@
           <li>回測期間 2025 年勝率僅 46.9%（輸的年份）；訊號優勢依賴「權值股獨強」的行情結構。</li>
           <li>成績改用「vs 加權指數」打分（平行參考表）時回測全視窗 &lt;50%——訊號贏的是「市場平均股」，不保證贏過權值股拉動的大盤。</li>
           <li>平均 +0.60% 為毛超額，未扣手續費、證交稅與滑價；族群無法直接買進。</li>
+          <li>F1（轉弱→領先）回測 52.8% 距 50% 約 1.5 個標準差＝統計上未達顯著，且只在等權指數作法上存在（成交額加權法 44.x%）；四條進領先路徑挑最亮的一格、有選擇效應——正因如此才上 OOS 考試而不是直接採用。</li>
           <li>用途是「值得優先研究的族群排序」，不是買進訊號，也不預測絕對報酬。</li>
         </ul></div>
         <span class="warning-label">EXPLORATORY</span>

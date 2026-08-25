@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated": "2026-08-24T18:11:14+08:00",
+ "generated": "2026-08-25T11:48:34+08:00",
  "as_of": "2026-08-24",
  "oos_start": "2026-08-21",
  "backtest_reference": {
@@ -9,6 +9,25 @@
   "median_excess": 0.16,
   "sample": 499,
   "window": "2023-08~2026-08"
+ },
+ "f1_start": "2026-08-25",
+ "f1_reference": {
+  "t0": {
+   "win_rate": 49.5,
+   "mean_excess": 0.31,
+   "median_excess": -0.02
+  },
+  "t1": {
+   "win_rate": 52.8,
+   "mean_excess": 0.35,
+   "median_excess": 0.11
+  },
+  "sample": 744,
+  "yearly_t1": "49.4／53.0／57.0"
+ },
+ "signal_type_labels": {
+  "il": "改善→領先",
+  "wl": "轉弱→領先"
  },
  "stats": {
   "oos_total": 1,
@@ -19,6 +38,11 @@
   "median_excess": null,
   "extra": {},
   "combo_v3": {
+   "total": 0,
+   "t0": null,
+   "t1": null
+  },
+  "wl": {
    "total": 0,
    "t0": null,
    "t1": null
@@ -63,7 +87,8 @@
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
-   "days_since_prev_il": 18
+   "days_since_prev_il": 18,
+   "signal_type": "il"
   },
   {
    "date": "2026-08-20",
@@ -101,7 +126,8 @@
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
-   "days_since_prev_il": 17
+   "days_since_prev_il": 17,
+   "signal_type": "il"
   },
   {
    "date": "2026-08-20",
@@ -139,7 +165,8 @@
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
-   "days_since_prev_il": 17
+   "days_since_prev_il": 17,
+   "signal_type": "il"
   },
   {
    "date": "2026-08-20",
@@ -173,7 +200,8 @@
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
-   "days_since_prev_il": 37
+   "days_since_prev_il": 37,
+   "signal_type": "il"
   },
   {
    "date": "2026-08-20",
@@ -209,7 +237,8 @@
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
-   "days_since_prev_il": 38
+   "days_since_prev_il": 38,
+   "signal_type": "il"
   },
   {
    "date": "2026-08-20",
@@ -243,7 +272,8 @@
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
-   "days_since_prev_il": 31
+   "days_since_prev_il": 31,
+   "signal_type": "il"
   }
  ]
 }

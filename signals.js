@@ -49,6 +49,17 @@
     return `<td class="num ${cls}">${text}</td>`;
   }
 
+  // F1 第二張考卷（2026-08-25 拍板）：wl＝轉弱→領先（二次點火）＋熱門確認。
+  // 回測 in-sample 參考（混合視角、n=744）：T+0 5 日 49.5%／+0.31、T+1 52.8%／+0.35、
+  // 跨年 T+1 49.4/53.0/57.0＝首個 2025 過 50 的格子；僅 C 等權法存在、未達統計顯著。
+  // 舊記錄沒有 signal_type＝主考卷 il；主考卷的統計與分層一律先用 isIL 過濾。
+  const F1_REF_FALLBACK = {
+    t0: { win_rate: 49.5, mean_excess: 0.31 },
+    t1: { win_rate: 52.8, mean_excess: 0.35 },
+    sample: 744,
+  };
+  function isIL(s) { return (s.signal_type || "il") === "il"; }
+
   // 組合 v3（2026-08-24 拍板追蹤）：蓄勢 ≥4 日 ∩ 廣度斜率有值且 ≤0.10。
   // 回測 in-sample（T+1 5 日）60.3%／+1.30%（n=73、2025 年 47.1%）＝樣本薄的探索性候選。
   function isComboV3(s) {
@@ -60,6 +71,16 @@
 
   function tagChips(signal) {
     let chips = "";
+    if (!isIL(signal)) {
+      // F1（wl）列：只掛類別 chip＋中性的歇腳天數；il 的品質標籤（蓄勢/⭐/⚠/重觸發）
+      // 是主考卷的分層、對 wl 沒驗證過，不掛。
+      chips += `<span class="sig-tag wl" title="F1 第二張考卷：轉弱→領先（二次點火）＋熱門確認，2026-08-25 起與主考卷分開計分（回測 T+1 5 日 52.8%／+0.35%，n=744）">🔁 轉弱→領先</span>`;
+      const rest = signal.weakening_days;
+      if (rest !== null && rest !== undefined) {
+        chips += `<span class="sig-tag" title="跨線前在轉弱區停留 ${rest} 個交易日（純記錄，未掛分層門檻）">歇腳 ${rest} 日</span>`;
+      }
+      return chips;
+    }
     if (isComboV3(signal)) {
       chips += `<span class="sig-tag star" title="組合 v3：蓄勢確認且無追高（回測最佳格 60.3%，n=73 樣本薄，看 OOS）">⭐ 組合 v3</span>`;
     }
@@ -139,9 +160,10 @@
     $("parallelTwiiRows").innerHTML = rows.join("");
   }
 
-  // 品質分層對帳（前端自算，只看 OOS 且 5 日 T+0 已回填的訊號）
+  // 品質分層對帳（前端自算，只看 OOS 且 5 日 T+0 已回填的訊號）。
+  // 只吃主考卷（il）：分層門檻全是 I→L 家族回測宣告的，F1（wl）另開專區不混入。
   function renderTiers(signals, oosStart) {
-    const done = signals.filter((s) => s.date >= oosStart
+    const done = signals.filter((s) => isIL(s) && s.date >= oosStart
       && s.excess_eqw_5 !== null && s.excess_eqw_5 !== undefined);
     const bucket = (rows) => {
       if (!rows.length) return null;
@@ -169,6 +191,31 @@
     if (done.length) {
       $("tierNote").textContent =
         `已用 ${done.length} 筆 OOS 對帳自動分層（5 日 T+0 口徑）；桶內樣本少時勝率波動大，滿百筆前都只是趨勢參考。`;
+    }
+  }
+
+  // F1 專區：第二張考卷（wl）的 OOS 戰績卡；wl 統計由後端 stats.wl 供應。
+  function renderF1(stats) {
+    const box = $("f1Cards");
+    if (!box) return;
+    const ref = (payload && payload.f1_reference) || F1_REF_FALLBACK;
+    const wl = stats.wl || { total: 0, t0: null, t1: null };
+    const card = (label, live, refText) => {
+      const body = live
+        ? `<strong>${fmtPct(live.win_rate, 1)}</strong><span>n=${live.filled} · 平均 ${fmtPct(live.mean, 2, true)}</span>`
+        : `<strong class="sig-wait">—</strong><span>等待對帳</span>`;
+      return `<div class="tier-card"><small>${label} · ${refText}</small>${body}</div>`;
+    };
+    box.innerHTML =
+      `<div class="tier-card"><small>累積訊號 · 起點 ${payload.f1_start || "2026-08-25"}</small>` +
+      `<strong>${wl.total}</strong><span>門檻：百筆、勝率 &gt;50%＋平均 &gt;0</span></div>` +
+      card("5 日 T+0（主統計）", wl.t0, `回測 ${ref.t0.win_rate}%／${fmtPct(ref.t0.mean_excess, 2, true)}`) +
+      card("5 日 T+1（平行）", wl.t1, `回測 ${ref.t1.win_rate}%／${fmtPct(ref.t1.mean_excess, 2, true)}`);
+    const note = $("f1Note");
+    if (note) {
+      note.textContent = wl.total
+        ? `F1 已累積 ${wl.total} 筆 wl 訊號，各視窗滿天數自動對帳；與主考卷永不混算。`
+        : "F1 考試 2026-08-25 起跑，第一筆「轉弱→領先＋熱門確認」出現後開始累積。";
     }
   }
 
@@ -230,6 +277,7 @@
     renderStats(stats);
     renderParallel(stats);
     renderParallelTwii(stats);
+    renderF1(stats);
     renderTiers(payload.signals || [], payload.oos_start || "");
     setupPills();
     renderRows();
