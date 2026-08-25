@@ -1,10 +1,24 @@
 # CHECKPOINT
 
-Updated: 2026-07-17T11:09:03+08:00
-Task Lead: Echo
+Updated: 2026-08-25T18:30:00+08:00
+Task Lead: Batnini
 Status: complete
 Branch: master
-Last verified commit: HoldingsRadar 66f703f（本機來源）；sector-rrg 2af1c8a（熱門確認已推送，以下收據由後續 SSOT commit 記錄）
+Last verified commit: HoldingsRadar 6fc5ed8（來源）；sector-rrg b7ba3a3（已上線，UI/SW v4.9.0）
+
+## 2026-08-25 網站兩頁化改版（Batnini Lead，已上線）
+
+**Boss 拍板**：signals.html 重構「以訊號為主角」（一訊號一主卡：定義＋回測承諾 vs OOS 實績＋影子單）；validation.html 下架留魂（地基三結論＋假設記分板搬進 signals `#origins` 摺疊區）；訊號改名 主考卷→**改善點火**／F1→**二次點火**／組合 v3→**蓄勢優選**（帳本 signal_type il/wl 與統計口徑零變動）；三訊號六視窗×兩把尺平行表格式一致；主頁輪動訊號卡改過濾按鈕＋三訊號個別 chip（⚡🔁⭐，0 筆灰化）；工具列「假設實驗室」→「訊號來歷/對帳」單一入口。
+
+**Completed**：
+- validation.html/js 刪除、validation.css 改名 signals.css；sw.js app shell 同步、`deploy_web.py` 白名單更新＋RETIRED 機制（下架檔自動 `git rm --ignore-unmatch` 清公開 repo）
+- 假設記分板改資料驅動（signals.js `SCOREBOARD` 陣列，14 列＋掛起 4 張），補齊 8/24～8/25 判決（A5a 轉生上線／蓄勢優選上考／E1、E2 死亡／F 組兩判決）
+- `rotation_tracker.compute_stats`：wl 與 combo_v3 各帶 `extra` 六視窗彙總（純平行對照，主統計零變動）；推播文案同步改名
+- 測試 `test_rrg_validation_page.py` → `test_rrg_web_pages.py`（版號一致性、CSS 變數防呆、白名單/RETIRED 契約）；43/43 綠
+- 主頁順手修：`.tools` 未定義 CSS 變數（--border/--accent/--text → --line/--focus/--ink）
+- UI/SW 同步升 v4.9.0；上線由 18:00 排程 deploy（sector-rrg b7ba3a3），公開站已驗證：sw v4.9.0、三主卡、validation.html 404、新卡片與 chip 皆生效；Boss 同日授權
+
+**注意**：18:00 排程會自動 deploy web/ 現況——在排程時窗附近改 web/ 檔案，完稿前就可能被推上線（本輪 18:06 排程恰好推了已完稿版本，無害；未來改版避開 18:00 前後或先停排程）。
 
 ## PM requested
 
