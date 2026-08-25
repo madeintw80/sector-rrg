@@ -2026,7 +2026,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.4"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.5"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
