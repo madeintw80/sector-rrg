@@ -79,8 +79,8 @@
   h1{margin:0;font-size:23px;line-height:1.25;letter-spacing:-.02em;}
   .tagline{margin:5px 0 0;color:var(--sub);}
   .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:12px;}
-  .tools button,.tools a{min-width:0;padding:9px 6px;white-space:nowrap;background:transparent;font-size:12px;text-align:center;text-decoration:none;border:1px solid var(--border);border-radius:8px;color:var(--text);}
-  .tools a:hover,.tools a:focus-visible{border-color:var(--accent);color:var(--accent);}
+  .tools button,.tools a{min-width:0;padding:9px 6px;white-space:nowrap;background:transparent;font-size:12px;text-align:center;text-decoration:none;border:1px solid var(--line);border-radius:8px;color:var(--ink);}
+  .tools a:hover,.tools a:focus-visible{border-color:var(--focus);color:var(--focus);}
   .meta{display:flex;flex-wrap:wrap;gap:4px 10px;margin:0 0 12px;color:var(--sub);font-size:12px;font-variant-numeric:tabular-nums;}
   .meta span{white-space:nowrap;}
   .meta span:not(:last-child)::after{content:"";}
@@ -106,15 +106,22 @@
   .signal-label{grid-area:label;color:var(--sub);font-size:13px;}
   .signal-count{grid-area:count;justify-self:end;font-size:13px;font-variant-numeric:tabular-nums;}
   .signal-names{grid-area:names;font-size:13px;line-height:1.4;}
-  .signal-card.rotation-card{border-top:3px solid #7c6cf0;text-decoration:none;color:inherit;cursor:pointer;}
+  .signal-card.rotation-card{border-top:3px solid #7c6cf0;text-decoration:none;color:inherit;cursor:pointer;
+    grid-template-areas:"label count" "names names" "types types";}
   .signal-card.rotation-card .signal-count{color:#a99df5;}
+  /* 三訊號個別過濾 chip（⚡改善點火／🔁二次點火／⭐蓄勢優選）：卡內小按鈕，點了圖上只看該類 */
+  .rot-type-row{grid-area:types;display:flex;flex-wrap:wrap;gap:5px;margin-top:2px;}
+  .rot-type{padding:3px 8px;border:1px solid var(--line);border-radius:999px;font-size:11px;cursor:pointer;color:var(--sub);}
+  .rot-type b{font-weight:700;color:inherit;}
+  .rot-type.on{background:var(--btn-on);color:var(--btn-on-ink);border-color:var(--btn-on);}
+  .rot-type.off{opacity:.45;cursor:default;}
   /* ⚡ 今日輪動訊號列：一鍵過濾 + 逐族群定位（資料來自 rotation_signals.json） */
   .rotation-strip{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-4px 0 12px;padding:8px 10px;border:1px solid var(--line);border-left:3px solid #7c6cf0;}
   .rotation-strip .strip-label{color:var(--sub);font-size:12px;margin-right:2px;}
   .rotation-strip button{padding:4px 10px;font-size:12px;min-height:0;}
   .rotation-strip button.rot-only.on{border-color:#7c6cf0;color:#a99df5;font-weight:700;}
   .rotation-strip .rot-chip small{opacity:.65;font-size:10px;margin-left:3px;}
-  /* F1 二次點火（轉弱→領先）訊號：橘色系跟主考卷（紫）區分 */
+  /* 二次點火（wl＝轉弱→領先）訊號：橘色系跟改善點火（紫）區分 */
   .rotation-strip .rot-chip.wl{border-color:#e08a3c;color:#e08a3c;}
   .rotation-panel.wl{border-left-color:#e08a3c;}
   /* 側欄：輪動訊號細節面板 */
@@ -378,7 +385,7 @@
         <h1>台股全市場產業輪動</h1>
         <p class="tagline">產業分類看全市場資金；題材標籤看細分產品與敘事</p>
         <div class="tools" aria-label="工具">
-          <a href="validation.html" title="查看假設記分板：裸 RRG 地基證據、候選與 T+1、九假設判決">假設實驗室</a>
+          <a href="signals.html" title="輪動訊號對帳頁：三訊號各自對帳＋影子單＋訊號來歷（地基證據與假設記分板，原假設實驗室已併入）">訊號來歷/對帳</a>
           <button id="downloadBtn" title="匯出目前這張靜態圖">匯出圖</button>
           <button id="themeBtn" title="切換深色或淺色">切換主題</button>
           <button id="checkUpdate" title="檢查網站程式是否有新版">檢查更新</button>
@@ -410,11 +417,18 @@
           <span class="signal-label">轉弱警戒</span><strong class="signal-count" id="weakeningCount">0 個</strong>
           <span class="signal-names" id="weakeningNames">—</span>
         </button>
-        <!-- 輪動訊號 OOS 追蹤入口：資料來自 rotation_signals.json（每日排程產出），點卡進對帳頁 -->
-        <a class="signal-card rotation-card" id="rotationCard" href="signals.html" hidden>
+        <!-- 輪動訊號卡：點卡＝圖上只看今日訊號族群（同其他卡的過濾行為）；
+             卡內三 chip＝只看該類訊號；對帳頁入口在上方工具列「對帳」與側欄「看對帳」 -->
+        <button type="button" class="signal-card rotation-card" id="rotationCard" aria-pressed="false" hidden
+                title="圖上只顯示今日亮訊號的族群（再點一次還原）">
           <span class="signal-label">🔄 輪動訊號</span><strong class="signal-count" id="rotationCount">—</strong>
           <span class="signal-names" id="rotationNames">—</span>
-        </a>
+          <span class="rot-type-row" id="rotTypeRow" aria-label="依訊號類別過濾">
+            <span class="rot-type" role="button" tabindex="0" data-rot-type="il">⚡ 改善點火 <b id="rotIlCount">0</b></span>
+            <span class="rot-type" role="button" tabindex="0" data-rot-type="wl">🔁 二次點火 <b id="rotWlCount">0</b></span>
+            <span class="rot-type" role="button" tabindex="0" data-rot-type="combo">⭐ 蓄勢優選 <b id="rotComboCount">0</b></span>
+          </span>
+        </button>
       </section>
 
       <!-- ⚡ 今日輪動訊號互動列：只看訊號＝過濾圖上族群；點族群名＝自動切層級定位 -->
@@ -715,7 +729,7 @@
   var D = null;   // 資料，載入後填
   var state = { mode:"industry", level:"subindustry", span:"month", pos:0, sel:{}, focus:null, playing:false, timer:null,
                 floor:100, speed:220, search:"", stockFocus:null, companyFocus:null, cats:{}, tail:null, labels:true,
-                hotOnly:false, rotationOnly:false, topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
+                hotOnly:false, rotationOnly:false, rotationType:null, topicSelected:{}, topicNotice:"", topicStarterSpan:null, topicStarterSeen:false };
   //  floor＝成交值門檻(億,0=全部)  speed＝動圖間隔ms  search＝搜尋字
   //  cats＝策略分類篩選(空=全部)   tail＝尾巴長度override(null=用span預設)  labels＝標籤開關
   var UI_DEMO = new URLSearchParams(location.search).get("ui"); // 僅供 loading／empty／error 視覺驗收
@@ -869,7 +883,7 @@
   }
 
   // 側欄：今日輪動訊號細節（含品質標籤＋對帳頁連結）。
-  // 主考卷（il＝改善→領先）掛蓄勢/追高標籤；F1（wl＝轉弱→領先）只列中性的歇腳天數
+  // 改善點火（il＝改善→領先）掛蓄勢/追高標籤；二次點火（wl＝轉弱→領先）只列中性的歇腳天數
   // ——il 的分層標籤對 wl 沒驗證過，不掛。
   function renderRotationPanel(item){
     var rec=rotationRecord(item);
@@ -885,9 +899,9 @@
       }
       if(slope!==null&&slope!==undefined&&slope>0.10) tags+='<span class="rp-tag warn">⚠ 追高警戒</span>';
     }
-    var head=isWl?'🔁 今日輪動訊號・F1 二次點火（':'⚡ 今日輪動訊號（';
+    var head=isWl?'🔁 今日輪動訊號・二次點火（':'⚡ 今日輪動訊號・改善點火（';
     var note=isWl
-      ?'F1 第二張考卷＝轉弱→領先（曾領先→動能歇腳→再點火）＋熱門確認，2026-08-25 起與主考卷分開計分（回測 T+1 5 日 52.8%／+0.35%、n=744；研究排序用，不是買進訊號）。'
+      ?'二次點火＝轉弱→領先（曾領先→動能歇腳→再點火）＋熱門確認，2026-08-25 起與改善點火分開計分（回測 T+1 5 日 52.8%／+0.35%、n=744；研究排序用，不是買進訊號）。'
       :'訊號＝改善轉入領先＋熱門確認（研究排序用，不是買進訊號）；5 個交易日後在對帳頁自動結算。蓄勢確認＝跨線前在改善區蓄勢 ≥4 日（回測較佳桶）；追高警戒＝廣度 5 日斜率 &gt;0.10（回測最爛桶）。';
     return '<section class="rotation-panel'+(isWl?' wl':'')+'" aria-label="今日輪動訊號">'+
       '<div class="rp-head"><b>'+head+escapeHtml(rotation.asOf)+'）'+tags+'</b><a href="signals.html">看對帳 →</a></div>'+
@@ -914,17 +928,32 @@
     setMobileView("chart");
   }
 
-  // 「只看訊號」：像熱門確認卡的一鍵過濾；目前層級沒訊號就自動跳到訊號最多的層級
-  function toggleRotationOnly(){
-    var enable=!state.rotationOnly;
+  // 訊號類別判定：il＝改善點火（舊記錄沒 signal_type 也算）、wl＝二次點火、
+  // combo＝蓄勢優選（il 且蓄勢 ≥4 日且廣度斜率 ≤0.10，與對帳頁同門檻）；type=null＝全部
+  function rotationTypeMatch(rec,type){
+    if(!type) return true;
+    var isWl=rec.signal_type==="wl";
+    if(type==="wl") return isWl;
+    if(type==="il") return !isWl;
+    return !isWl && rec.improving_days!=null && rec.improving_days>=4
+      && rec.breadth_slope5!=null && rec.breadth_slope5<=0.10;   // combo
+  }
+  // 「只看訊號」：像熱門確認卡的一鍵過濾；可帶類別（點卡內 ⚡🔁⭐ chip）。
+  // 邏輯：關→開（帶類別）；開著點同類別→關；開著點別的類別→切換。
+  // 目前層級沒（該類）訊號就自動跳到訊號最多的層級。
+  function toggleRotationOnly(type){
+    type=type||null;
+    var enable=!state.rotationOnly || state.rotationType!==type;
     if(enable && state.mode!=="industry") setMode("industry");   // setMode 會清 rotationOnly，所以先切
     state.rotationOnly=enable;
+    state.rotationType=enable?type:null;
     if(enable){
       stopPlay(); state.cats={}; state.hotOnly=false; state.floor=0; state.search="";
       state.stockFocus=null; state.companyFocus=null;
       document.getElementById("search").value=""; syncFloorButtons(); closeSearchSuggestions();
+      var matched=rotation.todays.filter(function(s){ return rotationTypeMatch(s,type); });
       var counts={}, here=0, best=null;
-      rotation.todays.forEach(function(s){ counts[s.level]=(counts[s.level]||0)+1; if(s.level===state.level) here+=1; });
+      matched.forEach(function(s){ counts[s.level]=(counts[s.level]||0)+1; if(s.level===state.level) here+=1; });
       if(!here){
         Object.keys(counts).forEach(function(lv){ if(best===null||counts[lv]>counts[best]) best=lv; });
         if(best && best!==state.level) setLevel(best);
@@ -949,7 +978,7 @@
       var b=document.createElement("button"); b.type="button";
       b.className="rot-chip"+(isWl?" wl":"");
       b.innerHTML=(isWl?"🔁 ":"")+escapeHtml(rec.group_name)+'<small>'+escapeHtml((D.level_labels&&D.level_labels[rec.level])||rec.level)+'</small>';
-      b.title=(isWl?"F1 二次點火（轉弱→領先）：":"")+"在圖上定位 "+rec.group_name;
+      b.title=(isWl?"二次點火（轉弱→領先）：":"")+"在圖上定位 "+rec.group_name;
       b.addEventListener("click",function(){ locateRotationSignal(rec); });
       strip.appendChild(b);
     });
@@ -1086,7 +1115,10 @@
       if(state.mode!=="topic" && state.floor && t.tv < state.floor) continue;      // 成交值旋鈕
       if(hasCat && !state.cats[currentPoint(t).c]) continue; // 策略分類隨時間軸更新
       if(state.hotOnly && !isHotConfirmed(t)) continue;      // 熱門確認固定看最新盤後資料
-      if(state.rotationOnly && !rotationRecord(t)) continue; // 只看今日輪動訊號族群
+      if(state.rotationOnly){                                 // 只看今日輪動訊號族群（可再依類別縮小）
+        var rrec=rotationRecord(t);
+        if(!rrec || !rotationTypeMatch(rrec, state.rotationType)) continue;
+      }
       if(state.mode!=="topic" && !themeMatchesSearch(t,q)) continue;               // 題材、公司名或股號
       out.push(t);
     }
@@ -1358,7 +1390,7 @@
         g.appendChild(c);
       }
       // ⚡ 今日輪動訊號：當前點外圈光環（僅時間軸最新一格；faded 不畫）。
-      // 主考卷（改善→領先）＝紫色短虛線；F1 二次點火（轉弱→領先）＝橘色長虛線。
+      // 改善點火（改善→領先）＝紫色短虛線；二次點火（轉弱→領先）＝橘色長虛線。
       if(!faded && isRotationMarked(item)){
         var rotRec=rotationRecord(item), isWl=rotRec&&rotRec.signal_type==="wl";
         g.appendChild(el("circle",{cx:sx(last.x).toFixed(1),cy:sy(last.y).toFixed(1),
@@ -1841,6 +1873,11 @@
     if(hotCard) hotCard.setAttribute("aria-pressed",state.hotOnly?"true":"false");
     var rotBtn=document.getElementById("rotationOnlyBtn");
     if(rotBtn){ rotBtn.classList.toggle("on",state.rotationOnly); rotBtn.setAttribute("aria-pressed",state.rotationOnly?"true":"false"); }
+    var rotCard=document.getElementById("rotationCard");
+    if(rotCard) rotCard.setAttribute("aria-pressed",state.rotationOnly&&!state.rotationType?"true":"false");
+    document.querySelectorAll("#rotTypeRow .rot-type").forEach(function(chip){
+      chip.classList.toggle("on",state.rotationOnly&&state.rotationType===chip.getAttribute("data-rot-type"));
+    });
   }
 
   // 下載目前這張 SVG 圖成 PNG（補背景色，因為 SVG 本身透明）→ 跳預覽存相簿/分享
@@ -1989,7 +2026,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.8.1"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.0"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
@@ -2147,7 +2184,9 @@
     });
   }
 
-  // ── 輪動訊號入口卡：讀 rotation_signals.json 填「今日訊號＋OOS 戰績」──
+  // ── 輪動訊號卡：讀 rotation_signals.json 填「今日訊號＋OOS 戰績」──
+  // 點卡＝圖上只看今日訊號族群（同其他卡）；卡內 ⚡🔁⭐ chip＝只看該類。
+  // 對帳頁入口改走工具列「對帳」與側欄「看對帳」。
   // 獨立於主資料流：抓得到才顯示卡，抓不到（檔案還沒產出/離線首次）就保持隱藏。
   fetch("rotation_signals.json",{cache:"no-cache"}).then(function(res){
     if(!res.ok) throw new Error("HTTP "+res.status);
@@ -2163,7 +2202,28 @@
     var score=stats.oos_filled
       ? "OOS 勝率 "+stats.win_rate+"%（"+stats.oos_filled+" 筆）"
       : "OOS 累積 "+(stats.oos_total||0)+" 筆";
-    document.getElementById("rotationNames").textContent=(names?names+" · ":"")+score+" · 點看對帳";
+    document.getElementById("rotationNames").textContent=(names?names+" · ":"")+score;
+    // 各類別今日數量：0 個的 chip 灰化不可按（點了也只會看到空圖）
+    var typeCounts={ il:0, wl:0, combo:0 };
+    todays.forEach(function(s){
+      if(rotationTypeMatch(s,"wl")) typeCounts.wl+=1; else typeCounts.il+=1;
+      if(rotationTypeMatch(s,"combo")) typeCounts.combo+=1;
+    });
+    document.getElementById("rotIlCount").textContent=typeCounts.il;
+    document.getElementById("rotWlCount").textContent=typeCounts.wl;
+    document.getElementById("rotComboCount").textContent=typeCounts.combo;
+    card.addEventListener("click",function(){
+      if(rotation.todays.length) toggleRotationOnly(null);
+    });
+    if(!todays.length) card.title="今日無訊號；訊號亮起當天點卡可在圖上過濾定位";
+    document.querySelectorAll("#rotTypeRow .rot-type").forEach(function(chip){
+      var type=chip.getAttribute("data-rot-type");
+      if(!typeCounts[type]){ chip.classList.add("off"); chip.title="今日無"+chip.textContent.replace(/\s*\d+$/,"")+"訊號"; return; }
+      chip.title="圖上只顯示今日這類訊號的族群（再點一次還原）";
+      function fire(ev){ ev.stopPropagation(); toggleRotationOnly(type); }
+      chip.addEventListener("click",fire);
+      chip.addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" ") fire(ev); });
+    });
     card.hidden=false;
     applyRotationUI();   // 主資料若已 boot 完成，立即補畫圖上標記與互動列
   }).catch(function(){ /* 帳本還沒產出就先不顯示卡 */ });
