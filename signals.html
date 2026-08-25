@@ -85,6 +85,13 @@
     .base-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 14px; }
     .base-card { border: 1px solid rgba(148, 210, 189, .18); padding: 12px 14px; font-size: 1rem; line-height: 1.7; opacity: .88; }
     .base-card b { display: block; font-size: 1.05rem; margin-bottom: 4px; color: #6ee7b7; opacity: 1; }
+    /* 分頁切換（Boss 不想一直下拉）：三訊號各一頁＋對帳與來歷一頁 */
+    .tab-nav { margin-top: 4px; position: sticky; top: 78px; background: var(--ink); z-index: 10; }
+    .tab-nav button { font-size: 16px; padding-top: 14px; }
+    .tab-pane { display: none; padding: 26px 0 44px; }
+    .tab-pane.show { display: block; }
+    .tab-pane section + section { margin-top: 16px; }
+    @media (max-width: 620px) { .tab-nav { top: 67px; } }
     @media (max-width: 720px) { .sig-table td.members, .sig-table th.members { display: none; } }
   </style>
   <title>輪動訊號追蹤｜台股產業輪動</title>
@@ -112,7 +119,7 @@
         <div class="hero-copy">
           <p class="hero-label">輪動訊號 <span>／ 公開考試</span></p>
           <h1>三個追蹤中的訊號，<br><em>各自對帳、各自說話</em></h1>
-          <p>回測裡活下來的候選全部凍結成規則，每天自動掃描、每筆訊號公開對帳。這頁一個訊號一張卡：一句話定義、回測當初承諾的數字、新樣本（OOS）的實際成績，還有「真的照做會賺賠多少」的影子單淨值。判準事前約定：累積百筆新樣本仍勝率 &gt;50%＋平均 &gt;0 才算通過。</p>
+          <p>回測裡活下來的候選全部凍結成規則，每天自動掃描、每筆訊號公開對帳。用下方分頁切換：<b>一個訊號一頁</b>（一句話定義、完整條件、回測承諾 vs OOS 實績、影子單淨值），對帳明細與訊號來歷合併在最後一頁。判準事前約定：累積百筆新樣本仍勝率 &gt;50%＋平均 &gt;0 才算通過。</p>
         </div>
         <div class="hero-summary">
           <div class="summary-top"><span class="pulse"></span><b>追蹤中訊號</b><small>OOS 起算 2026-08-21</small></div>
@@ -126,25 +133,34 @@
         </div>
       </section>
 
-      <!-- ═══ 訊號主卡一：⚡ 改善點火 ═══ -->
+      <!-- ═══ 分頁列：三訊號各一頁＋對帳與來歷 ═══ -->
+      <nav class="tab-nav" id="sigTabs" aria-label="訊號分頁">
+        <button type="button" data-tab="il" class="active">⚡ 改善點火</button>
+        <button type="button" data-tab="wl">🔁 二次點火</button>
+        <button type="button" data-tab="combo">⭐ 蓄勢優選</button>
+        <button type="button" data-tab="ledger">📒 對帳與來歷</button>
+      </nav>
+
+      <!-- ═══ 分頁一：⚡ 改善點火 ═══ -->
+      <div class="tab-pane show" data-pane="il">
       <section class="split-grid">
         <article class="panel" style="grid-column: 1 / -1;" id="cardIl">
           <div class="panel-heading">
             <div><p class="eyebrow">訊號一 · OOS 2026-08-21 起</p><h2>⚡ 改善點火</h2></div>
             <span class="small-chip" id="ilCount">—</span>
           </div>
-          <p class="sig-def">族群在改善象限蓄勢後<b>跨進領先</b>、同一天拿到熱門確認（量能升溫＋成分股過半上漲＋族群已跑贏大盤）——<b>正在變強、而且市場開始擠進來</b>的族群。</p>
+          <p class="sig-def">族群從改善象限<b>跨進領先</b>、同一天拿到熱門確認（量能升溫＋成分股過半上漲＋族群已跑贏大盤）——<b>正在變強、而且市場開始擠進來</b>的族群。</p>
+          <details class="fold-note">
+            <summary>訊號怎麼定義？（完整條件）</summary>
+            <p>族群「同一天」滿足三件事就亮訊號：① 相對加權指數的 RRG 強度從「改善中」跨進「領先」；② 量能升溫＝近 5 日均成交額比近月均量高一成以上（&gt;1.1 倍）；③ 熱度確認＝族群裡至少一半成分股近 20 日上漲、且族群近 20 日已跑贏大盤。②＋③ 就是主頁的「熱門確認」。卡上的蓄勢／追高／重觸發標籤是事後分層記錄，<b>不是</b>亮訊號的門檻。主判準（凍結）＝訊號日收盤起算 5 個交易日 T+0、族群報酬 vs 全市場等權平均；T+1（隔天才進場）與 10／20 日視窗平行對帳、永不混成一個數字。</p>
+          </details>
           <div class="tier-grid">
             <div class="tier-card"><small>回測承諾 · 5 日 T+0</small><strong>51.5%</strong><span>平均 +0.60%（n=499）；T+1 只剩 49.5%</span></div>
             <div class="tier-card"><small>OOS 實績 · 5 日 T+0</small><strong id="statWin">—</strong><span id="ilOosSub">等待對帳</span></div>
             <div class="tier-card"><small>🕶 影子單淨值</small><strong id="ilShadowWin">—</strong><span id="ilShadowSub">等待對帳</span></div>
           </div>
           <details class="sig-more">
-            <summary>展開細節：兩把尺平行對帳、品質分層、定義與限制</summary>
-            <details class="fold-note">
-              <summary>訊號怎麼定義？（完整條件）</summary>
-              <p>族群「同一天」滿足三件事就亮訊號：① 相對加權指數的強度從「改善中」跨進「領先」；② 近 5 日均成交額比近月高一成以上；③ 族群裡至少一半成分股近月上漲、且族群近月已跑贏大盤。②＋③ 就是主頁的「熱門確認」。主判準（凍結）＝訊號日收盤起算 5 個交易日、族群報酬 vs 全市場等權平均；T+1（隔天進場）與 10／20 日視窗平行對帳、永不混成一個數字。</p>
-            </details>
+            <summary>展開細節：兩把尺平行對帳、品質分層、使用限制</summary>
             <h3 class="bench-title">成績打分：vs <b>等權市場</b>（主判準用的尺）</h3>
             <div class="table-wrap">
               <table class="ptable" aria-label="平行對帳統計（vs 等權市場）">
@@ -184,7 +200,10 @@
         </article>
       </section>
 
-      <!-- ═══ 訊號主卡二：🔁 二次點火 ═══ -->
+      </div>
+
+      <!-- ═══ 分頁二：🔁 二次點火 ═══ -->
+      <div class="tab-pane" data-pane="wl">
       <section class="split-grid">
         <article class="panel" style="grid-column: 1 / -1;" id="cardWl">
           <div class="panel-heading">
@@ -192,10 +211,14 @@
             <span class="small-chip" id="wlCount">—</span>
           </div>
           <p class="sig-def">曾經領先的族群動能歇腳幾天（退到轉弱區）、<b>再次跨回領先</b>＋同一套熱門確認——<b>輪動還在進行、短暫休息後再點火</b>的族群。與改善點火分開計分、永不混算。</p>
+          <details class="fold-note">
+            <summary>訊號怎麼定義？（完整條件）</summary>
+            <p>族群「同一天」滿足三件事就亮訊號：① 相對加權指數的 RRG 強度從「轉弱」跨回「領先」（曾領先→動能歇腳退到轉弱區→再點火，中間沒經過改善象限）；② 量能升溫＝近 5 日均成交額比近月均量高一成以上（&gt;1.1 倍）；③ 熱度確認＝族群裡至少一半成分股近 20 日上漲、且族群近 20 日已跑贏大盤。②＋③ 與改善點火用的是<b>同一套</b>「熱門確認」。「歇腳 N 日」＝跨線前在轉弱區停留的交易日數，純記錄、不設門檻。主統計（凍結）＝訊號日收盤起算 5 個交易日 T+0、族群報酬 vs 全市場等權平均；T+1 與 10／20 日視窗平行對帳，與改善點火分開計分、永不混算。</p>
+          </details>
           <div class="tier-grid" id="wlCards"></div>
           <div class="chart-note"><span></span><span id="wlNote">二次點火考試起跑，等待第一筆訊號。</span></div>
           <details class="sig-more">
-            <summary>展開細節：兩把尺平行對帳、這個訊號怎麼來的、定義與限制</summary>
+            <summary>展開細節：兩把尺平行對帳、來歷、使用限制</summary>
             <h3 class="bench-title">成績打分：vs <b>等權市場</b>（主判準用的尺）</h3>
             <div class="table-wrap">
               <table class="ptable" aria-label="二次點火平行對帳統計（vs 等權市場）">
@@ -232,7 +255,10 @@
         </article>
       </section>
 
-      <!-- ═══ 訊號主卡三：⭐ 蓄勢優選 ═══ -->
+      </div>
+
+      <!-- ═══ 分頁三：⭐ 蓄勢優選 ═══ -->
+      <div class="tab-pane" data-pane="combo">
       <section class="split-grid">
         <article class="panel" style="grid-column: 1 / -1;" id="cardCombo">
           <div class="panel-heading">
@@ -240,10 +266,14 @@
             <span class="small-chip" id="comboCount">—</span>
           </div>
           <p class="sig-def">改善點火裡的精選層：跨線前已在改善區<b>蓄勢 ≥4 個交易日</b>、且廣度 5 日斜率 ≤0.10（<b>沒人在追高</b>）。兩個條件經交叉驗證近乎獨立——蹲得夠久、又還沒被搶上車的那批。</p>
+          <details class="fold-note">
+            <summary>訊號怎麼定義？（完整條件）</summary>
+            <p>不是獨立訊號，是<b>改善點火的精選層</b>：改善點火三條件（①跨進領先＋②量能升溫＋③熱度確認）全數成立，再同時滿足兩個分層條件——④ 蓄勢確認＝跨線前已在改善區連續蓄勢 ≥4 個交易日；⑤ 無追高＝廣度 5 日斜率有值且 ≤0.10（成分股上漲家數還沒被搶著推高）。對帳明細裡標 ⭐ 的那些筆就是它，不另外重複計入訊號總數。主口徑（凍結）＝5 日 T+0、族群報酬 vs 全市場等權平均；回測參考只留存 T+1 5 日那格（60.3%／+1.30%、n=73），其餘視窗無回測數字、只看 OOS 累積。</p>
+          </details>
           <div class="tier-grid" id="comboCards"></div>
           <div class="chart-note"><span></span><span id="comboNote">蓄勢優選不是獨立事件、是改善點火的分層：對帳明細裡標 ⭐ 的那些筆。</span></div>
           <details class="sig-more">
-            <summary>展開細節：兩把尺平行對帳、定義與限制</summary>
+            <summary>展開細節：兩把尺平行對帳、條件來歷、使用限制</summary>
             <h3 class="bench-title">成績打分：vs <b>等權市場</b>（主判準用的尺）</h3>
             <div class="table-wrap">
               <table class="ptable" aria-label="蓄勢優選平行對帳統計（vs 等權市場）">
@@ -279,7 +309,10 @@
         </article>
       </section>
 
-      <!-- ═══ 🕶 影子單規則（兩訊號共用） ═══ -->
+      </div>
+
+      <!-- ═══ 分頁四：📒 對帳與來歷（影子單規則＋對帳明細＋訊號來歷） ═══ -->
+      <div class="tab-pane" data-pane="ledger">
       <section class="split-grid">
         <article class="panel" style="grid-column: 1 / -1;">
           <div class="panel-heading">
@@ -354,6 +387,7 @@
           </details>
         </article>
       </section>
+      </div>
 
       <section class="data-warning">
         <span class="warning-icon">!</span>

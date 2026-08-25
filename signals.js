@@ -445,6 +445,31 @@
     $("emptyNote").hidden = rows.length > 0;
   }
 
+  // 分頁切換（2026-08-25 Boss 拍板：不想一直下拉）：三訊號各一頁＋對帳與來歷一頁。
+  // hash 記住目前分頁（#il/#wl/#combo/#ledger）；主頁舊深連結 #origins＝帳本分頁＋展開來歷。
+  function setupTabs() {
+    const buttons = Array.from(document.querySelectorAll("#sigTabs button[data-tab]"));
+    const panes = Array.from(document.querySelectorAll(".tab-pane"));
+    const show = (name) => {
+      buttons.forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+      panes.forEach((p) => p.classList.toggle("show", p.dataset.pane === name));
+    };
+    buttons.forEach((b) => b.addEventListener("click", () => {
+      show(b.dataset.tab);
+      history.replaceState(null, "", "#" + b.dataset.tab);
+    }));
+    const hash = location.hash.replace("#", "");
+    if (hash === "origins") {
+      show("ledger");
+      const fold = $("originsFold");
+      if (fold) fold.open = true;
+      const target = $("origins");
+      if (target) target.scrollIntoView();
+    } else if (["il", "wl", "combo", "ledger"].includes(hash)) {
+      show(hash);
+    }
+  }
+
   function setupPills() {
     const buttons = Array.from(document.querySelectorAll("#winPills button[data-win]"));
     buttons.forEach((button) => {
@@ -496,16 +521,10 @@
     renderTiers(payload.signals || [], payload.oos_start || "");
     renderScoreboard();
     setupPills();
+    setupTabs();
     renderRows();
     $("loadingState").hidden = true;
     $("signalsApp").hidden = false;
-    // 從主頁「訊號來歷」連進來（#origins）：自動展開摺疊區並捲過去
-    if (location.hash === "#origins") {
-      const fold = $("originsFold");
-      if (fold) fold.open = true;
-      const target = $("origins");
-      if (target) target.scrollIntoView();
-    }
   }
 
   fetch("rotation_signals.json", { cache: "no-cache" })
