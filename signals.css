@@ -54,7 +54,7 @@ body::before {
 .brand > span:last-child { display: grid; gap: 2px; }
 .brand b { font-size: 14px; letter-spacing: .01em; }
 .brand small { color: var(--muted); font-size: 9px; letter-spacing: .2em; }
-.header-meta { display: flex; align-items: center; gap: 18px; font-size: 13px; }
+.header-meta { display: flex; align-items: center; gap: 18px; font-size: 14px; }
 .local-pill { display: inline-flex; align-items: center; gap: 7px; color: #bff3d8; padding: 7px 11px; border: 1px solid rgba(99,221,169,.25); background: rgba(99,221,169,.08); }
 .local-pill i { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px rgba(99,221,169,.1); }
 .asof { color: var(--muted); }
@@ -69,16 +69,16 @@ body::before {
 .error-actions { margin-top:18px;display:flex;justify-content:center;gap:10px; }
 .error-actions button { padding:9px 13px;border:1px solid var(--line);background:var(--panel);cursor:pointer; }
 .question-grid article { overflow-wrap:anywhere; }
-.limitations-list { margin:0;padding-left:18px;color:#9db1aa;font-size:13px;line-height:1.75; }
+.limitations-list { margin:0;padding-left:18px;color:#9db1aa;font-size:15px;line-height:1.75; }
 .limitations-list li + li { margin-top:7px; }
 
 .page-shell { width: min(1320px, calc(100% - 48px)); margin: 0 auto; }
 .hero { min-height: 430px; padding: 78px 0 64px; display: grid; grid-template-columns: 1.45fr .75fr; gap: clamp(40px, 9vw, 130px); align-items: center; }
-.hero-label, .eyebrow { margin: 0 0 16px; color: var(--mint); font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+.hero-label, .eyebrow { margin: 0 0 16px; color: var(--mint); font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .hero-label span { color: var(--muted); }
 .hero h1 { margin: 0; font: 500 clamp(46px, 6vw, 82px)/.98 Georgia, "Noto Serif TC", serif; letter-spacing: -.045em; }
 .hero h1 em { color: var(--mint); font-style: normal; }
-.hero-copy > p:last-child { max-width: 690px; margin: 28px 0 0; color: #aebdb8; font-size: 16px; line-height: 1.9; }
+.hero-copy > p:last-child { max-width: 690px; margin: 28px 0 0; color: #aebdb8; font-size: 17px; line-height: 1.9; }
 
 .hero-summary { background: linear-gradient(145deg, rgba(22,44,38,.98), rgba(12,27,23,.98)); border: 1px solid var(--line); padding: 26px; box-shadow: 0 28px 80px rgba(0,0,0,.25); position: relative; overflow: hidden; }
 .hero-summary::after { content: ""; position: absolute; width: 190px; height: 190px; border: 1px solid rgba(99,221,169,.08); border-radius: 50%; right: -92px; top: -100px; box-shadow: 0 0 0 34px rgba(99,221,169,.025), 0 0 0 68px rgba(99,221,169,.018); }
@@ -88,11 +88,11 @@ body::before {
 .pulse { width: 7px; height: 7px; background: var(--mint); border-radius: 50%; box-shadow: 0 0 0 5px rgba(99,221,169,.1); }
 .summary-score { margin: 34px 0 26px; display: grid; gap: 8px; }
 .summary-score strong { color: var(--mint); font: 500 43px/1 Georgia, serif; }
-.summary-score span { color: #c0d1cb; font-size: 13px; }
+.summary-score span { color: #c0d1cb; font-size: 14px; }
 .summary-divider { height: 1px; background: var(--line); }
 .summary-details { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 22px; }
 .summary-details div { display: grid; gap: 7px; }
-.summary-details span { color: var(--muted); font-size: 12px; }
+.summary-details span { color: var(--muted); font-size: 13px; }
 .summary-details b { font: 500 18px/1 Georgia, serif; }
 
 .tab-nav { display: flex; border-bottom: 1px solid var(--line); gap: 32px; overflow-x: auto; }
@@ -139,7 +139,7 @@ body::before {
 .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .panel-heading .eyebrow { margin-bottom: 8px; font-size: 9px; }
 .panel h2 { margin: 0; font: 500 22px/1.25 Georgia, "Noto Serif TC", serif; }
-.small-chip, .preview-badge { padding: 6px 9px; border: 1px solid var(--line); color: var(--muted); font-size: 11px; letter-spacing: .06em; white-space: nowrap; }
+.small-chip, .preview-badge { padding: 6px 9px; border: 1px solid var(--line); color: var(--muted); font-size: 13px; letter-spacing: .06em; white-space: nowrap; }
 .method-list { display: grid; gap: 20px; margin-top: 30px; }
 .method-row { display: grid; grid-template-columns: 34px 1fr 58px; gap: 12px; align-items: center; }
 .method-letter { width: 30px; height: 30px; display: grid; place-items: center; color: var(--ink); font: 700 12px/1 Georgia,serif; }
@@ -151,7 +151,7 @@ body::before {
 .method-side { display: grid; text-align: right; gap: 3px; }
 .method-side small { color: var(--muted); font-size: 9px; }
 .method-side strong { color: var(--red); font: 500 13px/1 Georgia,serif; }
-.chart-note { margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; line-height: 1.7; display: flex; gap: 8px; align-items: flex-start; }
+.chart-note { margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; line-height: 1.7; display: flex; gap: 8px; align-items: flex-start; }
 /* 只有第一個（空的）span 是裝飾小圓點；後面裝文字的 span 不能吃到這條
    （舊寫法 .chart-note span 會把文字 span 壓成 5px 寬 → 中文變一個字一行的直條） */
 .chart-note > span:first-child { flex: 0 0 5px; height: 5px; border-radius: 50%; background: var(--amber); margin-top: 7px; }
@@ -187,7 +187,7 @@ body::before {
 .state-row > span { display: flex; gap: 8px; align-items: center; font-size: 11px; }.state-row i { width: 5px; height: 5px; border-radius: 50%; }
 .state-row strong { font: 500 13px/1 Georgia,serif; }.state-row em { color: var(--red); font: normal 500 12px/1 Georgia,serif; }
 .insight-box { margin-top: 26px; padding: 17px; background: rgba(240,197,106,.055); border-left: 2px solid var(--amber); }
-.insight-box b { color: var(--amber); font-size: 13px; }.insight-box p { color: #9db1aa; margin: 7px 0 0; font-size: 13px; line-height: 1.7; }
+.insight-box b { color: var(--amber); font-size: 15px; }.insight-box p { color: #9db1aa; margin: 7px 0 0; font-size: 15px; line-height: 1.7; }
 
 .stability-layout { grid-template-columns: 1fr .8fr; }
 .stability-bars { margin-top: 40px; display: grid; gap: 28px; }
@@ -213,8 +213,8 @@ body::before {
 
 .data-warning { margin: 0 0 50px; padding: 20px 22px; display: grid; grid-template-columns: auto 1fr auto; gap: 15px; align-items: center; background: rgba(240,197,106,.045); border: 1px solid rgba(240,197,106,.18); }
 .warning-icon { width: 28px; height: 28px; display: grid; place-items: center; color: var(--amber); border: 1px solid rgba(240,197,106,.5); border-radius: 50%; font: 700 13px/1 Georgia,serif; }
-.data-warning b { color: #e9d49f; font-size: 13px; }.data-warning p { margin: 5px 0 0; color: #9db1aa; font-size: 12px; line-height: 1.65; }.warning-label { color: #836f42; font-size: 10px; letter-spacing: .18em; }
-footer { min-height: 90px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; color: #60746d; font-size: 11px; letter-spacing: .06em; } footer p { margin: 0; }
+.data-warning b { color: #e9d49f; font-size: 15px; }.data-warning p { margin: 5px 0 0; color: #9db1aa; font-size: 14px; line-height: 1.65; }.warning-label { color: #836f42; font-size: 12px; letter-spacing: .18em; }
+footer { min-height: 90px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; color: #60746d; font-size: 13px; letter-spacing: .06em; } footer p { margin: 0; }
 
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 58px; }
