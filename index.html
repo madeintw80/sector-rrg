@@ -862,6 +862,7 @@
 
   function currentPoint(item){ var s=item.series||[]; return s.length?s[endIndex(s)]:{x:100,y:100,c:"",d:"—"}; }
   function latestPoint(item){ var s=item.series||[]; return s.length?s[s.length-1]:{x:100,y:100,c:"",d:"—"}; }
+  function quadLabel(x,y){ return x>=100?(y>=100?"領先":"轉弱"):(y>=100?"改善":"落後"); }
   function hotMetrics(item){
     var groups=D&&D.confirmation&&D.confirmation.groups;
     return groups&&groups[themeKey(item)]&&groups[themeKey(item)].hot_confirmation;
@@ -903,6 +904,16 @@
     var note=isWl
       ?'二次點火＝轉弱→領先（曾領先→動能歇腳→再點火）＋熱門確認，2026-08-25 起與改善點火分開計分（回測 T+1 5 日 52.8%／+0.35%、n=744；研究排序用，不是買進訊號）。'
       :'訊號＝改善轉入領先＋熱門確認（研究排序用，不是買進訊號）；5 個交易日後在對帳頁自動結算。蓄勢確認＝跨線前在改善區蓄勢 ≥4 日（回測較佳桶）；追高警戒＝廣度 5 日斜率 &gt;0.10（回測最爛桶）。';
+    // 兩把尺標註：訊號用全成分等權指數（回測凍結口徑）、圖用成交額前 8 大加權，
+    // 象限可能不同步——沒這行字，訊號亮在「看起來沒跨線」的點上會像 bug。
+    var scaleNote='訊號象限依「全成分等權」族群指數判定（回測凍結、唯一驗出優勢的作法）；圖上座標是成交額前 8 大加權指數，兩把尺象限可能不同步，以訊號為準。';
+    var chartPoint=latestPoint(item);
+    var chartPos=(chartPoint&&chartPoint.d!=="—")
+      ?chartPoint.x.toFixed(2)+" / "+chartPoint.y.toFixed(2)+"・"+quadLabel(chartPoint.x,chartPoint.y)
+      :"—";
+    var sigPos=(rec.rs_ratio!=null&&rec.rs_momentum!=null)
+      ?rec.rs_ratio.toFixed(2)+" / "+rec.rs_momentum.toFixed(2)+"・"+quadLabel(rec.rs_ratio,rec.rs_momentum)
+      :"—";
     return '<section class="rotation-panel'+(isWl?' wl':'')+'" aria-label="今日輪動訊號">'+
       '<div class="rp-head"><b>'+head+escapeHtml(rotation.asOf)+'）'+tags+'</b><a href="signals.html">看對帳 →</a></div>'+
       '<div class="rp-grid">'+
@@ -910,8 +921,10 @@
         '<span>成分廣度</span><b>'+(rec.breadth_up20!=null?Math.round(rec.breadth_up20*100)+"%":"—")+'</b>'+
         '<span>廣度 5 日斜率</span><b>'+(slope!=null?slope:"—")+'</b>'+
         '<span>近月既有超額</span><b>'+(rec.trailing_excess20!=null?percentText(rec.trailing_excess20):"—")+'</b>'+
+        '<span>訊號座標（等權）</span><b>'+sigPos+'</b>'+
+        '<span>圖上座標（前8大加權）</span><b>'+chartPos+'</b>'+
       '</div>'+
-      '<p class="rp-note">'+note+'</p></section>';
+      '<p class="rp-note">'+note+' '+scaleNote+'</p></section>';
   }
 
   // 定位：點互動列的族群名 → 切回產業模式＋對應層級，選取該族群並捲到圖
@@ -2026,7 +2039,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.7"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.8"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");
