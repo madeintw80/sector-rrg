@@ -416,7 +416,15 @@
       if (live && live.filled) {
         winEl.textContent = fmtPct(live.win_rate, 1);
         winEl.classList.remove("sig-wait");
-        subEl.textContent = `n=${live.filled} · 淨 ${fmtPct(live.mean_net, 2, true)} · 毛 ${fmtPct(live.mean_gross, 2, true)}`;
+        let sub = `n=${live.filled} · 淨 ${fmtPct(live.mean_net, 2, true)} · 毛 ${fmtPct(live.mean_gross, 2, true)}`;
+        // 平行出場（2026-08-27 拍板）：同一批單的 10／20 日賣法成績，有回填才顯示
+        [10, 20].forEach((hold) => {
+          const h = live[`h${hold}`];
+          if (h && h.filled) {
+            sub += ` ｜ 抱${hold}日 淨 ${fmtPct(h.mean_net, 2, true)}（勝 ${fmtPct(h.win_rate, 1)}、n=${h.filled}）`;
+          }
+        });
+        subEl.textContent = sub;
       }
     };
     fill("ilShadowWin", "ilShadowSub", shadow.il);
@@ -428,7 +436,10 @@
         `規則凍結：訊號隔天（T+1）收盤等金額模擬買進族群成交額前 ${cfg.top_n ?? 3} 大主角、` +
         `持 ${cfg.hold_days ?? 5} 個交易日機械出場，毛報酬扣來回成本 ${cost}%＝淨損益；` +
         `${cfg.start ?? "2026-08-25"} 起的新訊號才記（不補歷史）。勝負以淨損益 >0 判定；` +
-        `影子單戰績各自顯示在各訊號分頁的主卡（蓄勢優選＝取 ⭐ 筆分組、不另開單）。`;
+        `影子單戰績各自顯示在各訊號分頁的主卡（蓄勢優選＝取 ⭐ 筆分組、不另開單）。` +
+        `另平行記「抱 10 日／20 日再賣」兩種賣法（同標的同進場、只是晚賣；成本同 ${cost}% 只付一次）` +
+        `——回測顯示毛利隨持有期變肥（5日 +0.35％→20日 +1.41％）但 20 日跨年不穩，` +
+        `讓 OOS 真數據回答「該抱幾天」；主口徑與勝負記號仍以 5 日為準。`;
     }
   }
 
