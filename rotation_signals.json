@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-01T18:03:48+08:00",
- "as_of": "2026-09-01",
+ "generated": "2026-09-02T18:04:24+08:00",
+ "as_of": "2026-09-02",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -56,6 +56,11 @@
     "filled": 1,
     "win_rate": 0.0,
     "mean": -5.854
+   },
+   "excess_twii_lag1_5": {
+    "filled": 1,
+    "win_rate": 0.0,
+    "mean": -8.703
    }
   },
   "combo_v3": {
@@ -66,14 +71,38 @@
   },
   "wl": {
    "total": 8,
-   "t0": null,
-   "t1": null,
-   "extra": {}
+   "t0": {
+    "filled": 1,
+    "win_rate": 0.0,
+    "mean": -4.173
+   },
+   "t1": {
+    "filled": 1,
+    "win_rate": 0.0,
+    "mean": -3.325
+   },
+   "extra": {
+    "excess_eqw_lag1_5": {
+     "filled": 1,
+     "win_rate": 0.0,
+     "mean": -3.325
+    },
+    "excess_twii_5": {
+     "filled": 1,
+     "win_rate": 0.0,
+     "mean": -5.976
+    }
+   }
   },
   "shadow": {
    "assumed_cost": 0.45,
    "il": null,
-   "wl": null
+   "wl": {
+    "filled": 1,
+    "win_rate": 0.0,
+    "mean_gross": -2.72,
+    "mean_net": -3.171
+   }
   }
  },
  "level_labels": {
@@ -586,13 +615,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.5,
    "days_since_prev_il": 14,
-   "excess_eqw_5": null,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_5": -4.1727,
+   "excess_eqw_lag1_5": -3.3251,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -5.9761,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -603,10 +632,10 @@
     "2484.TW",
     "6174.TWO"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
-   "win": null,
-   "filled_at": null,
+   "shadow_gross_5": -2.7205,
+   "shadow_net_5": -3.1705,
+   "win": false,
+   "filled_at": "2026-09-02",
    "weakening_days": 1,
    "shadow_gross_10": null,
    "shadow_net_10": null,
@@ -641,7 +670,7 @@
    "win": false,
    "filled_at": "2026-08-28",
    "excess_twii_5": -5.8543,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": -8.7027,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
