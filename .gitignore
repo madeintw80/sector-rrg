@@ -1,0 +1,10 @@
+# 治理文件只留 HoldingsRadar 私有端（docs/sector-rrg/），公開 repo 只放網站檔＋README
+# （健檢 2026-09 第 12 題 12A，2026-09-02）
+AGENTS.md
+PROJECT.md
+CHECKPOINT.md
+TASKS.md
+DECISIONS.md
+# 本機雜物
+__pycache__/
+*.bak
