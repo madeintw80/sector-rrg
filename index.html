@@ -532,8 +532,8 @@
   <button type="button" data-mobile-target="drill" aria-pressed="false">下鑽</button>
 </nav>
 
-<!-- 離線 fallback：file:// 雙擊或 fetch 失敗時用這份內嵌資料（window.RRG_DATA）-->
-<script src="rrg_web_data.js"></script>
+<!-- 離線 fallback（rrg_web_data.js／window.RRG_DATA）v4.9.13 起改由 loadData() 在 fetch 失敗時才動態載入，
+     不再無條件 <script src>（那份 19.4MB 複本每個訪客每次開頁都白載；公開站也不再部署它）-->
 
 <!-- =====================================================================
      極簡 GIF89a 動圖編碼器（純前端、無外部檔、可離線／iOS 可用）
@@ -2017,11 +2017,26 @@
     if(!document.documentElement.getAttribute("data-theme")){ updateThemeBtn(); if(D) redrawAll(); }
   });
 
-  // ── 載入資料：優先 fetch 最新 json，失敗（離線／file://）退回內嵌 fallback ──
+  // ── 載入資料：優先 fetch 最新 json；失敗（離線／file://）才動態載入 rrg_web_data.js 當 fallback ──
+  // v4.9.13 起不再用 <script src> 無條件載入那份 19.4MB 的 json 複本（每個訪客每次開頁都白載），
+  // 公開站也不再部署它：線上的離線能力由 sw.js 對 rrg_web.json 的 network-first＋快取回退提供；
+  // 這段動態載入只剩本機 file:// 雙擊（rrg_web_export.py 仍會寫 web/rrg_web_data.js）會真的用到。
+  function loadFallbackScript(){
+    return new Promise(function(resolve){
+      if(window.RRG_DATA){ resolve(window.RRG_DATA); return; }
+      var s=document.createElement("script");
+      s.src="rrg_web_data.js";
+      s.onload=function(){ resolve(window.RRG_DATA||null); };
+      s.onerror=function(){ resolve(null); };          // 檔不存在（公開站）→ 交給 boot 顯示「資料載入失敗」
+      document.head.appendChild(s);
+    });
+  }
   function loadData(){
     return fetch("rrg_web.json", {cache:"no-cache"})
       .then(function(res){ if(!res.ok) throw 0; dataSource="network"; return res.json(); })
-      .catch(function(){ dataSource=window.RRG_DATA?"fallback":"error"; return window.RRG_DATA||null; });
+      .catch(function(){
+        return loadFallbackScript().then(function(d){ dataSource=d?"fallback":"error"; return d; });
+      });
   }
 
   function boot(data){
@@ -2039,7 +2054,7 @@
     });
     if(!levelSpans()[state.span]) state.span=Object.keys(levelSpans())[0];
     var benchShort = String(D.benchmark||"").replace(/（[^）]*）/,"").replace(/\([^)]*\)/,"").trim();
-    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.12"];
+    var metaItems = ["資料日期 "+D.generated, "比較基準 "+benchShort, "三層分類皆 100% 覆蓋", "UI v4.9.13"];
     if(D.coverage && D.coverage.companies) metaItems.splice(1,0,"全市場 "+D.coverage.companies+" 檔");
     if(D.topic_rrg) metaItems.splice(metaItems.length-1,0,"可比較標籤 "+D.topic_rrg.eligible_count+" 個");
     if(dataSource==="fallback") metaItems.push("離線快照");

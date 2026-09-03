@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-02T18:04:24+08:00",
- "as_of": "2026-09-02",
+ "generated": "2026-09-03T18:04:41+08:00",
+ "as_of": "2026-09-03",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -41,11 +41,11 @@
  },
  "stats": {
   "oos_total": 4,
-  "oos_filled": 1,
-  "oos_pending": 3,
+  "oos_filled": 2,
+  "oos_pending": 2,
   "win_rate": 0.0,
-  "mean_excess": -5.329,
-  "median_excess": -5.329,
+  "mean_excess": -5.868,
+  "median_excess": -5.868,
   "extra": {
    "excess_eqw_lag1_5": {
     "filled": 1,
@@ -70,11 +70,11 @@
    "extra": {}
   },
   "wl": {
-   "total": 8,
+   "total": 10,
    "t0": {
-    "filled": 1,
-    "win_rate": 0.0,
-    "mean": -4.173
+    "filled": 3,
+    "win_rate": 33.3,
+    "mean": -1.931
    },
    "t1": {
     "filled": 1,
@@ -91,6 +91,11 @@
      "filled": 1,
      "win_rate": 0.0,
      "mean": -5.976
+    },
+    "excess_twii_lag1_5": {
+     "filled": 1,
+     "win_rate": 0.0,
+     "mean": -6.923
     }
    }
   },
@@ -111,6 +116,103 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-09-03",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:17:C028020",
+   "group_name": "壽險",
+   "members": [
+    "國泰金 2882",
+    "富邦金 2881",
+    "第一金 2892",
+    "合庫金 5880",
+    "中再保 2851",
+    "三商壽 2867"
+   ],
+   "rs_ratio": 104.1,
+   "rs_momentum": 100.62,
+   "turnover_heat": 1.293,
+   "breadth_up20": 1.0,
+   "trailing_excess20": 10.921,
+   "improving_days": 0,
+   "breadth_slope5": 0.3333,
+   "days_since_prev_il": 10,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "2882.TW",
+    "2881.TW",
+    "2892.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 6
+  },
+  {
+   "date": "2026-09-03",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:22:C017125",
+   "group_name": "醫學影像裝置",
+   "members": [
+    "益安 6499",
+    "晉弘 6796",
+    "欣大健康 4198",
+    "浩宇生醫 6872",
+    "明達醫 6527"
+   ],
+   "rs_ratio": 101.74,
+   "rs_momentum": 100.54,
+   "turnover_heat": 1.681,
+   "breadth_up20": 0.8,
+   "trailing_excess20": 7.884,
+   "improving_days": 0,
+   "breadth_slope5": 0.2,
+   "days_since_prev_il": 10,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "6499.TWO",
+    "6796.TW",
+    "4198.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 1
+  },
   {
    "date": "2026-09-01",
    "signal_type": "il",
@@ -472,7 +574,7 @@
    "improving_days": 0,
    "breadth_slope5": 0.6667,
    "days_since_prev_il": 15,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -2.4531,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
@@ -495,8 +597,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-09-03",
    "weakening_days": 3
   },
   {
@@ -522,7 +624,7 @@
    "improving_days": 0,
    "breadth_slope5": 0.4286,
    "days_since_prev_il": 5,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 0.8333,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
@@ -545,8 +647,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-09-03",
    "weakening_days": 1
   },
   {
@@ -569,7 +671,7 @@
    "improving_days": 1,
    "breadth_slope5": 0.0,
    "days_since_prev_il": 16,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -6.4072,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
@@ -592,8 +694,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null
+   "win": false,
+   "filled_at": "2026-09-03"
   },
   {
    "date": "2026-08-25",
@@ -622,7 +724,7 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -5.9761,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": -6.9229,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
@@ -702,7 +804,7 @@
    "win": false,
    "filled_at": "2026-08-27",
    "excess_eqw_lag1_5": -0.3991,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -1.9703,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -741,7 +843,7 @@
    "win": false,
    "filled_at": "2026-08-27",
    "excess_eqw_lag1_5": -0.8178,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -2.517,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -776,7 +878,7 @@
    "win": false,
    "filled_at": "2026-08-27",
    "excess_eqw_lag1_5": -2.9598,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -1.8575,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -813,7 +915,7 @@
    "win": false,
    "filled_at": "2026-08-27",
    "excess_eqw_lag1_5": -1.2756,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -2.2252,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -848,7 +950,7 @@
    "win": false,
    "filled_at": "2026-08-27",
    "excess_eqw_lag1_5": -3.9904,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -3.8025,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,

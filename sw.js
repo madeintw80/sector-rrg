@@ -3,17 +3,18 @@
    ⚠️ 改版規則：每次更新前端檔案，把 CACHE 版本號 +1（例 v1.0.0 → v1.0.1）
       使用者的瀏覽器才會抓到新版（對應 App Versioning Rule）
    ===================================================================== */
-const CACHE = 'rrg-v4.9.12';
+const CACHE = 'rrg-v4.9.13';
 
 // App shell：前端本體，預先快取（相對路徑，配合 GitHub Pages 子目錄）
 // ⚠️ 注意 rrg_web.json（資料檔）不放這裡 → 它每天更新，改走 network-first（見下方 fetch）
+// v4.9.13：拿掉 rrg_web_data.js（rrg_web.json 的 19.4MB 複本）——每次版號 bump 都會強迫重抓一次，
+//   而離線需求靠 rrg_web.json 的 network-first＋快取回退早已滿足；公開站也不再部署它
 const ASSETS = [
   './',
   './index.html',
   './signals.html',
   './signals.css',
   './signals.js',
-  './rrg_web_data.js',       // 離線 fallback 資料（fetch json 失敗時前端會改吃這份）
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -54,11 +55,15 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
+          // v4.9.13：非 2xx（Pages 暫時 404／5xx）以前被當成功回傳、還把錯誤頁覆寫進快取，
+          // 等於自己把離線回退的好資料弄壞 → 改成丟出去走下面的快取回退，且不快取
+          if (!res.ok) throw new Error('http ' + res.status);
           const copy = res.clone();                       // 抓到最新就順手更新快取（給離線用）
           caches.open(CACHE).then((c) => c.put(e.request, copy));
           return res;
         })
-        .catch(() => caches.match(e.request))             // 離線：用上次抓到的
+        // 離線／伺服器出錯：用上次抓到的；真的沒有快取就回網路錯誤，讓頁面自己走 fallback
+        .catch(() => caches.match(e.request).then((hit) => hit || Response.error()))
     );
     return;
   }
