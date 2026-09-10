@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-09T18:04:51+08:00",
- "as_of": "2026-09-09",
+ "generated": "2026-09-10T18:05:32+08:00",
+ "as_of": "2026-09-10",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,9 +40,9 @@
   ]
  },
  "stats": {
-  "oos_total": 5,
+  "oos_total": 6,
   "oos_filled": 4,
-  "oos_pending": 1,
+  "oos_pending": 2,
   "win_rate": 50.0,
   "mean_excess": -2.326,
   "median_excess": -2.558,
@@ -53,9 +53,9 @@
     "mean": -1.942
    },
    "excess_eqw_10": {
-    "filled": 1,
+    "filled": 2,
     "win_rate": 0.0,
-    "mean": -8.575
+    "mean": -7.603
    },
    "excess_eqw_lag1_10": {
     "filled": 1,
@@ -73,9 +73,9 @@
     "mean": -4.406
    },
    "excess_twii_10": {
-    "filled": 1,
+    "filled": 2,
     "win_rate": 0.0,
-    "mean": -9.816
+    "mean": -9.698
    },
    "excess_twii_lag1_10": {
     "filled": 1,
@@ -84,17 +84,17 @@
    }
   },
   "combo_v3": {
-   "total": 0,
+   "total": 1,
    "t0": null,
    "t1": null,
    "extra": {}
   },
   "wl": {
-   "total": 11,
+   "total": 12,
    "t0": {
-    "filled": 8,
-    "win_rate": 12.5,
-    "mean": -2.671
+    "filled": 10,
+    "win_rate": 20.0,
+    "mean": -1.12
    },
    "t1": {
     "filled": 8,
@@ -108,9 +108,9 @@
      "mean": -2.266
     },
     "excess_eqw_10": {
-     "filled": 1,
+     "filled": 3,
      "win_rate": 0.0,
-     "mean": -8.557
+     "mean": -4.449
     },
     "excess_eqw_lag1_10": {
      "filled": 1,
@@ -118,9 +118,9 @@
      "mean": -4.213
     },
     "excess_twii_5": {
-     "filled": 8,
-     "win_rate": 0.0,
-     "mean": -4.292
+     "filled": 10,
+     "win_rate": 10.0,
+     "mean": -2.863
     },
     "excess_twii_lag1_5": {
      "filled": 8,
@@ -128,9 +128,9 @@
      "mean": -4.134
     },
     "excess_twii_10": {
-     "filled": 1,
+     "filled": 3,
      "win_rate": 0.0,
-     "mean": -11.553
+     "mean": -7.503
     },
     "excess_twii_lag1_10": {
      "filled": 1,
@@ -167,6 +167,103 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-09-10",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:10:C020117",
+   "group_name": "不鏽鋼剪裁加工",
+   "members": [
+    "運錩 2069",
+    "彰源 2030",
+    "允強 2034",
+    "新鋼 2032",
+    "美亞 2020",
+    "建錩 5014"
+   ],
+   "rs_ratio": 100.48,
+   "rs_momentum": 103.28,
+   "turnover_heat": 1.191,
+   "breadth_up20": 0.667,
+   "trailing_excess20": 1.876,
+   "improving_days": 4,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 23,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "2069.TW",
+    "2030.TW",
+    "2034.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-09-10",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:27:C023996",
+   "group_name": "光纖主動元件",
+   "members": [
+    "華星光 4979",
+    "光聖 6442",
+    "眾達-KY 4977",
+    "前鼎 4908",
+    "光環 3234",
+    "創威 6530"
+   ],
+   "rs_ratio": 101.07,
+   "rs_momentum": 100.2,
+   "turnover_heat": 1.228,
+   "breadth_up20": 1.0,
+   "trailing_excess20": 20.364,
+   "improving_days": 0,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 34,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "4979.TWO",
+    "6442.TW",
+    "4977.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 8
+  },
   {
    "date": "2026-09-09",
    "signal_type": "il",
@@ -286,13 +383,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.3333,
    "days_since_prev_il": 10,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -0.0573,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -2.1808,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -309,8 +406,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-09-10",
    "weakening_days": 6
   },
   {
@@ -334,13 +431,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.2,
    "days_since_prev_il": 10,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 10.2212,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 7.8793,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -357,8 +454,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-09-10",
    "weakening_days": 1
   },
   {
@@ -724,13 +821,13 @@
    "days_since_prev_il": 15,
    "excess_eqw_5": -2.4531,
    "excess_eqw_lag1_5": -4.5464,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -3.4128,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.5061,
    "excess_twii_lag1_5": -5.3156,
-   "excess_twii_10": null,
+   "excess_twii_10": -6.4633,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -774,13 +871,13 @@
    "days_since_prev_il": 5,
    "excess_eqw_5": 0.8333,
    "excess_eqw_lag1_5": 0.4965,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -1.3769,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -0.2551,
    "excess_twii_lag1_5": -0.3133,
-   "excess_twii_10": null,
+   "excess_twii_10": -4.4916,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -821,13 +918,13 @@
    "days_since_prev_il": 16,
    "excess_eqw_5": -6.4072,
    "excess_eqw_lag1_5": -9.0626,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -6.6317,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -7.4175,
    "excess_twii_lag1_5": -9.7954,
-   "excess_twii_10": null,
+   "excess_twii_10": -9.5804,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
