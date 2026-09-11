@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-10T18:05:32+08:00",
- "as_of": "2026-09-10",
+ "generated": "2026-09-11T18:04:30+08:00",
+ "as_of": "2026-09-11",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,9 +40,9 @@
   ]
  },
  "stats": {
-  "oos_total": 6,
+  "oos_total": 9,
   "oos_filled": 4,
-  "oos_pending": 2,
+  "oos_pending": 5,
   "win_rate": 50.0,
   "mean_excess": -2.326,
   "median_excess": -2.558,
@@ -58,9 +58,9 @@
     "mean": -7.603
    },
    "excess_eqw_lag1_10": {
-    "filled": 1,
+    "filled": 2,
     "win_rate": 0.0,
-    "mean": -7.662
+    "mean": -7.708
    },
    "excess_twii_5": {
     "filled": 4,
@@ -78,9 +78,9 @@
     "mean": -9.698
    },
    "excess_twii_lag1_10": {
-    "filled": 1,
+    "filled": 2,
     "win_rate": 0.0,
-    "mean": -11.116
+    "mean": -10.304
    }
   },
   "combo_v3": {
@@ -92,50 +92,50 @@
   "wl": {
    "total": 12,
    "t0": {
-    "filled": 10,
-    "win_rate": 20.0,
-    "mean": -1.12
+    "filled": 11,
+    "win_rate": 27.3,
+    "mean": -0.895
    },
    "t1": {
-    "filled": 8,
-    "win_rate": 12.5,
-    "mean": -2.266
+    "filled": 10,
+    "win_rate": 30.0,
+    "mean": -1.107
    },
    "extra": {
     "excess_eqw_lag1_5": {
-     "filled": 8,
-     "win_rate": 12.5,
-     "mean": -2.266
+     "filled": 10,
+     "win_rate": 30.0,
+     "mean": -1.107
     },
     "excess_eqw_10": {
-     "filled": 3,
-     "win_rate": 0.0,
-     "mean": -4.449
+     "filled": 5,
+     "win_rate": 20.0,
+     "mean": -3.958
     },
     "excess_eqw_lag1_10": {
-     "filled": 1,
-     "win_rate": 0.0,
-     "mean": -4.213
-    },
-    "excess_twii_5": {
-     "filled": 10,
-     "win_rate": 10.0,
-     "mean": -2.863
-    },
-    "excess_twii_lag1_5": {
-     "filled": 8,
-     "win_rate": 0.0,
-     "mean": -4.134
-    },
-    "excess_twii_10": {
      "filled": 3,
      "win_rate": 0.0,
-     "mean": -7.503
+     "mean": -3.343
+    },
+    "excess_twii_5": {
+     "filled": 11,
+     "win_rate": 18.2,
+     "mean": -2.574
+    },
+    "excess_twii_lag1_5": {
+     "filled": 10,
+     "win_rate": 20.0,
+     "mean": -2.813
+    },
+    "excess_twii_10": {
+     "filled": 5,
+     "win_rate": 0.0,
+     "mean": -6.519
     },
     "excess_twii_lag1_10": {
-     "filled": 1,
+     "filled": 3,
      "win_rate": 0.0,
-     "mean": -6.991
+     "mean": -5.488
     }
    }
   },
@@ -145,18 +145,24 @@
     "filled": 3,
     "win_rate": 66.7,
     "mean_gross": 0.435,
-    "mean_net": -0.015
-   },
-   "wl": {
-    "filled": 8,
-    "win_rate": 12.5,
-    "mean_gross": -3.862,
-    "mean_net": -4.312,
+    "mean_net": -0.015,
     "h10": {
      "filled": 1,
      "win_rate": 0.0,
-     "mean_gross": -4.426,
-     "mean_net": -4.876
+     "mean_gross": -7.736,
+     "mean_net": -8.186
+    }
+   },
+   "wl": {
+    "filled": 10,
+    "win_rate": 10.0,
+    "mean_gross": -3.723,
+    "mean_net": -4.173,
+    "h10": {
+     "filled": 3,
+     "win_rate": 0.0,
+     "mean_gross": -7.079,
+     "mean_net": -7.529
     }
    }
   }
@@ -167,6 +173,154 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-09-11",
+   "signal_type": "il",
+   "level": "sector",
+   "group_id": "sector:energy",
+   "group_name": "能源",
+   "members": [
+    "台塑化 6505",
+    "台汽電 8926",
+    "大台北 9908",
+    "北基 8927",
+    "山隆 2616",
+    "欣雄 8908",
+    "大汽電 8931",
+    "全國 9937"
+   ],
+   "rs_ratio": 101.75,
+   "rs_momentum": 103.13,
+   "turnover_heat": 1.486,
+   "breadth_up20": 0.667,
+   "trailing_excess20": 1.033,
+   "improving_days": 1,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 16,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "6505.TW",
+    "8926.TW",
+    "9908.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-09-11",
+   "signal_type": "il",
+   "level": "industry",
+   "group_id": "industry:23",
+   "group_name": "油電燃氣業",
+   "members": [
+    "台塑化 6505",
+    "台汽電 8926",
+    "大台北 9908",
+    "北基 8927",
+    "山隆 2616",
+    "欣雄 8908",
+    "大汽電 8931",
+    "全國 9937"
+   ],
+   "rs_ratio": 101.75,
+   "rs_momentum": 103.13,
+   "turnover_heat": 1.486,
+   "breadth_up20": 0.667,
+   "trailing_excess20": 1.033,
+   "improving_days": 1,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 16,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "6505.TW",
+    "8926.TW",
+    "9908.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-09-11",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:04:C014012",
+   "group_name": "聚酯加工絲",
+   "members": [
+    "聯發 1459",
+    "光明 4420",
+    "台富 1454",
+    "宏益 1452",
+    "新昕纖 4406",
+    "大宇 1445"
+   ],
+   "rs_ratio": 100.55,
+   "rs_momentum": 103.44,
+   "turnover_heat": 1.214,
+   "breadth_up20": 0.667,
+   "trailing_excess20": 1.549,
+   "improving_days": 5,
+   "breadth_slope5": 0.3333,
+   "days_since_prev_il": 16,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "1459.TW",
+    "4420.TWO",
+    "1454.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
   {
    "date": "2026-09-10",
    "signal_type": "il",
@@ -334,13 +488,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.125,
    "days_since_prev_il": 15,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 1.3553,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 0.3221,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -357,8 +511,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-09-11",
    "weakening_days": 2
   },
   {
@@ -384,13 +538,13 @@
    "breadth_slope5": 0.3333,
    "days_since_prev_il": 10,
    "excess_eqw_5": -0.0573,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_lag1_5": 2.2702,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -2.1808,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": 1.2277,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
@@ -400,8 +554,8 @@
     "2881.TW",
     "2892.TW"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
+   "shadow_gross_5": -0.3175,
+   "shadow_net_5": -0.7675,
    "shadow_gross_10": null,
    "shadow_net_10": null,
    "shadow_gross_20": null,
@@ -432,13 +586,13 @@
    "breadth_slope5": 0.2,
    "days_since_prev_il": 10,
    "excess_eqw_5": 10.2212,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_lag1_5": 4.7845,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 7.8793,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": 3.7164,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
@@ -448,8 +602,8 @@
     "6796.TW",
     "4198.TWO"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
+   "shadow_gross_5": -6.0159,
+   "shadow_net_5": -6.4659,
    "shadow_gross_10": null,
    "shadow_net_10": null,
    "shadow_gross_20": null,
@@ -721,13 +875,13 @@
    "days_since_prev_il": 19,
    "excess_eqw_5": -5.7926,
    "excess_eqw_lag1_5": -4.0966,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -6.7918,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -6.5518,
    "excess_twii_lag1_5": -6.543,
-   "excess_twii_10": null,
+   "excess_twii_10": -8.5479,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -772,13 +926,13 @@
    "days_since_prev_il": 15,
    "excess_eqw_5": -2.997,
    "excess_eqw_lag1_5": -0.9366,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 0.3503,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.7788,
    "excess_twii_lag1_5": -3.4636,
-   "excess_twii_10": null,
+   "excess_twii_10": -1.5404,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -822,13 +976,13 @@
    "excess_eqw_5": -2.4531,
    "excess_eqw_lag1_5": -4.5464,
    "excess_eqw_10": -3.4128,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -5.0624,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.5061,
    "excess_twii_lag1_5": -5.3156,
    "excess_twii_10": -6.4633,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -6.8511,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -838,8 +992,8 @@
    ],
    "shadow_gross_5": -8.8527,
    "shadow_net_5": -9.3027,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -11.002,
+   "shadow_net_10": -11.452,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
@@ -872,13 +1026,13 @@
    "excess_eqw_5": 0.8333,
    "excess_eqw_lag1_5": 0.4965,
    "excess_eqw_10": -1.3769,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -0.7533,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -0.2551,
    "excess_twii_lag1_5": -0.3133,
    "excess_twii_10": -4.4916,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -2.6231,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -888,8 +1042,8 @@
    ],
    "shadow_gross_5": 1.8941,
    "shadow_net_5": 1.4441,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -5.8097,
+   "shadow_net_10": -6.2597,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": true,
@@ -919,13 +1073,13 @@
    "excess_eqw_5": -6.4072,
    "excess_eqw_lag1_5": -9.0626,
    "excess_eqw_10": -6.6317,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -7.7545,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -7.4175,
    "excess_twii_lag1_5": -9.7954,
    "excess_twii_10": -9.5804,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -9.4924,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -935,8 +1089,8 @@
    ],
    "shadow_gross_5": -6.9746,
    "shadow_net_5": -7.4246,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -7.7364,
+   "shadow_net_10": -8.1864,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
