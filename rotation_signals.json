@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-16T18:05:11+08:00",
- "as_of": "2026-09-16",
+ "generated": "2026-09-17T18:03:44+08:00",
+ "as_of": "2026-09-17",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,17 +40,17 @@
   ]
  },
  "stats": {
-  "oos_total": 15,
-  "oos_filled": 5,
+  "oos_total": 16,
+  "oos_filled": 6,
   "oos_pending": 10,
-  "win_rate": 60.0,
-  "mean_excess": -1.811,
-  "median_excess": 0.213,
+  "win_rate": 66.7,
+  "mean_excess": -1.359,
+  "median_excess": 0.231,
   "extra": {
    "excess_eqw_lag1_5": {
-    "filled": 4,
-    "win_rate": 50.0,
-    "mean": -1.942
+    "filled": 5,
+    "win_rate": 60.0,
+    "mean": -1.332
    },
    "excess_eqw_10": {
     "filled": 4,
@@ -63,14 +63,14 @@
     "mean": -1.721
    },
    "excess_twii_5": {
-    "filled": 5,
-    "win_rate": 40.0,
-    "mean": -2.447
+    "filled": 6,
+    "win_rate": 50.0,
+    "mean": -1.655
    },
    "excess_twii_lag1_5": {
-    "filled": 4,
-    "win_rate": 25.0,
-    "mean": -4.406
+    "filled": 5,
+    "win_rate": 40.0,
+    "mean": -3.021
    },
    "excess_twii_10": {
     "filled": 4,
@@ -85,16 +85,26 @@
   },
   "combo_v3": {
    "total": 1,
-   "t0": null,
+   "t0": {
+    "filled": 1,
+    "win_rate": 100.0,
+    "mean": 0.899
+   },
    "t1": null,
-   "extra": {}
+   "extra": {
+    "excess_twii_5": {
+     "filled": 1,
+     "win_rate": 100.0,
+     "mean": 2.306
+    }
+   }
   },
   "wl": {
    "total": 14,
    "t0": {
-    "filled": 11,
-    "win_rate": 27.3,
-    "mean": -0.895
+    "filled": 12,
+    "win_rate": 25.0,
+    "mean": -1.224
    },
    "t1": {
     "filled": 11,
@@ -108,9 +118,9 @@
      "mean": -0.741
     },
     "excess_eqw_10": {
-     "filled": 8,
-     "win_rate": 25.0,
-     "mean": -3.264
+     "filled": 10,
+     "win_rate": 40.0,
+     "mean": -1.888
     },
     "excess_eqw_lag1_10": {
      "filled": 8,
@@ -118,9 +128,9 @@
      "mean": -2.845
     },
     "excess_twii_5": {
-     "filled": 11,
-     "win_rate": 18.2,
-     "mean": -2.574
+     "filled": 12,
+     "win_rate": 16.7,
+     "mean": -2.652
     },
     "excess_twii_lag1_5": {
      "filled": 11,
@@ -128,9 +138,9 @@
      "mean": -2.179
     },
     "excess_twii_10": {
-     "filled": 8,
-     "win_rate": 0.0,
-     "mean": -5.372
+     "filled": 10,
+     "win_rate": 20.0,
+     "mean": -3.719
     },
     "excess_twii_lag1_10": {
      "filled": 8,
@@ -142,10 +152,10 @@
   "shadow": {
    "assumed_cost": 0.45,
    "il": {
-    "filled": 3,
-    "win_rate": 66.7,
-    "mean_gross": 0.435,
-    "mean_net": -0.015,
+    "filled": 4,
+    "win_rate": 75.0,
+    "mean_gross": 0.751,
+    "mean_net": 0.301,
     "h10": {
      "filled": 3,
      "win_rate": 66.7,
@@ -173,6 +183,52 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-09-17",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:24:C023201",
+   "group_name": "IC測試",
+   "members": [
+    "欣銓 3264",
+    "微矽電子-創 8162",
+    "逸昌 3567",
+    "立衛 5344"
+   ],
+   "rs_ratio": 100.98,
+   "rs_momentum": 100.49,
+   "turnover_heat": 1.177,
+   "breadth_up20": 0.5,
+   "trailing_excess20": 0.783,
+   "improving_days": 1,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 3,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "3264.TWO",
+    "8162.TW",
+    "3567.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
   {
    "date": "2026-09-16",
    "signal_type": "il",
@@ -734,13 +790,13 @@
    "improving_days": 4,
    "breadth_slope5": 0.0,
    "days_since_prev_il": 23,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 0.8992,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 2.3063,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -757,8 +813,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null
+   "win": true,
+   "filled_at": "2026-09-17"
   },
   {
    "date": "2026-09-10",
@@ -782,13 +838,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.0,
    "days_since_prev_il": 34,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -4.8407,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -3.5136,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -805,8 +861,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-09-17",
    "weakening_days": 8
   },
   {
@@ -830,13 +886,13 @@
    "breadth_slope5": 0.0,
    "days_since_prev_il": 13,
    "excess_eqw_5": 0.2489,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_lag1_5": 1.1085,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 1.9033,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": 2.5185,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
@@ -846,8 +902,8 @@
     "4714.TWO",
     "1776.TW"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
+   "shadow_gross_5": 1.7014,
+   "shadow_net_5": 1.2514,
    "shadow_gross_10": null,
    "shadow_net_10": null,
    "shadow_gross_20": null,
@@ -930,13 +986,13 @@
    "days_since_prev_il": 10,
    "excess_eqw_5": -0.0573,
    "excess_eqw_lag1_5": 2.2702,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 3.6852,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -2.1808,
    "excess_twii_lag1_5": 1.2277,
-   "excess_twii_10": null,
+   "excess_twii_10": 2.9645,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -978,13 +1034,13 @@
    "days_since_prev_il": 10,
    "excess_eqw_5": 10.2212,
    "excess_eqw_lag1_5": 4.7845,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 3.547,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 7.8793,
    "excess_twii_lag1_5": 3.7164,
-   "excess_twii_10": null,
+   "excess_twii_10": 2.8273,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1596,7 +1652,7 @@
    "excess_eqw_lag1_5": -0.3991,
    "excess_eqw_10": -1.9703,
    "excess_eqw_lag1_10": -0.8968,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -2.7541,
    "excess_eqw_lag1_20": null,
    "improving_days": 1,
    "breadth_slope5": 0.0655,
@@ -1604,7 +1660,7 @@
    "excess_twii_lag1_5": -0.9518,
    "excess_twii_10": -3.1928,
    "excess_twii_lag1_10": -2.2422,
-   "excess_twii_20": null,
+   "excess_twii_20": -4.6775,
    "excess_twii_lag1_20": null,
    "days_since_prev_il": 17,
    "signal_type": "il"
@@ -1635,7 +1691,7 @@
    "excess_eqw_lag1_5": -0.8178,
    "excess_eqw_10": -2.517,
    "excess_eqw_lag1_10": -1.4712,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -3.4484,
    "excess_eqw_lag1_20": null,
    "improving_days": 2,
    "breadth_slope5": 0.1663,
@@ -1643,7 +1699,7 @@
    "excess_twii_lag1_5": -1.3682,
    "excess_twii_10": -3.7306,
    "excess_twii_lag1_10": -2.8088,
-   "excess_twii_20": null,
+   "excess_twii_20": -5.3581,
    "excess_twii_lag1_20": null,
    "days_since_prev_il": 17,
    "signal_type": "il"
@@ -1670,7 +1726,7 @@
    "excess_eqw_lag1_5": -2.9598,
    "excess_eqw_10": -1.8575,
    "excess_eqw_lag1_10": -2.8548,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -2.9712,
    "excess_eqw_lag1_20": null,
    "improving_days": 7,
    "breadth_slope5": 0.5,
@@ -1678,7 +1734,7 @@
    "excess_twii_lag1_5": -3.4983,
    "excess_twii_10": -3.1103,
    "excess_twii_lag1_10": -4.1737,
-   "excess_twii_20": null,
+   "excess_twii_20": -4.8904,
    "excess_twii_lag1_20": null,
    "days_since_prev_il": 37,
    "signal_type": "il"
@@ -1707,7 +1763,7 @@
    "excess_eqw_lag1_5": -1.2756,
    "excess_eqw_10": -2.2252,
    "excess_eqw_lag1_10": -1.6064,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -4.2909,
    "excess_eqw_lag1_20": null,
    "improving_days": 4,
    "breadth_slope5": 0.0,
@@ -1715,7 +1771,7 @@
    "excess_twii_lag1_5": -1.8234,
    "excess_twii_10": -3.4733,
    "excess_twii_lag1_10": -2.9422,
-   "excess_twii_20": null,
+   "excess_twii_20": -6.1839,
    "excess_twii_lag1_20": null,
    "days_since_prev_il": 38,
    "signal_type": "il"
@@ -1742,7 +1798,7 @@
    "excess_eqw_lag1_5": -3.9904,
    "excess_eqw_10": -3.8025,
    "excess_eqw_lag1_10": -4.2721,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -4.0526,
    "excess_eqw_lag1_20": null,
    "improving_days": 8,
    "breadth_slope5": 0.0,
@@ -1750,7 +1806,7 @@
    "excess_twii_lag1_5": -4.5232,
    "excess_twii_10": -5.0305,
    "excess_twii_lag1_10": -5.5717,
-   "excess_twii_20": null,
+   "excess_twii_20": -5.9503,
    "excess_twii_lag1_20": null,
    "days_since_prev_il": 31,
    "signal_type": "il"
