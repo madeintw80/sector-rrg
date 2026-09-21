@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-20T18:03:49+08:00",
- "as_of": "2026-09-20",
+ "generated": "2026-09-21T18:06:38+08:00",
+ "as_of": "2026-09-21",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,9 +40,9 @@
   ]
  },
  "stats": {
-  "oos_total": 16,
+  "oos_total": 17,
   "oos_filled": 13,
-  "oos_pending": 3,
+  "oos_pending": 4,
   "win_rate": 53.8,
   "mean_excess": -1.287,
   "median_excess": 0.213,
@@ -217,6 +217,53 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-09-21",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:27:C023310",
+   "group_name": "接取設備",
+   "members": [
+    "仲琦 2419",
+    "展達 3447",
+    "居易 6216",
+    "榮群 8034",
+    "鋐寶科技 6674"
+   ],
+   "rs_ratio": 101.19,
+   "rs_momentum": 100.99,
+   "turnover_heat": 1.354,
+   "breadth_up20": 0.8,
+   "trailing_excess20": 0.745,
+   "improving_days": 1,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 3,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "2419.TW",
+    "3447.TW",
+    "6216.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
   {
    "date": "2026-09-18",
    "signal_type": "wl",
