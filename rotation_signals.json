@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-09-22T18:04:49+08:00",
- "as_of": "2026-09-22",
+ "generated": "2026-09-23T18:03:45+08:00",
+ "as_of": "2026-09-23",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,22 +40,22 @@
   ]
  },
  "stats": {
-  "oos_total": 17,
-  "oos_filled": 14,
+  "oos_total": 18,
+  "oos_filled": 15,
   "oos_pending": 3,
-  "win_rate": 50.0,
-  "mean_excess": -1.265,
-  "median_excess": -0.378,
+  "win_rate": 53.3,
+  "mean_excess": -0.851,
+  "median_excess": 0.213,
   "extra": {
    "excess_eqw_lag1_5": {
-    "filled": 13,
-    "win_rate": 23.1,
-    "mean": -1.943
+    "filled": 14,
+    "win_rate": 21.4,
+    "mean": -1.95
    },
    "excess_eqw_10": {
-    "filled": 4,
-    "win_rate": 25.0,
-    "mean": -3.962
+    "filled": 5,
+    "win_rate": 40.0,
+    "mean": -2.612
    },
    "excess_eqw_lag1_10": {
     "filled": 4,
@@ -134,22 +134,22 @@
    }
   },
   "wl": {
-   "total": 19,
+   "total": 21,
    "t0": {
     "filled": 14,
     "win_rate": 35.7,
     "mean": -0.673
    },
    "t1": {
-    "filled": 13,
-    "win_rate": 46.2,
-    "mean": -0.561
+    "filled": 14,
+    "win_rate": 50.0,
+    "mean": -0.353
    },
    "extra": {
     "excess_eqw_lag1_5": {
-     "filled": 13,
-     "win_rate": 46.2,
-     "mean": -0.561
+     "filled": 14,
+     "win_rate": 50.0,
+     "mean": -0.353
     },
     "excess_eqw_10": {
      "filled": 11,
@@ -165,6 +165,11 @@
      "filled": 1,
      "win_rate": 0.0,
      "mean": -7.209
+    },
+    "excess_eqw_lag1_20": {
+     "filled": 1,
+     "win_rate": 0.0,
+     "mean": -0.954
     },
     "excess_twii_5": {
      "filled": 14,
@@ -196,10 +201,10 @@
   "shadow": {
    "assumed_cost": 0.45,
    "il": {
-    "filled": 12,
-    "win_rate": 75.0,
-    "mean_gross": 1.964,
-    "mean_net": 1.514,
+    "filled": 13,
+    "win_rate": 69.2,
+    "mean_gross": 1.83,
+    "mean_net": 1.38,
     "h10": {
      "filled": 3,
      "win_rate": 66.7,
@@ -208,15 +213,21 @@
     }
    },
    "wl": {
-    "filled": 13,
-    "win_rate": 30.8,
-    "mean_gross": -2.376,
-    "mean_net": -2.826,
+    "filled": 14,
+    "win_rate": 35.7,
+    "mean_gross": -1.599,
+    "mean_net": -2.049,
     "h10": {
      "filled": 11,
      "win_rate": 18.2,
      "mean_gross": -5.996,
      "mean_net": -6.446
+    },
+    "h20": {
+     "filled": 1,
+     "win_rate": 0.0,
+     "mean_gross": 0.188,
+     "mean_net": -0.262
     }
    }
   }
@@ -227,6 +238,155 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-09-23",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:24:C023209",
+   "group_name": "ASIC",
+   "members": [
+    "世芯-KY 3661",
+    "創意 3443",
+    "智原 3035",
+    "巨有科技 8227",
+    "意騰-KY 7749",
+    "金麗科 3228",
+    "宏觀 6568"
+   ],
+   "rs_ratio": 104.95,
+   "rs_momentum": 100.38,
+   "turnover_heat": 1.264,
+   "breadth_up20": 0.857,
+   "trailing_excess20": 12.367,
+   "improving_days": 0,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 20,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "3661.TW",
+    "3443.TW",
+    "3035.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 1
+  },
+  {
+   "date": "2026-09-23",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:31:C023370",
+   "group_name": "設備儀器商",
+   "members": [
+    "陽程 3498",
+    "倚強科 3219",
+    "聯策 6658",
+    "天正國際 6654",
+    "銳澤 7703",
+    "星雲 8047"
+   ],
+   "rs_ratio": 101.15,
+   "rs_momentum": 103.59,
+   "turnover_heat": 1.127,
+   "breadth_up20": 0.833,
+   "trailing_excess20": 6.613,
+   "improving_days": 2,
+   "breadth_slope5": 0.1667,
+   "days_since_prev_il": 33,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "3498.TWO",
+    "3219.TWO",
+    "6658.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-09-23",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:31:C023139",
+   "group_name": "電子零件元件",
+   "members": [
+    "安葆 7792",
+    "可成 2474",
+    "匯鑽科 8431",
+    "位速 3508",
+    "柏騰 3518",
+    "盈正 3628",
+    "鼎炫-KY 8499",
+    "科風 3043"
+   ],
+   "rs_ratio": 103.5,
+   "rs_momentum": 100.14,
+   "turnover_heat": 1.38,
+   "breadth_up20": 0.75,
+   "trailing_excess20": 6.004,
+   "improving_days": 0,
+   "breadth_slope5": 0.125,
+   "days_since_prev_il": 31,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "7792.TWO",
+    "2474.TW",
+    "8431.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 1
+  },
   {
    "date": "2026-09-22",
    "signal_type": "wl",
@@ -591,7 +751,7 @@
    "improving_days": 3,
    "breadth_slope5": 0.0,
    "days_since_prev_il": 16,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 4.9366,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
@@ -614,8 +774,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null
+   "win": true,
+   "filled_at": "2026-09-23"
   },
   {
    "date": "2026-09-15",
@@ -642,7 +802,7 @@
    "breadth_slope5": 0.0,
    "days_since_prev_il": 22,
    "excess_eqw_5": 2.1996,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_lag1_5": 2.3544,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
@@ -658,8 +818,8 @@
     "6005.TW",
     "5864.TWO"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
+   "shadow_gross_5": 8.4985,
+   "shadow_net_5": 8.0485,
    "shadow_gross_10": null,
    "shadow_net_10": null,
    "shadow_gross_20": null,
@@ -692,7 +852,7 @@
    "breadth_slope5": 0.5714,
    "days_since_prev_il": 17,
    "excess_eqw_5": -0.9697,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_lag1_5": -2.0309,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
@@ -708,8 +868,8 @@
     "5410.TWO",
     "6163.TWO"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
+   "shadow_gross_5": 0.2282,
+   "shadow_net_5": -0.2218,
    "shadow_gross_10": null,
    "shadow_net_10": null,
    "shadow_gross_20": null,
@@ -1228,7 +1388,7 @@
    "days_since_prev_il": 13,
    "excess_eqw_5": 0.2489,
    "excess_eqw_lag1_5": 1.1085,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 2.79,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -1909,7 +2069,7 @@
    "excess_eqw_10": -8.5575,
    "excess_eqw_lag1_10": -4.2128,
    "excess_eqw_20": -7.2094,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -0.9542,
    "excess_twii_5": -5.9761,
    "excess_twii_lag1_5": -6.9229,
    "excess_twii_10": -11.5534,
@@ -1928,8 +2088,8 @@
    "weakening_days": 1,
    "shadow_gross_10": -4.4263,
    "shadow_net_10": -4.8763,
-   "shadow_gross_20": null,
-   "shadow_net_20": null
+   "shadow_gross_20": 0.1882,
+   "shadow_net_20": -0.2618
   },
   {
    "date": "2026-08-21",
