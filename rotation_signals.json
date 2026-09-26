@@ -1,6 +1,6 @@
 {
  "schema_version": 1,
- "generated": "2026-09-25T18:04:11+08:00",
+ "generated": "2026-09-26T18:03:45+08:00",
  "as_of": "2026-09-24",
  "oos_start": "2026-08-21",
  "backtest_reference": {
@@ -73,29 +73,29 @@
     "mean": -6.352
    },
    "excess_twii_5": {
-    "filled": 15,
-    "win_rate": 46.7,
-    "mean": -1.494
+    "filled": 16,
+    "win_rate": 50.0,
+    "mean": -1.238
    },
    "excess_twii_lag1_5": {
-    "filled": 14,
-    "win_rate": 14.3,
-    "mean": -3.275
+    "filled": 15,
+    "win_rate": 20.0,
+    "mean": -2.948
    },
    "excess_twii_10": {
-    "filled": 5,
-    "win_rate": 40.0,
-    "mean": -3.764
+    "filled": 6,
+    "win_rate": 50.0,
+    "mean": -1.823
    },
    "excess_twii_lag1_10": {
-    "filled": 4,
-    "win_rate": 50.0,
-    "mean": -3.624
+    "filled": 5,
+    "win_rate": 60.0,
+    "mean": -2.521
    },
    "excess_twii_20": {
-    "filled": 1,
+    "filled": 2,
     "win_rate": 0.0,
-    "mean": -9.253
+    "mean": -8.64
    },
    "excess_twii_lag1_20": {
     "filled": 1,
@@ -135,11 +135,16 @@
      "filled": 1,
      "win_rate": 0.0,
      "mean": -0.257
+    },
+    "excess_twii_10": {
+     "filled": 1,
+     "win_rate": 100.0,
+     "mean": 7.878
     }
    }
   },
   "wl": {
-   "total": 23,
+   "total": 25,
    "t0": {
     "filled": 14,
     "win_rate": 35.7,
@@ -187,9 +192,9 @@
      "mean": -1.819
     },
     "excess_twii_10": {
-     "filled": 11,
-     "win_rate": 27.3,
-     "mean": -3.319
+     "filled": 12,
+     "win_rate": 25.0,
+     "mean": -3.766
     },
     "excess_twii_lag1_10": {
      "filled": 11,
@@ -197,9 +202,9 @@
      "mean": -2.739
     },
     "excess_twii_20": {
-     "filled": 1,
+     "filled": 3,
      "win_rate": 0.0,
-     "mean": -10.294
+     "mean": -6.496
     },
     "excess_twii_lag1_20": {
      "filled": 1,
@@ -342,6 +347,106 @@
    "win": null,
    "filled_at": null,
    "weakening_days": 3
+  },
+  {
+   "date": "2026-09-24",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:10:C020117",
+   "group_name": "不鏽鋼剪裁加工",
+   "members": [
+    "彰源 2030",
+    "運錩 2069",
+    "允強 2034",
+    "新鋼 2032",
+    "美亞 2020",
+    "建錩 5014"
+   ],
+   "rs_ratio": 104.97,
+   "rs_momentum": 102.16,
+   "turnover_heat": 2.431,
+   "breadth_up20": 0.833,
+   "trailing_excess20": 6.613,
+   "improving_days": 0,
+   "breadth_slope5": 0.3333,
+   "days_since_prev_il": 10,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "2030.TW",
+    "2069.TW",
+    "2034.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 6
+  },
+  {
+   "date": "2026-09-24",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:31:C023375",
+   "group_name": "廠務工程",
+   "members": [
+    "漢唐 2404",
+    "亞翔 6139",
+    "聖暉* 5536",
+    "帆宣 6196",
+    "洋基工程 6691",
+    "信紘科 6667",
+    "巨漢 6903",
+    "漢科 3402"
+   ],
+   "rs_ratio": 102.41,
+   "rs_momentum": 100.2,
+   "turnover_heat": 1.499,
+   "breadth_up20": 0.545,
+   "trailing_excess20": 0.087,
+   "improving_days": 0,
+   "breadth_slope5": 0.2727,
+   "days_since_prev_il": 4,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "2404.TW",
+    "6139.TW",
+    "5536.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 1
   },
   {
    "date": "2026-09-23",
@@ -815,7 +920,7 @@
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 2.5995,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -863,7 +968,7 @@
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 0.9369,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": 1.621,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
@@ -1404,7 +1509,7 @@
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 2.3063,
    "excess_twii_lag1_5": -0.2572,
-   "excess_twii_10": null,
+   "excess_twii_10": 7.8784,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1452,7 +1557,7 @@
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.5136,
    "excess_twii_lag1_5": 0.4642,
-   "excess_twii_10": null,
+   "excess_twii_10": -8.684,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1500,7 +1605,7 @@
    "excess_twii_5": 1.9033,
    "excess_twii_lag1_5": 2.5185,
    "excess_twii_10": 1.487,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 1.8898,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -2036,7 +2141,7 @@
    "excess_twii_lag1_5": -5.3156,
    "excess_twii_10": -6.4633,
    "excess_twii_lag1_10": -6.8511,
-   "excess_twii_20": null,
+   "excess_twii_20": -5.1573,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "6278.TW",
@@ -2086,7 +2191,7 @@
    "excess_twii_lag1_5": -0.3133,
    "excess_twii_10": -4.4916,
    "excess_twii_lag1_10": -2.6231,
-   "excess_twii_20": null,
+   "excess_twii_20": -4.037,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2476.TW",
@@ -2133,7 +2238,7 @@
    "excess_twii_lag1_5": -9.7954,
    "excess_twii_10": -9.5804,
    "excess_twii_lag1_10": -9.4924,
-   "excess_twii_20": null,
+   "excess_twii_20": -8.0279,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "6213.TW",
