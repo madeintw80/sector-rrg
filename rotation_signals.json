@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-10-15T18:06:24+08:00",
- "as_of": "2026-10-15",
+ "generated": "2026-10-16T18:07:50+08:00",
+ "as_of": "2026-10-16",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,12 +40,12 @@
   ]
  },
  "stats": {
-  "oos_total": 35,
-  "oos_filled": 21,
+  "oos_total": 36,
+  "oos_filled": 22,
   "oos_pending": 14,
-  "win_rate": 57.1,
-  "mean_excess": 0.415,
-  "median_excess": 0.249,
+  "win_rate": 54.5,
+  "mean_excess": 0.171,
+  "median_excess": 0.231,
   "extra": {
    "excess_eqw_lag1_5": {
     "filled": 21,
@@ -58,24 +58,24 @@
     "mean": -0.904
    },
    "excess_eqw_lag1_10": {
-    "filled": 18,
-    "win_rate": 27.8,
-    "mean": -1.075
+    "filled": 19,
+    "win_rate": 31.6,
+    "mean": -0.967
    },
    "excess_eqw_20": {
-    "filled": 13,
-    "win_rate": 53.8,
-    "mean": -0.096
+    "filled": 14,
+    "win_rate": 50.0,
+    "mean": -0.345
    },
    "excess_eqw_lag1_20": {
-    "filled": 9,
-    "win_rate": 44.4,
-    "mean": 1.622
+    "filled": 13,
+    "win_rate": 38.5,
+    "mean": 0.623
    },
    "excess_twii_5": {
-    "filled": 21,
-    "win_rate": 52.4,
-    "mean": -0.288
+    "filled": 22,
+    "win_rate": 50.0,
+    "mean": -0.352
    },
    "excess_twii_lag1_5": {
     "filled": 21,
@@ -88,19 +88,19 @@
     "mean": -1.7
    },
    "excess_twii_lag1_10": {
-    "filled": 18,
-    "win_rate": 33.3,
-    "mean": -2.289
+    "filled": 19,
+    "win_rate": 36.8,
+    "mean": -1.994
    },
    "excess_twii_20": {
-    "filled": 13,
-    "win_rate": 53.8,
-    "mean": -0.627
+    "filled": 14,
+    "win_rate": 50.0,
+    "mean": -0.756
    },
    "excess_twii_lag1_20": {
-    "filled": 9,
-    "win_rate": 55.6,
-    "mean": 0.699
+    "filled": 13,
+    "win_rate": 61.5,
+    "mean": 0.341
    }
   },
   "combo_v3": {
@@ -174,11 +174,11 @@
    }
   },
   "wl": {
-   "total": 45,
+   "total": 47,
    "t0": {
-    "filled": 38,
-    "win_rate": 55.3,
-    "mean": 0.747
+    "filled": 40,
+    "win_rate": 55.0,
+    "mean": 0.604
    },
    "t1": {
     "filled": 38,
@@ -192,29 +192,29 @@
      "mean": 0.078
     },
     "excess_eqw_10": {
-     "filled": 32,
-     "win_rate": 37.5,
-     "mean": -1.443
+     "filled": 37,
+     "win_rate": 37.8,
+     "mean": -1.316
     },
     "excess_eqw_lag1_10": {
-     "filled": 26,
-     "win_rate": 46.2,
-     "mean": -1.64
+     "filled": 32,
+     "win_rate": 40.6,
+     "mean": -2.061
     },
     "excess_eqw_20": {
-     "filled": 13,
-     "win_rate": 38.5,
-     "mean": -0.763
+     "filled": 14,
+     "win_rate": 42.9,
+     "mean": -0.369
     },
     "excess_eqw_lag1_20": {
-     "filled": 12,
-     "win_rate": 41.7,
-     "mean": -0.885
+     "filled": 13,
+     "win_rate": 46.2,
+     "mean": 0.063
     },
     "excess_twii_5": {
-     "filled": 38,
-     "win_rate": 47.4,
-     "mean": -0.402
+     "filled": 40,
+     "win_rate": 47.5,
+     "mean": -0.32
     },
     "excess_twii_lag1_5": {
      "filled": 38,
@@ -222,24 +222,24 @@
      "mean": -0.978
     },
     "excess_twii_10": {
-     "filled": 32,
-     "win_rate": 31.2,
-     "mean": -2.009
+     "filled": 37,
+     "win_rate": 35.1,
+     "mean": -1.496
     },
     "excess_twii_lag1_10": {
-     "filled": 26,
-     "win_rate": 38.5,
-     "mean": -2.103
+     "filled": 32,
+     "win_rate": 37.5,
+     "mean": -2.022
     },
     "excess_twii_20": {
-     "filled": 13,
-     "win_rate": 15.4,
-     "mean": -3.194
+     "filled": 14,
+     "win_rate": 21.4,
+     "mean": -2.538
     },
     "excess_twii_lag1_20": {
-     "filled": 12,
-     "win_rate": 0.0,
-     "mean": -2.912
+     "filled": 13,
+     "win_rate": 7.7,
+     "mean": -1.707
     }
    }
   },
@@ -251,16 +251,16 @@
     "mean_gross": 2.417,
     "mean_net": 1.967,
     "h10": {
-     "filled": 17,
-     "win_rate": 70.6,
-     "mean_gross": 3.62,
-     "mean_net": 3.17
+     "filled": 18,
+     "win_rate": 72.2,
+     "mean_gross": 3.579,
+     "mean_net": 3.129
     },
     "h20": {
-     "filled": 8,
-     "win_rate": 87.5,
-     "mean_gross": 10.463,
-     "mean_net": 10.013
+     "filled": 12,
+     "win_rate": 83.3,
+     "mean_gross": 8.397,
+     "mean_net": 7.947
     }
    },
    "wl": {
@@ -269,16 +269,16 @@
     "mean_gross": -0.098,
     "mean_net": -0.548,
     "h10": {
-     "filled": 26,
-     "win_rate": 30.8,
-     "mean_gross": -2.125,
-     "mean_net": -2.575
+     "filled": 32,
+     "win_rate": 28.1,
+     "mean_gross": -2.469,
+     "mean_net": -2.919
     },
     "h20": {
-     "filled": 12,
-     "win_rate": 50.0,
-     "mean_gross": 0.382,
-     "mean_net": -0.068
+     "filled": 13,
+     "win_rate": 53.8,
+     "mean_gross": 0.938,
+     "mean_net": 0.488
     }
    }
   }
@@ -289,6 +289,148 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-10-16",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:24:C023332",
+   "group_name": "LED驅動IC",
+   "members": [
+    "矽力*-KY 6415",
+    "致新 8081",
+    "通嘉 3588",
+    "聚積 3527",
+    "凱鈺 5468"
+   ],
+   "rs_ratio": 101.71,
+   "rs_momentum": 103.06,
+   "turnover_heat": 2.096,
+   "breadth_up20": 0.8,
+   "trailing_excess20": 0.78,
+   "improving_days": 1,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 10,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "6415.TW",
+    "8081.TW",
+    "3588.TW"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
+  {
+   "date": "2026-10-16",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:28:C023069",
+   "group_name": "被動元件上游",
+   "members": [
+    "九豪 6127",
+    "鈞寶 6155",
+    "立敦 6175",
+    "越峰 8121"
+   ],
+   "rs_ratio": 102.18,
+   "rs_momentum": 100.59,
+   "turnover_heat": 1.481,
+   "breadth_up20": 1.0,
+   "trailing_excess20": 16.523,
+   "improving_days": 0,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 19,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "6127.TWO",
+    "6155.TW",
+    "6175.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 8
+  },
+  {
+   "date": "2026-10-16",
+   "signal_type": "wl",
+   "level": "subindustry",
+   "group_id": "subindustry:31:C023328",
+   "group_name": "IC檢測設備",
+   "members": [
+    "德律 3030",
+    "鏵友益 6877",
+    "光焱科技 7728",
+    "華洋精機 6983",
+    "美達科技 6735"
+   ],
+   "rs_ratio": 102.22,
+   "rs_momentum": 102.11,
+   "turnover_heat": 1.132,
+   "breadth_up20": 0.6,
+   "trailing_excess20": 6.582,
+   "improving_days": 0,
+   "breadth_slope5": -0.4,
+   "days_since_prev_il": 11,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "3030.TW",
+    "6877.TWO",
+    "7728.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null,
+   "weakening_days": 2
+  },
   {
    "date": "2026-10-15",
    "signal_type": "wl",
@@ -1187,13 +1329,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.5,
    "days_since_prev_il": 5,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 2.2778,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 5.7851,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -1210,8 +1352,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-10-16",
    "weakening_days": 2
   },
   {
@@ -1238,13 +1380,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.0,
    "days_since_prev_il": 13,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -6.4984,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -3.2921,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -1261,8 +1403,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-10-16",
    "weakening_days": 3
   },
   {
@@ -1288,13 +1430,13 @@
    "improving_days": 2,
    "breadth_slope5": 0.4286,
    "days_since_prev_il": 13,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -4.9455,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -1.6859,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -1311,8 +1453,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null
+   "win": false,
+   "filled_at": "2026-10-16"
   },
   {
    "date": "2026-10-06",
@@ -1477,13 +1619,13 @@
    "days_since_prev_il": 14,
    "excess_eqw_5": 7.1747,
    "excess_eqw_lag1_5": 1.0984,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 3.3794,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 6.0153,
    "excess_twii_lag1_5": -0.1499,
-   "excess_twii_10": null,
+   "excess_twii_10": 5.76,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1526,13 +1668,13 @@
    "days_since_prev_il": 12,
    "excess_eqw_5": -6.4328,
    "excess_eqw_lag1_5": -5.7104,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -5.0551,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -7.445,
    "excess_twii_lag1_5": -6.8746,
-   "excess_twii_10": null,
+   "excess_twii_10": -2.8687,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1574,13 +1716,13 @@
    "days_since_prev_il": 14,
    "excess_eqw_5": -3.3425,
    "excess_eqw_lag1_5": -4.1616,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -2.5885,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -4.3882,
    "excess_twii_lag1_5": -5.345,
-   "excess_twii_10": null,
+   "excess_twii_10": -0.3453,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1625,13 +1767,13 @@
    "days_since_prev_il": 8,
    "excess_eqw_5": -3.6717,
    "excess_eqw_lag1_5": -2.935,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -1.1975,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -4.7138,
    "excess_twii_lag1_5": -4.1335,
-   "excess_twii_10": null,
+   "excess_twii_10": 1.0777,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1675,13 +1817,13 @@
    "days_since_prev_il": 6,
    "excess_eqw_5": 8.0712,
    "excess_eqw_lag1_5": 4.3962,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 2.9501,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 6.902,
    "excess_twii_lag1_5": 3.1072,
-   "excess_twii_10": null,
+   "excess_twii_10": 5.3209,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1727,13 +1869,13 @@
    "excess_eqw_5": 0.2349,
    "excess_eqw_lag1_5": 0.3181,
    "excess_eqw_10": -1.1334,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -0.0775,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -2.5454,
    "excess_twii_lag1_5": -0.7672,
    "excess_twii_10": -0.0586,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 2.2235,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1743,8 +1885,8 @@
    ],
    "shadow_gross_5": 0.1362,
    "shadow_net_5": -0.3138,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -3.6225,
+   "shadow_net_10": -4.0725,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": true,
@@ -1778,13 +1920,13 @@
    "excess_eqw_5": -0.3599,
    "excess_eqw_lag1_5": -0.5778,
    "excess_eqw_10": 0.3193,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": 0.9913,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.1237,
    "excess_twii_lag1_5": -1.6533,
    "excess_twii_10": 1.4098,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 3.3169,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1794,8 +1936,8 @@
    ],
    "shadow_gross_5": 0.7743,
    "shadow_net_5": 0.3243,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": 2.8913,
+   "shadow_net_10": 2.4413,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
@@ -1824,13 +1966,13 @@
    "excess_eqw_5": 7.2467,
    "excess_eqw_lag1_5": 2.3396,
    "excess_eqw_10": 0.644,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -3.5922,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 4.272,
    "excess_twii_lag1_5": 1.2325,
    "excess_twii_10": 1.7381,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -1.3722,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1840,8 +1982,8 @@
    ],
    "shadow_gross_5": -2.6689,
    "shadow_net_5": -3.1189,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -4.6402,
+   "shadow_net_10": -5.0902,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": true,
@@ -1873,13 +2015,13 @@
    "excess_eqw_5": 4.6378,
    "excess_eqw_lag1_5": 0.9755,
    "excess_eqw_10": -9.9959,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -10.8366,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 1.7354,
    "excess_twii_lag1_5": -0.1169,
    "excess_twii_10": -9.0175,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -8.7834,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1889,8 +2031,8 @@
    ],
    "shadow_gross_5": 2.8001,
    "shadow_net_5": 2.3501,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -12.0685,
+   "shadow_net_10": -12.5185,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": true,
@@ -1921,13 +2063,13 @@
    "excess_eqw_5": -0.4648,
    "excess_eqw_lag1_5": -3.8073,
    "excess_eqw_10": -9.6113,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -9.2258,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.2256,
    "excess_twii_lag1_5": -4.848,
    "excess_twii_10": -8.6287,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -7.1355,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1937,8 +2079,8 @@
    ],
    "shadow_gross_5": -1.6415,
    "shadow_net_5": -2.0915,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -9.9556,
+   "shadow_net_10": -10.4056,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
@@ -1972,13 +2114,13 @@
    "excess_eqw_5": -1.5809,
    "excess_eqw_lag1_5": -0.4298,
    "excess_eqw_10": -5.6744,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -3.675,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -4.3108,
    "excess_twii_lag1_5": -1.507,
    "excess_twii_10": -4.649,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -1.4568,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1988,8 +2130,8 @@
    ],
    "shadow_gross_5": 4.2758,
    "shadow_net_5": 3.8258,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -2.0987,
+   "shadow_net_10": -2.5487,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
@@ -2020,13 +2162,13 @@
    "excess_eqw_5": 0.5715,
    "excess_eqw_lag1_5": 1.5748,
    "excess_eqw_10": 2.0296,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": 4.0881,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -2.2181,
    "excess_twii_lag1_5": 0.4759,
    "excess_twii_10": 3.1388,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 6.485,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -2036,8 +2178,8 @@
    ],
    "shadow_gross_5": 4.1817,
    "shadow_net_5": 3.7317,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": 8.6296,
+   "shadow_net_10": 8.1796,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": true,
@@ -2853,13 +2995,13 @@
    "excess_eqw_lag1_5": 2.3544,
    "excess_eqw_10": -0.423,
    "excess_eqw_lag1_10": 0.4078,
-   "excess_eqw_20": null,
+   "excess_eqw_20": 4.7503,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 0.6577,
    "excess_twii_lag1_5": -1.0044,
    "excess_twii_10": -1.5156,
    "excess_twii_lag1_10": -0.8227,
-   "excess_twii_20": null,
+   "excess_twii_20": 5.9874,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2855.TW",
@@ -2903,13 +3045,13 @@
    "excess_eqw_lag1_5": -2.0309,
    "excess_eqw_10": -4.25,
    "excess_eqw_lag1_10": -4.653,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -3.5753,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -2.4637,
    "excess_twii_lag1_5": -4.3195,
    "excess_twii_10": -5.3006,
    "excess_twii_lag1_10": -5.8215,
-   "excess_twii_20": null,
+   "excess_twii_20": -2.4365,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2471.TW",
@@ -2954,13 +3096,13 @@
    "excess_eqw_10": -1.2396,
    "excess_eqw_lag1_10": -3.2733,
    "excess_eqw_20": 1.4032,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -0.146,
    "excess_twii_5": 0.4102,
    "excess_twii_lag1_5": -3.1749,
    "excess_twii_10": -1.5762,
    "excess_twii_lag1_10": -4.3346,
    "excess_twii_20": 2.1405,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": 1.0333,
    "shadow_tickers": [
     "3029.TW",
     "6214.TW",
@@ -2970,8 +3112,8 @@
    "shadow_net_5": 3.1155,
    "shadow_gross_10": 0.9671,
    "shadow_net_10": 0.5171,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": 7.9285,
+   "shadow_net_20": 7.4785,
    "win": true,
    "filled_at": "2026-09-20"
   },
@@ -3001,13 +3143,13 @@
    "excess_eqw_10": 3.6928,
    "excess_eqw_lag1_10": 2.7554,
    "excess_eqw_20": 13.4391,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": 11.4349,
    "excess_twii_5": 2.3204,
    "excess_twii_lag1_5": -0.9463,
    "excess_twii_10": 3.3394,
    "excess_twii_lag1_10": 1.628,
    "excess_twii_20": 14.2639,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": 12.7509,
    "shadow_tickers": [
     "6416.TW",
     "2332.TW",
@@ -3017,8 +3159,8 @@
    "shadow_net_5": 2.1226,
    "shadow_gross_10": 4.9318,
    "shadow_net_10": 4.4818,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": 7.5989,
+   "shadow_net_20": 7.1489,
    "win": true,
    "filled_at": "2026-09-20",
    "weakening_days": 5
@@ -3052,13 +3194,13 @@
    "excess_eqw_10": 0.9204,
    "excess_eqw_lag1_10": -3.7917,
    "excess_eqw_20": 4.6699,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": 2.2983,
    "excess_twii_5": 0.3165,
    "excess_twii_lag1_5": -3.4021,
    "excess_twii_10": 0.5764,
    "excess_twii_lag1_10": -4.8473,
    "excess_twii_20": 5.431,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": 3.5064,
    "shadow_tickers": [
     "2468.TW",
     "2427.TW",
@@ -3068,8 +3210,8 @@
    "shadow_net_5": 3.0523,
    "shadow_gross_10": 1.4944,
    "shadow_net_10": 1.0444,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": 8.9276,
+   "shadow_net_20": 8.4776,
    "win": true,
    "filled_at": "2026-09-20"
   },
@@ -3102,13 +3244,13 @@
    "excess_eqw_10": -1.7439,
    "excess_eqw_lag1_10": -3.3239,
    "excess_eqw_20": 0.1219,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -0.1099,
    "excess_twii_5": 1.4627,
    "excess_twii_lag1_5": -3.3608,
    "excess_twii_10": -2.0788,
    "excess_twii_lag1_10": -4.3846,
    "excess_twii_20": 0.8499,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": 1.0698,
    "shadow_tickers": [
     "3029.TW",
     "6214.TW",
@@ -3118,8 +3260,8 @@
    "shadow_net_5": 0.7909,
    "shadow_gross_10": -0.3463,
    "shadow_net_10": -0.7963,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": 2.6053,
+   "shadow_net_20": 2.1553,
    "win": true,
    "filled_at": "2026-09-20"
   },
@@ -3148,13 +3290,13 @@
    "excess_eqw_10": -6.3169,
    "excess_eqw_lag1_10": -5.5181,
    "excess_eqw_20": -10.3761,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -8.5386,
    "excess_twii_5": -7.0249,
    "excess_twii_lag1_5": -7.2276,
    "excess_twii_10": -6.6362,
    "excess_twii_lag1_10": -6.5547,
    "excess_twii_20": -9.7244,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -7.4585,
    "shadow_tickers": [
     "6690.TWO",
     "7765.TW",
@@ -3164,8 +3306,8 @@
    "shadow_net_5": -0.3593,
    "shadow_gross_10": -1.134,
    "shadow_net_10": -1.584,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": -2.4044,
+   "shadow_net_20": -2.8544,
    "win": false,
    "filled_at": "2026-09-20"
   },
