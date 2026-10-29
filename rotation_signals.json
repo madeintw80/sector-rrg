@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-10-28T18:04:00+08:00",
- "as_of": "2026-10-28",
+ "generated": "2026-10-29T18:04:04+08:00",
+ "as_of": "2026-10-29",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -40,9 +40,9 @@
   ]
  },
  "stats": {
-  "oos_total": 36,
+  "oos_total": 37,
   "oos_filled": 36,
-  "oos_pending": 0,
+  "oos_pending": 1,
   "win_rate": 47.2,
   "mean_excess": 0.114,
   "median_excess": -0.073,
@@ -53,9 +53,9 @@
     "mean": -0.541
    },
    "excess_eqw_10": {
-    "filled": 26,
-    "win_rate": 30.8,
-    "mean": -1.466
+    "filled": 35,
+    "win_rate": 37.1,
+    "mean": -0.986
    },
    "excess_eqw_lag1_10": {
     "filled": 26,
@@ -88,9 +88,9 @@
     "mean": -1.591
    },
    "excess_twii_lag1_10": {
-    "filled": 22,
-    "win_rate": 36.4,
-    "mean": -1.736
+    "filled": 26,
+    "win_rate": 38.5,
+    "mean": -1.49
    },
    "excess_twii_20": {
     "filled": 18,
@@ -98,13 +98,13 @@
     "mean": -0.61
    },
    "excess_twii_lag1_20": {
-    "filled": 17,
-    "win_rate": 58.8,
-    "mean": -0.294
+    "filled": 18,
+    "win_rate": 61.1,
+    "mean": -0.105
    }
   },
   "combo_v3": {
-   "total": 3,
+   "total": 4,
    "t0": {
     "filled": 3,
     "win_rate": 66.7,
@@ -122,9 +122,9 @@
      "mean": 0.592
     },
     "excess_eqw_10": {
-     "filled": 2,
-     "win_rate": 50.0,
-     "mean": 0.863
+     "filled": 3,
+     "win_rate": 66.7,
+     "mean": 2.072
     },
     "excess_eqw_lag1_10": {
      "filled": 2,
@@ -202,14 +202,14 @@
      "mean": -2.321
     },
     "excess_eqw_20": {
-     "filled": 25,
-     "win_rate": 36.0,
-     "mean": -1.259
+     "filled": 26,
+     "win_rate": 34.6,
+     "mean": -1.378
     },
     "excess_eqw_lag1_20": {
-     "filled": 21,
-     "win_rate": 38.1,
-     "mean": -1.641
+     "filled": 25,
+     "win_rate": 36.0,
+     "mean": -1.393
     },
     "excess_twii_5": {
      "filled": 47,
@@ -227,19 +227,19 @@
      "mean": -1.369
     },
     "excess_twii_lag1_10": {
-     "filled": 40,
-     "win_rate": 40.0,
-     "mean": -1.78
+     "filled": 44,
+     "win_rate": 38.6,
+     "mean": -1.748
     },
     "excess_twii_20": {
-     "filled": 21,
-     "win_rate": 23.8,
-     "mean": -2.397
+     "filled": 25,
+     "win_rate": 32.0,
+     "mean": -1.305
     },
     "excess_twii_lag1_20": {
-     "filled": 19,
-     "win_rate": 15.8,
-     "mean": -1.309
+     "filled": 21,
+     "win_rate": 14.3,
+     "mean": -1.689
     }
    }
   },
@@ -275,10 +275,10 @@
      "mean_net": -4.082
     },
     "h20": {
-     "filled": 21,
-     "win_rate": 38.1,
-     "mean_gross": -0.843,
-     "mean_net": -1.293
+     "filled": 25,
+     "win_rate": 36.0,
+     "mean_gross": -0.761,
+     "mean_net": -1.211
     }
    }
   }
@@ -289,6 +289,52 @@
   "subindustry": "細產業"
  },
  "signals": [
+  {
+   "date": "2026-10-29",
+   "signal_type": "il",
+   "level": "subindustry",
+   "group_id": "subindustry:28:C023211",
+   "group_name": "銅箔基板",
+   "members": [
+    "台光電 2383",
+    "聯茂 6213",
+    "台燿 6274",
+    "尚茂 8291"
+   ],
+   "rs_ratio": 101.13,
+   "rs_momentum": 103.24,
+   "turnover_heat": 1.15,
+   "breadth_up20": 0.75,
+   "trailing_excess20": 10.358,
+   "improving_days": 4,
+   "breadth_slope5": 0.0,
+   "days_since_prev_il": 19,
+   "excess_eqw_5": null,
+   "excess_eqw_lag1_5": null,
+   "excess_eqw_10": null,
+   "excess_eqw_lag1_10": null,
+   "excess_eqw_20": null,
+   "excess_eqw_lag1_20": null,
+   "excess_twii_5": null,
+   "excess_twii_lag1_5": null,
+   "excess_twii_10": null,
+   "excess_twii_lag1_10": null,
+   "excess_twii_20": null,
+   "excess_twii_lag1_20": null,
+   "shadow_tickers": [
+    "2383.TW",
+    "6213.TW",
+    "6274.TWO"
+   ],
+   "shadow_gross_5": null,
+   "shadow_net_5": null,
+   "shadow_gross_10": null,
+   "shadow_net_10": null,
+   "shadow_gross_20": null,
+   "shadow_net_20": null,
+   "win": null,
+   "filled_at": null
+  },
   {
    "date": "2026-10-16",
    "signal_type": "il",
@@ -503,7 +549,7 @@
    "days_since_prev_il": 9,
    "excess_eqw_5": 2.7319,
    "excess_eqw_lag1_5": 4.5336,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 1.0077,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -550,7 +596,7 @@
    "days_since_prev_il": 9,
    "excess_eqw_5": 2.7319,
    "excess_eqw_lag1_5": 4.5336,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 1.0077,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -597,7 +643,7 @@
    "days_since_prev_il": 52,
    "excess_eqw_5": 1.1199,
    "excess_eqw_lag1_5": -1.4556,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 2.0562,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -647,7 +693,7 @@
    "days_since_prev_il": 19,
    "excess_eqw_5": -1.422,
    "excess_eqw_lag1_5": -0.9904,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -2.1389,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -697,7 +743,7 @@
    "days_since_prev_il": 7,
    "excess_eqw_5": -1.784,
    "excess_eqw_lag1_5": -1.8035,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -4.2553,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -745,7 +791,7 @@
    "days_since_prev_il": 9,
    "excess_eqw_5": 4.3001,
    "excess_eqw_lag1_5": 0.9456,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 4.5931,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -795,7 +841,7 @@
    "days_since_prev_il": 16,
    "excess_eqw_5": 0.6039,
    "excess_eqw_lag1_5": -0.2418,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -0.8393,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -845,7 +891,7 @@
    "days_since_prev_il": 17,
    "excess_eqw_5": -1.047,
    "excess_eqw_lag1_5": -0.7001,
-   "excess_eqw_10": null,
+   "excess_eqw_10": -2.3371,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -894,7 +940,7 @@
    "days_since_prev_il": 18,
    "excess_eqw_5": -0.0433,
    "excess_eqw_lag1_5": 2.2583,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 4.4893,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
@@ -951,7 +997,7 @@
    "excess_twii_5": 4.2208,
    "excess_twii_lag1_5": 3.5736,
    "excess_twii_10": 4.2356,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 3.0546,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1002,7 +1048,7 @@
    "excess_twii_5": 2.3233,
    "excess_twii_lag1_5": 2.6258,
    "excess_twii_10": 1.2974,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 1.0164,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1048,7 +1094,7 @@
    "excess_twii_5": 2.6018,
    "excess_twii_lag1_5": -0.9081,
    "excess_twii_10": -1.0834,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -3.0467,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1095,7 +1141,7 @@
    "excess_twii_5": -1.5607,
    "excess_twii_lag1_5": -2.2616,
    "excess_twii_10": -0.1461,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -0.3005,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1145,7 +1191,7 @@
    "excess_twii_5": 2.1941,
    "excess_twii_lag1_5": 2.7707,
    "excess_twii_10": 1.8026,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 1.7732,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1194,7 +1240,7 @@
    "excess_twii_5": 1.4255,
    "excess_twii_lag1_5": 0.8063,
    "excess_twii_10": -1.0993,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -1.3772,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1243,7 +1289,7 @@
    "excess_twii_5": -5.0065,
    "excess_twii_lag1_5": -2.422,
    "excess_twii_10": -5.3286,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -4.659,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -1291,7 +1337,7 @@
    "excess_twii_5": 3.32,
    "excess_twii_lag1_5": 2.1571,
    "excess_twii_10": -0.7173,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -2.7149,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -2210,7 +2256,7 @@
    "excess_eqw_lag1_5": 10.0952,
    "excess_eqw_10": 8.8803,
    "excess_eqw_lag1_10": 3.6151,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -4.3369,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 1.8466,
    "excess_twii_lag1_5": 7.0414,
@@ -2259,12 +2305,12 @@
    "excess_eqw_10": -1.0226,
    "excess_eqw_lag1_10": 1.1619,
    "excess_eqw_20": 0.8489,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -0.8323,
    "excess_twii_5": 1.914,
    "excess_twii_lag1_5": -0.8064,
    "excess_twii_10": -0.391,
    "excess_twii_lag1_10": 1.2253,
-   "excess_twii_20": null,
+   "excess_twii_20": 1.675,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2409.TW",
@@ -2275,8 +2321,8 @@
    "shadow_net_5": 3.9674,
    "shadow_gross_10": 2.9185,
    "shadow_net_10": 2.4685,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": -5.7007,
+   "shadow_net_20": -6.1507,
    "win": true,
    "filled_at": "2026-10-05",
    "weakening_days": 6
@@ -2306,12 +2352,12 @@
    "excess_eqw_10": -4.6543,
    "excess_eqw_lag1_10": -9.2412,
    "excess_eqw_20": 11.436,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": 10.1265,
    "excess_twii_5": -5.4613,
    "excess_twii_lag1_5": -11.0784,
    "excess_twii_10": -4.0459,
    "excess_twii_lag1_10": -9.1844,
-   "excess_twii_20": null,
+   "excess_twii_20": 16.4138,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "6902.TW",
@@ -2322,8 +2368,8 @@
    "shadow_net_5": -8.0985,
    "shadow_gross_10": -7.7254,
    "shadow_net_10": -8.1754,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": 19.0761,
+   "shadow_net_20": 18.6261,
    "win": false,
    "filled_at": "2026-10-05",
    "weakening_days": 3
@@ -2355,12 +2401,12 @@
    "excess_eqw_10": -1.547,
    "excess_eqw_lag1_10": -6.5561,
    "excess_eqw_20": 3.3226,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -3.7545,
    "excess_twii_5": 2.6721,
    "excess_twii_lag1_5": -4.0187,
    "excess_twii_10": -0.9188,
    "excess_twii_lag1_10": -6.4975,
-   "excess_twii_20": null,
+   "excess_twii_20": 4.4594,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2030.TW",
@@ -2371,8 +2417,8 @@
    "shadow_net_5": 1.8487,
    "shadow_gross_10": -6.306,
    "shadow_net_10": -6.756,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": -4.1667,
+   "shadow_net_20": -4.6167,
    "win": true,
    "filled_at": "2026-10-05",
    "weakening_days": 6
@@ -2406,12 +2452,12 @@
    "excess_eqw_10": -1.2947,
    "excess_eqw_lag1_10": 0.5502,
    "excess_eqw_20": -7.1533,
-   "excess_eqw_lag1_20": null,
+   "excess_eqw_lag1_20": -5.9194,
    "excess_twii_5": 3.0351,
    "excess_twii_lag1_5": 3.0407,
    "excess_twii_10": -0.6649,
    "excess_twii_lag1_10": 0.6132,
-   "excess_twii_20": null,
+   "excess_twii_20": -4.835,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2404.TW",
@@ -2422,8 +2468,8 @@
    "shadow_net_5": 8.9608,
    "shadow_gross_10": -2.1007,
    "shadow_net_10": -2.5507,
-   "shadow_gross_20": null,
-   "shadow_net_20": null,
+   "shadow_gross_20": -10.5168,
+   "shadow_net_20": -10.9668,
    "win": true,
    "filled_at": "2026-10-05",
    "weakening_days": 1
@@ -2462,7 +2508,7 @@
    "excess_twii_10": -4.1304,
    "excess_twii_lag1_10": -6.2575,
    "excess_twii_20": -4.738,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -5.8562,
    "shadow_tickers": [
     "3661.TW",
     "3443.TW",
@@ -2511,7 +2557,7 @@
    "excess_twii_10": 7.1148,
    "excess_twii_lag1_10": 0.4172,
    "excess_twii_20": 8.2224,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": 3.1099,
    "shadow_tickers": [
     "3498.TWO",
     "3219.TWO",
@@ -2561,7 +2607,7 @@
    "excess_twii_10": 1.8885,
    "excess_twii_lag1_10": 0.028,
    "excess_twii_20": -1.8678,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -4.7542,
    "shadow_tickers": [
     "7792.TWO",
     "2474.TW",
