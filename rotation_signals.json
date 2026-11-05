@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-11-04T18:05:21+08:00",
- "as_of": "2026-11-04",
+ "generated": "2026-11-05T18:06:26+08:00",
+ "as_of": "2026-11-05",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -41,11 +41,11 @@
  },
  "stats": {
   "oos_total": 37,
-  "oos_filled": 36,
-  "oos_pending": 1,
-  "win_rate": 47.2,
-  "mean_excess": 0.114,
-  "median_excess": -0.073,
+  "oos_filled": 37,
+  "oos_pending": 0,
+  "win_rate": 45.9,
+  "mean_excess": -0.354,
+  "median_excess": -0.102,
   "extra": {
    "excess_eqw_lag1_5": {
     "filled": 36,
@@ -73,9 +73,9 @@
     "mean": -1.401
    },
    "excess_twii_5": {
-    "filled": 36,
-    "win_rate": 63.9,
-    "mean": 0.569
+    "filled": 37,
+    "win_rate": 62.2,
+    "mean": 0.153
    },
    "excess_twii_lag1_5": {
     "filled": 36,
@@ -98,17 +98,17 @@
     "mean": -1.225
    },
    "excess_twii_lag1_20": {
-    "filled": 19,
-    "win_rate": 63.2,
-    "mean": 0.401
+    "filled": 21,
+    "win_rate": 57.1,
+    "mean": -0.856
    }
   },
   "combo_v3": {
    "total": 4,
    "t0": {
-    "filled": 3,
-    "win_rate": 66.7,
-    "mean": 1.031
+    "filled": 4,
+    "win_rate": 50.0,
+    "mean": -3.528
    },
    "t1": {
     "filled": 3,
@@ -142,9 +142,9 @@
      "mean": -5.878
     },
     "excess_twii_5": {
-     "filled": 3,
-     "win_rate": 100.0,
-     "mean": 1.692
+     "filled": 4,
+     "win_rate": 75.0,
+     "mean": -2.442
     },
     "excess_twii_lag1_5": {
      "filled": 3,
@@ -167,9 +167,9 @@
      "mean": -3.646
     },
     "excess_twii_lag1_20": {
-     "filled": 1,
-     "win_rate": 100.0,
-     "mean": 5.155
+     "filled": 2,
+     "win_rate": 50.0,
+     "mean": -6.19
     }
    }
   },
@@ -202,9 +202,9 @@
      "mean": -2.487
     },
     "excess_eqw_20": {
-     "filled": 37,
-     "win_rate": 32.4,
-     "mean": -2.18
+     "filled": 38,
+     "win_rate": 31.6,
+     "mean": -2.705
     },
     "excess_eqw_lag1_20": {
      "filled": 37,
@@ -755,13 +755,13 @@
    "improving_days": 4,
    "breadth_slope5": 0.0,
    "days_since_prev_il": 19,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -17.2043,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -14.8443,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -778,8 +778,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null
+   "win": false,
+   "filled_at": "2026-11-05"
   },
   {
    "date": "2026-10-16",
@@ -1972,7 +1972,7 @@
    "excess_eqw_lag1_5": -4.127,
    "excess_eqw_10": -0.6113,
    "excess_eqw_lag1_10": -3.9126,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -22.1434,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 3.1275,
    "excess_twii_lag1_5": -0.3122,
@@ -2026,7 +2026,7 @@
    "excess_twii_10": -5.5395,
    "excess_twii_lag1_10": -2.7417,
    "excess_twii_20": -14.179,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -17.5349,
    "shadow_tickers": [
     "2327.TW",
     "2492.TW",
@@ -2074,7 +2074,7 @@
    "excess_twii_10": 0.4186,
    "excess_twii_lag1_10": 6.3589,
    "excess_twii_20": -6.9741,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -8.0667,
    "shadow_tickers": [
     "3026.TW",
     "8042.TWO",
