@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-11-17T18:05:38+08:00",
- "as_of": "2026-11-17",
+ "generated": "2026-11-18T18:05:23+08:00",
+ "as_of": "2026-11-18",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -98,9 +98,9 @@
     "mean": 0.184
    },
    "excess_twii_lag1_20": {
-    "filled": 35,
-    "win_rate": 48.6,
-    "mean": 0.718
+    "filled": 36,
+    "win_rate": 47.2,
+    "mean": 0.568
    }
   },
   "combo_v3": {
@@ -197,9 +197,9 @@
      "mean": -0.699
     },
     "excess_eqw_lag1_10": {
-     "filled": 53,
-     "win_rate": 37.7,
-     "mean": -1.572
+     "filled": 56,
+     "win_rate": 39.3,
+     "mean": -1.523
     },
     "excess_eqw_20": {
      "filled": 47,
@@ -227,9 +227,9 @@
      "mean": -0.251
     },
     "excess_twii_lag1_10": {
-     "filled": 53,
-     "win_rate": 43.4,
-     "mean": -0.804
+     "filled": 56,
+     "win_rate": 44.6,
+     "mean": -0.791
     },
     "excess_twii_20": {
      "filled": 47,
@@ -237,9 +237,9 @@
      "mean": -3.099
     },
     "excess_twii_lag1_20": {
-     "filled": 45,
-     "win_rate": 22.2,
-     "mean": -2.794
+     "filled": 47,
+     "win_rate": 21.3,
+     "mean": -3.316
     }
    }
   },
@@ -269,10 +269,10 @@
     "mean_gross": -0.729,
     "mean_net": -1.179,
     "h10": {
-     "filled": 53,
-     "win_rate": 24.5,
-     "mean_gross": -2.984,
-     "mean_net": -3.434
+     "filled": 56,
+     "win_rate": 25.0,
+     "mean_gross": -3.123,
+     "mean_net": -3.573
     },
     "h20": {
      "filled": 47,
@@ -807,13 +807,13 @@
    "excess_eqw_5": -4.4659,
    "excess_eqw_lag1_5": -5.3643,
    "excess_eqw_10": -9.7166,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": -8.1562,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -5.1685,
    "excess_twii_lag1_5": -9.2639,
    "excess_twii_10": -8.4664,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": -8.0609,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -823,8 +823,8 @@
    ],
    "shadow_gross_5": -0.8746,
    "shadow_net_5": -1.3246,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -14.4057,
+   "shadow_net_10": -14.8557,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
@@ -858,13 +858,13 @@
    "excess_eqw_5": 3.9665,
    "excess_eqw_lag1_5": 6.1218,
    "excess_eqw_10": 8.1013,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": 4.6356,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 3.2019,
    "excess_twii_lag1_5": 1.7488,
    "excess_twii_10": 9.5982,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 4.7442,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -874,8 +874,8 @@
    ],
    "shadow_gross_5": 7.9789,
    "shadow_net_5": 7.5289,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": -4.4034,
+   "shadow_net_10": -4.8534,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": true,
@@ -905,13 +905,13 @@
    "excess_eqw_5": -3.0063,
    "excess_eqw_lag1_5": -2.4501,
    "excess_eqw_10": 5.6451,
-   "excess_eqw_lag1_10": null,
+   "excess_eqw_lag1_10": 1.5402,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -3.7197,
    "excess_twii_lag1_5": -6.4698,
    "excess_twii_10": 7.108,
-   "excess_twii_lag1_10": null,
+   "excess_twii_lag1_10": 1.6456,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
@@ -921,8 +921,8 @@
    ],
    "shadow_gross_5": 1.1311,
    "shadow_net_5": 0.6811,
-   "shadow_gross_10": null,
-   "shadow_net_10": null,
+   "shadow_gross_10": 2.0994,
+   "shadow_net_10": 1.6494,
    "shadow_gross_20": null,
    "shadow_net_20": null,
    "win": false,
@@ -1305,7 +1305,7 @@
    "excess_twii_10": 1.6144,
    "excess_twii_lag1_10": 3.5059,
    "excess_twii_20": -5.202,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -4.7065,
    "shadow_tickers": [
     "6415.TW",
     "8081.TW",
@@ -1351,7 +1351,7 @@
    "excess_twii_10": -7.9444,
    "excess_twii_lag1_10": -4.2467,
    "excess_twii_20": -20.0426,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -18.8025,
    "shadow_tickers": [
     "6127.TWO",
     "6155.TW",
@@ -1399,7 +1399,7 @@
    "excess_twii_10": -10.2203,
    "excess_twii_lag1_10": -4.8665,
    "excess_twii_20": -14.0136,
-   "excess_twii_lag1_20": null,
+   "excess_twii_lag1_20": -11.3446,
    "shadow_tickers": [
     "3030.TW",
     "6877.TWO",
