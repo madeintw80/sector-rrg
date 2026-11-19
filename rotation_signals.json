@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-11-18T18:05:23+08:00",
- "as_of": "2026-11-18",
+ "generated": "2026-11-19T18:05:42+08:00",
+ "as_of": "2026-11-19",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -176,9 +176,9 @@
   "wl": {
    "total": 65,
    "t0": {
-    "filled": 56,
-    "win_rate": 53.6,
-    "mean": 0.305
+    "filled": 57,
+    "win_rate": 54.4,
+    "mean": 0.33
    },
    "t1": {
     "filled": 56,
@@ -212,9 +212,9 @@
      "mean": -4.409
     },
     "excess_twii_5": {
-     "filled": 56,
-     "win_rate": 51.8,
-     "mean": -0.089
+     "filled": 57,
+     "win_rate": 52.6,
+     "mean": -0.015
     },
     "excess_twii_lag1_5": {
      "filled": 56,
@@ -754,13 +754,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.0714,
    "days_since_prev_il": 19,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 1.7662,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 4.1649,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -777,8 +777,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-11-19",
    "weakening_days": 5
   },
   {
