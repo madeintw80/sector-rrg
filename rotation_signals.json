@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-11-19T18:05:42+08:00",
- "as_of": "2026-11-19",
+ "generated": "2026-11-20T18:04:53+08:00",
+ "as_of": "2026-11-20",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -176,20 +176,20 @@
   "wl": {
    "total": 65,
    "t0": {
-    "filled": 57,
-    "win_rate": 54.4,
-    "mean": 0.33
+    "filled": 63,
+    "win_rate": 54.0,
+    "mean": 0.1
    },
    "t1": {
-    "filled": 56,
-    "win_rate": 50.0,
-    "mean": -0.329
+    "filled": 57,
+    "win_rate": 49.1,
+    "mean": -0.334
    },
    "extra": {
     "excess_eqw_lag1_5": {
-     "filled": 56,
-     "win_rate": 50.0,
-     "mean": -0.329
+     "filled": 57,
+     "win_rate": 49.1,
+     "mean": -0.334
     },
     "excess_eqw_10": {
      "filled": 56,
@@ -212,14 +212,14 @@
      "mean": -4.409
     },
     "excess_twii_5": {
-     "filled": 57,
-     "win_rate": 52.6,
-     "mean": -0.015
+     "filled": 63,
+     "win_rate": 52.4,
+     "mean": 0.032
     },
     "excess_twii_lag1_5": {
-     "filled": 56,
-     "win_rate": 41.1,
-     "mean": -0.999
+     "filled": 57,
+     "win_rate": 42.1,
+     "mean": -0.946
     },
     "excess_twii_10": {
      "filled": 56,
@@ -264,10 +264,10 @@
     }
    },
    "wl": {
-    "filled": 56,
-    "win_rate": 39.3,
-    "mean_gross": -0.729,
-    "mean_net": -1.179,
+    "filled": 57,
+    "win_rate": 38.6,
+    "mean_gross": -1.092,
+    "mean_net": -1.542,
     "h10": {
      "filled": 56,
      "win_rate": 25.0,
@@ -455,13 +455,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.234,
    "days_since_prev_il": 21,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 1.3641,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 4.0182,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -478,8 +478,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-11-20",
    "weakening_days": 5
   },
   {
@@ -503,13 +503,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.6,
    "days_since_prev_il": 20,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -8.2821,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -5.8806,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -526,8 +526,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-11-20",
    "weakening_days": 4
   },
   {
@@ -551,13 +551,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.6,
    "days_since_prev_il": 20,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -8.2821,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -5.8806,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -574,8 +574,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-11-20",
    "weakening_days": 4
   },
   {
@@ -602,13 +602,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.2222,
    "days_since_prev_il": 21,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 4.4199,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 7.154,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -625,8 +625,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-11-20",
    "weakening_days": 5
   },
   {
@@ -653,13 +653,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.2105,
    "days_since_prev_il": 21,
-   "excess_eqw_5": null,
+   "excess_eqw_5": 0.9437,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": 3.5868,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -676,8 +676,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": true,
+   "filled_at": "2026-11-20",
    "weakening_days": 5
   },
   {
@@ -704,13 +704,13 @@
    "improving_days": 0,
    "breadth_slope5": 0.375,
    "days_since_prev_il": 21,
-   "excess_eqw_5": null,
+   "excess_eqw_5": -2.6659,
    "excess_eqw_lag1_5": null,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
-   "excess_twii_5": null,
+   "excess_twii_5": -0.1173,
    "excess_twii_lag1_5": null,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
@@ -727,8 +727,8 @@
    "shadow_net_10": null,
    "shadow_gross_20": null,
    "shadow_net_20": null,
-   "win": null,
-   "filled_at": null,
+   "win": false,
+   "filled_at": "2026-11-20",
    "weakening_days": 4
   },
   {
@@ -755,13 +755,13 @@
    "breadth_slope5": 0.0714,
    "days_since_prev_il": 19,
    "excess_eqw_5": 1.7662,
-   "excess_eqw_lag1_5": null,
+   "excess_eqw_lag1_5": -0.5808,
    "excess_eqw_10": null,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 4.1649,
-   "excess_twii_lag1_5": null,
+   "excess_twii_lag1_5": 2.0224,
    "excess_twii_10": null,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
@@ -771,8 +771,8 @@
     "2471.TW",
     "6163.TWO"
    ],
-   "shadow_gross_5": null,
-   "shadow_net_5": null,
+   "shadow_gross_5": -21.3877,
+   "shadow_net_5": -21.8377,
    "shadow_gross_10": null,
    "shadow_net_10": null,
    "shadow_gross_20": null,
