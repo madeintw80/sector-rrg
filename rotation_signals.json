@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "generated": "2026-11-25T18:06:20+08:00",
- "as_of": "2026-11-25",
+ "generated": "2026-11-26T18:07:42+08:00",
+ "as_of": "2026-11-26",
  "oos_start": "2026-08-21",
  "backtest_reference": {
   "win_rate": 51.5,
@@ -63,9 +63,9 @@
     "mean": -1.292
    },
    "excess_eqw_20": {
-    "filled": 36,
-    "win_rate": 38.9,
-    "mean": -1.271
+    "filled": 37,
+    "win_rate": 37.8,
+    "mean": -1.716
    },
    "excess_eqw_lag1_20": {
     "filled": 36,
@@ -93,9 +93,9 @@
     "mean": -0.578
    },
    "excess_twii_20": {
-    "filled": 36,
-    "win_rate": 47.2,
-    "mean": 0.184
+    "filled": 37,
+    "win_rate": 45.9,
+    "mean": -0.308
    },
    "excess_twii_lag1_20": {
     "filled": 36,
@@ -132,9 +132,9 @@
      "mean": -1.032
     },
     "excess_eqw_20": {
-     "filled": 3,
-     "win_rate": 66.7,
-     "mean": 5.658
+     "filled": 4,
+     "win_rate": 50.0,
+     "mean": -0.189
     },
     "excess_eqw_lag1_20": {
      "filled": 3,
@@ -162,9 +162,9 @@
      "mean": 1.38
     },
     "excess_twii_20": {
-     "filled": 3,
-     "win_rate": 66.7,
-     "mean": 9.557
+     "filled": 4,
+     "win_rate": 50.0,
+     "mean": 2.667
     },
     "excess_twii_lag1_20": {
      "filled": 3,
@@ -192,9 +192,9 @@
      "mean": -1.067
     },
     "excess_eqw_10": {
-     "filled": 56,
-     "win_rate": 37.5,
-     "mean": -0.699
+     "filled": 57,
+     "win_rate": 38.6,
+     "mean": -0.65
     },
     "excess_eqw_lag1_10": {
      "filled": 56,
@@ -222,9 +222,9 @@
      "mean": -1.779
     },
     "excess_twii_10": {
-     "filled": 56,
-     "win_rate": 41.1,
-     "mean": -0.251
+     "filled": 57,
+     "win_rate": 42.1,
+     "mean": -0.215
     },
     "excess_twii_lag1_10": {
      "filled": 56,
@@ -803,13 +803,13 @@
    "days_since_prev_il": 19,
    "excess_eqw_5": 1.7662,
    "excess_eqw_lag1_5": -0.5808,
-   "excess_eqw_10": null,
+   "excess_eqw_10": 2.077,
    "excess_eqw_lag1_10": null,
    "excess_eqw_20": null,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": 4.1649,
    "excess_twii_lag1_5": 2.0224,
-   "excess_twii_10": null,
+   "excess_twii_10": 1.8318,
    "excess_twii_lag1_10": null,
    "excess_twii_20": null,
    "excess_twii_lag1_20": null,
@@ -1298,13 +1298,13 @@
    "excess_eqw_lag1_5": -21.1131,
    "excess_eqw_10": -17.6465,
    "excess_eqw_lag1_10": -17.1525,
-   "excess_eqw_20": null,
+   "excess_eqw_20": -17.7319,
    "excess_eqw_lag1_20": null,
    "excess_twii_5": -14.8443,
    "excess_twii_lag1_5": -17.9098,
    "excess_twii_10": -17.7288,
    "excess_twii_lag1_10": -17.4518,
-   "excess_twii_20": null,
+   "excess_twii_20": -18.003,
    "excess_twii_lag1_20": null,
    "shadow_tickers": [
     "2383.TW",
